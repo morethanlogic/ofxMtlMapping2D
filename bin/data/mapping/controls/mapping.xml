@@ -1,0 +1,30 @@
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING:EDIT_SHAPES</Name>
+    <Value>1</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING_MODE:OUTPUT</Name>
+    <Value>1</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING_MODE:INPUT</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING:CREATE_NEW_QUAD</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING:CREATE_NEW_TRAINGLE</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>MAPPING:SHOW_SHAPES_ID</Name>
+    <Value>1</Value>
+</Widget>

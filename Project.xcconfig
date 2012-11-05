@@ -1,0 +1,9 @@
+//THE PATH TO THE ROOT OF OUR OF PATH RELATIVE TO THIS PROJECT.
+//THIS NEEDS TO BE DEFINED BEFORE CoreOF.xcconfig IS INCLUDED
+OF_PATH = ../../../../../../Developer/Frameworks/openFrameworks
+
+//THIS HAS ALL THE HEADER AND LIBS FOR OF CORE
+#include "../../../../../../Developer/Frameworks/openFrameworks/libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig"
+
+OTHER_LDFLAGS = $(OF_CORE_LIBS) 
+HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS)
