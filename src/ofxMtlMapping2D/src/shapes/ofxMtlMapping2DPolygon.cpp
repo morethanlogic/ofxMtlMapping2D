@@ -98,9 +98,9 @@ void ofxMtlMapping2DPolygon::draw()
     ofBeginShape();
         ofFill();
         if(activePolygon == this) {
-            ofSetColor(0, 255, 0, 150);
+            ofSetColor(240, 0, 255, 200);
         } else {
-            ofSetColor(255, 0, 0, 150);
+            ofSetColor(240, 0, 255, 40);
         }
         
         for (it=vertices.begin(); it!=vertices.end(); it++) {
@@ -108,6 +108,22 @@ void ofxMtlMapping2DPolygon::draw()
             ofVertex(vertex->center.x, vertex->center.y);
         }
     ofEndShape(true);
+    
+    if(activePolygon != this) {
+        //ofBeginShape();
+        glBegin(GL_LINE_LOOP);
+            ofSetColor(240, 0, 255, 220);
+            ofNoFill();
+            
+            for (it=vertices.begin(); it!=vertices.end(); it++) {
+                ofxMtlMapping2DVertex* vertex = *it;
+                glVertex2f(vertex->center.x, vertex->center.y);
+            }
+            ofFill();
+        glEnd();
+        //ofEndShape(true);
+    }
+    
 
     // ----
     //Vertices

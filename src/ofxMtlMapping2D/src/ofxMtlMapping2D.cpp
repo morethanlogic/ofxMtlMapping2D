@@ -159,11 +159,6 @@ void ofxMtlMapping2D::draw()
             if(shape != ofxMtlMapping2DShape::activeShape) {
                 shape->draw();
             }
-            
-            
-            if(ofxMtlMapping2DControls::mapping2DControls()->showShapesId())  {
-                shape->drawID();
-            }
         }
         
         if(ofxMtlMapping2DShape::activeShape) {

@@ -79,7 +79,11 @@ void ofxMtlMapping2DShape::draw()
         inputPolygon->draw();
     }
     
-	ofDisableAlphaBlending();	
+    if(ofxMtlMapping2DControls::mapping2DControls()->showShapesId())  {
+        drawID();
+    }
+    
+	ofDisableAlphaBlending();
 }
 
 
