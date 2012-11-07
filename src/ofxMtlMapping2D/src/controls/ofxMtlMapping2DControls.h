@@ -66,6 +66,7 @@ class ofxMtlMapping2DControls
         void setAsActiveShapeWithId(int shapeID);
         const int& selectedShapeId() { return _selectedShapeId; }
         void resetSelectedShapeId();
+        void unselectShapesToggles();
 
     protected:
         ofxUIScrollableCanvas *_toolsCanvas;

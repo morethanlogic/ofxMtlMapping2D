@@ -5,6 +5,16 @@ ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+void ofxMtlMapping2DPolygon::resetActivePolygonVars(){
+    ofxMtlMapping2DPolygon::activePolygon = NULL;
+    ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
+    ofxMtlMapping2DVertex::activeVertex = NULL;
+}
+
+
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 ofxMtlMapping2DPolygon::ofxMtlMapping2DPolygon()
 {    
     disableAllEvents();
@@ -27,9 +37,7 @@ ofxMtlMapping2DPolygon::~ofxMtlMapping2DPolygon(){
     delete polyline;
     
     // ----
-    ofxMtlMapping2DPolygon::activePolygon = NULL;
-    ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
-    ofxMtlMapping2DVertex::activeVertex = NULL;
+    resetActivePolygonVars();
 }
 
 
@@ -63,7 +71,11 @@ void ofxMtlMapping2DPolygon::update()
         
         updatePolyline();
         
-	} else {
+	}
+    
+    //EST CE NECESSAIRE !!!!
+    
+    else {
         disableVertices();
 	}
 }
@@ -188,12 +200,18 @@ void ofxMtlMapping2DPolygon::setAsActive()
         activePolygon = this;
         
         if (previousActivePolygon) {
-            previousActivePolygon->disable();
-            previousActivePolygon->disableVertices();
+            previousActivePolygon->setAsIdle();
         }
         
         enableVertices();
     }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DPolygon::setAsIdle()
+{
+    disable();
+    disableVertices();
 }
 
 #pragma mark -

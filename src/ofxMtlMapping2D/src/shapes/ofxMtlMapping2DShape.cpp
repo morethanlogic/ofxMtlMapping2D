@@ -9,7 +9,6 @@ int                 ofxMtlMapping2DShape::activeShapeCurrVertexId = -1;
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::resetActiveShapeVars(){
-    delete ofxMtlMapping2DShape::activeShape;
     ofxMtlMapping2DShape::activeShape = NULL;
     ofxMtlMapping2DShape::previousActiveShape = NULL;
     ofxMtlMapping2DShape::activeShapeCurrVertexId = -1;
@@ -52,15 +51,15 @@ void ofxMtlMapping2DShape::update()
     
     if(activePolygon == this || activePolygon == inputPolygon) {
         setAsActiveShape();
+        
+        // ---- recalculate the homography transformation matrix.
+        calcHomography();
     }
     
     if (activeShape == this) {
         if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
             inputPolygon->update();
         }
-        
-        // ---- recalculate the homography transformation matrix.
-        calcHomography();
 	}
 }
 
@@ -100,16 +99,34 @@ void ofxMtlMapping2DShape::drawID()
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
 {
-	if (activeShape != this) {
-        previousActiveShape = activeShape;
-        activeShape = this;
-        activeShapeCurrVertexId = -1;
-        
-        // Update UI
-        if (fromUI) {
-            setAsActive();
-        } else {
-            ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+    // ---- OUTPUT MODE
+    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+        if (activeShape != this) {
+            previousActiveShape = activeShape;
+            activeShape = this;
+            activeShapeCurrVertexId = -1;
+            
+            // Update UI
+            if (fromUI) {
+                setAsActive();
+            } else {
+                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+            }
+        }
+    
+    // ---- INPUT MODE
+    } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
+        if (activeShape != this) {
+            previousActiveShape = activeShape;
+            activeShape = this;
+            activeShapeCurrVertexId = -1;
+            
+            // Update UI
+            if (fromUI) {
+                inputPolygon->setAsActive();
+            } else {
+                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+            }
         }
     }
 }

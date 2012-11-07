@@ -230,6 +230,14 @@ void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID)
     }
 }
 
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::unselectShapesToggles()
+{
+    for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
+        ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
+        shapeToggle->setValue(false);
+    }
+}
 
 #pragma mark -
 #pragma mark Reset widgets
