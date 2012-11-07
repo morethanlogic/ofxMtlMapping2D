@@ -9,12 +9,9 @@ int                 ofxMtlMapping2DShape::activeShapeCurrVertexId = -1;
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::resetActiveShapeVars(){
     delete ofxMtlMapping2DShape::activeShape;
-    ofxMtlMapping2DShape::activeShape              = NULL;
-    delete ofxMtlMapping2DShape::previousActiveShape;
-    ofxMtlMapping2DShape::previousActiveShape      = NULL;
-    ofxMtlMapping2DShape::activeShapeCurrVertexId  = -1;
-    delete ofxMtlMapping2DVertex::activeVertex;
-    ofxMtlMapping2DVertex::activeVertex            = NULL;
+    ofxMtlMapping2DShape::activeShape = NULL;
+    ofxMtlMapping2DShape::previousActiveShape = NULL;
+    ofxMtlMapping2DShape::activeShapeCurrVertexId = -1;
 }
 
 
@@ -26,7 +23,10 @@ ofxMtlMapping2DShape::ofxMtlMapping2DShape()
 }
 
 //--------------------------------------------------------------
-ofxMtlMapping2DShape::~ofxMtlMapping2DShape(){
+ofxMtlMapping2DShape::~ofxMtlMapping2DShape()
+{
+    // ----
+    delete inputPolygon;
 }
 
 
@@ -38,15 +38,6 @@ void ofxMtlMapping2DShape::init(int sId, bool defaultShape)
     _super::init(sId, defaultShape);
     
     calcHomography();
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DShape::destroy()
-{
-    _super::destroy();
-    
-    // ----
-    delete inputPolygon;
 }
 
 //--------------------------------------------------------------

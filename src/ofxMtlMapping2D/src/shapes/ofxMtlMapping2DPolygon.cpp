@@ -5,17 +5,6 @@ ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::resetActivePolygonVars(){
-    delete ofxMtlMapping2DPolygon::activePolygon;
-    ofxMtlMapping2DPolygon::activePolygon = NULL;
-    delete ofxMtlMapping2DPolygon::previousActivePolygon;
-    ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
-    delete ofxMtlMapping2DVertex::activeVertex;
-    ofxMtlMapping2DVertex::activeVertex = NULL;
-}
-
-//--------------------------------------------------------------
-//--------------------------------------------------------------
 ofxMtlMapping2DPolygon::ofxMtlMapping2DPolygon()
 {    
     disableAllEvents();
@@ -28,7 +17,19 @@ ofxMtlMapping2DPolygon::ofxMtlMapping2DPolygon()
 
 //--------------------------------------------------------------
 ofxMtlMapping2DPolygon::~ofxMtlMapping2DPolygon(){
-    destroy();
+
+    // ----
+    while(!vertices.empty()) delete vertices.back(), vertices.pop_back();
+	vertices.clear();
+    
+    // ----
+    polyline->clear();
+    delete polyline;
+    
+    // ----
+    ofxMtlMapping2DPolygon::activePolygon = NULL;
+    ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
+    ofxMtlMapping2DVertex::activeVertex = NULL;
 }
 
 
@@ -38,25 +39,13 @@ ofxMtlMapping2DPolygon::~ofxMtlMapping2DPolygon(){
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::init(int sId, bool defaultShape) 
 {
-	shapeId = sId;
+    shapeId = sId;
 	
     if (defaultShape) {
         createDefaultShape();
     }
     
     updatePolyline();
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::destroy()
-{
-    // ----
-    while(!vertices.empty()) delete vertices.back(), vertices.pop_back();
-	vertices.clear();
-    
-    // ----
-    polyline->clear();
-    delete polyline;
 }
 
 //--------------------------------------------------------------

@@ -19,7 +19,6 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         // ----
         static ofxMtlMapping2DPolygon* activePolygon;
         static ofxMtlMapping2DPolygon* previousActivePolygon;
-        static void resetActivePolygonVars();
     
         // ----
         ofxMtlMapping2DPolygon();
@@ -57,7 +56,6 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         ofPoint _centroid2D;
         ofPoint _grabAnchor;
 
-        void destroy();
         void setAsActive();
         void disableVertices();
         void enableVertices();

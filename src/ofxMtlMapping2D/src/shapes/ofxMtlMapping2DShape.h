@@ -36,7 +36,7 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
     
 
     protected:
-        void destroy();
+//        virtual void destroy();
         void setAsActiveShape();
 
         virtual void calcHomography() {};
