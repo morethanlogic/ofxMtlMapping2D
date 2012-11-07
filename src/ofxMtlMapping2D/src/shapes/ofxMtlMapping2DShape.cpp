@@ -1,7 +1,8 @@
 #include "ofxMtlMapping2DShape.h"
 #include "ofxMtlMapping2DControls.h"
 
-ofxMtlMapping2DShape*  ofxMtlMapping2DShape::activeShape         = NULL;
+int ofxMtlMapping2DShape::nextShapeId = 0;
+ofxMtlMapping2DShape*  ofxMtlMapping2DShape::activeShape = NULL;
 ofxMtlMapping2DShape*  ofxMtlMapping2DShape::previousActiveShape = NULL;
 int                 ofxMtlMapping2DShape::activeShapeCurrVertexId = -1;
 
@@ -97,11 +98,18 @@ void ofxMtlMapping2DShape::drawID()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DShape::setAsActiveShape()
+void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
 {
 	if (activeShape != this) {
         previousActiveShape = activeShape;
         activeShape = this;
         activeShapeCurrVertexId = -1;
+        
+        // Update UI
+        if (fromUI) {
+            setAsActive();
+        } else {
+            ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+        }
     }
 }

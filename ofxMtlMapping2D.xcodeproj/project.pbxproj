@@ -30,7 +30,6 @@
 		E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */; };
 		E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E715D3B6510020DFD4 /* QTKit.framework */; };
 		E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F985F515E0DE99003869B5 /* Accelerate.framework */; };
-		F3A2B23416470EA000FAE417 /* ofxMtlMapping2DControlsInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3A2B21916470EA000FAE417 /* ofxMtlMapping2DControlsInterface.cpp */; };
 		F3A2B23516470EA000FAE417 /* ofxMtlMapping2DControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3A2B21B16470EA000FAE417 /* ofxMtlMapping2DControls.cpp */; };
 		F3A2B23616470EA000FAE417 /* ofxMtlMapping2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3A2B21D16470EA000FAE417 /* ofxMtlMapping2D.cpp */; };
 		F3A2B23716470EA000FAE417 /* ofxMtlMapping2DSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3A2B22116470EA000FAE417 /* ofxMtlMapping2DSettings.cpp */; };
@@ -129,8 +128,6 @@
 		E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		E7E077E715D3B6510020DFD4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		E7F985F515E0DE99003869B5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
-		F3A2B21916470EA000FAE417 /* ofxMtlMapping2DControlsInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMtlMapping2DControlsInterface.cpp; sourceTree = "<group>"; };
-		F3A2B21A16470EA000FAE417 /* ofxMtlMapping2DControlsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMtlMapping2DControlsInterface.h; sourceTree = "<group>"; };
 		F3A2B21B16470EA000FAE417 /* ofxMtlMapping2DControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMtlMapping2DControls.cpp; sourceTree = "<group>"; };
 		F3A2B21C16470EA000FAE417 /* ofxMtlMapping2DControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMtlMapping2DControls.h; sourceTree = "<group>"; };
 		F3A2B21D16470EA000FAE417 /* ofxMtlMapping2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMtlMapping2D.cpp; sourceTree = "<group>"; };
@@ -348,8 +345,6 @@
 		F3A2B21816470EA000FAE417 /* controls */ = {
 			isa = PBXGroup;
 			children = (
-				F3A2B21916470EA000FAE417 /* ofxMtlMapping2DControlsInterface.cpp */,
-				F3A2B21A16470EA000FAE417 /* ofxMtlMapping2DControlsInterface.h */,
 				F3A2B21B16470EA000FAE417 /* ofxMtlMapping2DControls.cpp */,
 				F3A2B21C16470EA000FAE417 /* ofxMtlMapping2DControls.h */,
 			);
@@ -565,7 +560,6 @@
 				f05335cabaed483c65120126a4bff394 /* tinyxmlerror.cpp in Sources */,
 				2dde0fc5a3dc7368b1a38ef462d00131 /* tinyxmlparser.cpp in Sources */,
 				F3ECC21D163C3F2800A8E1F1 /* ofxMSAInteractiveObject.cpp in Sources */,
-				F3A2B23416470EA000FAE417 /* ofxMtlMapping2DControlsInterface.cpp in Sources */,
 				F3A2B23516470EA000FAE417 /* ofxMtlMapping2DControls.cpp in Sources */,
 				F3A2B23616470EA000FAE417 /* ofxMtlMapping2D.cpp in Sources */,
 				F3A2B23716470EA000FAE417 /* ofxMtlMapping2DSettings.cpp in Sources */,

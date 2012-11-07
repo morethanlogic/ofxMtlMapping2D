@@ -10,14 +10,13 @@ ofxMtlMapping2DControls * ofxMtlMapping2DControls::_mapping2DControls = NULL;
 ofxMtlMapping2DControls * ofxMtlMapping2DControls::mapping2DControls()
 {
     if (_mapping2DControls == NULL) {
-        _mapping2DControls = new ofxMtlMapping2DControls(kControlsMappingPanelWidth, "mapping/controls/mapping.xml");
+        _mapping2DControls = new ofxMtlMapping2DControls(kControlsMappingToolsPanelWidth, "mapping/controls/mapping.xml");
     }
     return _mapping2DControls;
 }
 
 //--------------------------------------------------------------
 ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
-    : ofxMtlMapping2DControlsInterface(width, ofColor(0, 0, 255, 130), file)
 {
     // set default values
     _saveMapping = false;
@@ -25,46 +24,52 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     _editShapes = false;
     _createNewQuad = false;
     _createNewTriangle = false;
-    _showShapesId = false;
+    _showShapesId = true;
     _mappingModeChanged = true; // initialized to true so that when the app launch the 'shapes' are correctly setted.
     _mappingMode = MAPPING_MODE_OUTPUT;
+    _selectedShapeId = -1;
+    shapeCounter = 0;
     
     static const int kWidgetWidth = width - 16;
     
-    // add save / load controls
-    _canvas->addWidgetDown(new ofxUILabel("SAVE MAPPING", OFX_UI_FONT_MEDIUM)); 
-    _canvas->addWidgetDown(new ofxUIButton(kToggleSize, kToggleSize, false, kSettingMappingSave));
-    _canvas->addWidgetDown(new ofxUIButton(kToggleSize, kToggleSize, false, kSettingMappingLoad));
-        
-    // add mapping controls
+    
+    _toolsCanvas = new ofxUIScrollableCanvas(0, 0, width, ofGetHeight());
+    //must have modified ofxUI
+    //_toolsCanvas->setStickyDistance(30.0f);
+    _toolsCanvas->setScrollableDirections(false, true);
+    _toolsCanvas->setColorBack(ofColor(0, 210, 255, 130));
+    
+    _file = file;
+    
+    
+    // Edit
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/edit.png", kSettingMappingEditShapes));
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/save.png", kSettingMappingSave));
+
+    // add mapping controls Output / Input
     ofxUISpacer *spacer = new ofxUISpacer(kWidgetWidth, kSpacerHeight);
     spacer->setDrawFill(false);
-    _canvas->addWidgetDown(spacer);
-    _canvas->addWidgetDown(new ofxUILabel("MAPPING", OFX_UI_FONT_MEDIUM)); 
-    _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingEditShapes));
     
-    // add mapping mode controls
-    _canvas->addWidgetDown(spacer);
-    _canvas->addWidgetDown(new ofxUILabel("MAPPING MODE", OFX_UI_FONT_MEDIUM)); 
-    _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, false, kSettingMappingModeOutput));
-    _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, false, kSettingMappingModeInput));
+    _toolsCanvas->addWidgetDown(spacer);
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/projo.png", kSettingMappingModeOutput));
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/texture.png", kSettingMappingModeInput));
     
+
     // add mapping shape controls
     if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
-        _canvas->addWidgetDown(spacer);
-        _canvas->addWidgetDown(new ofxUILabel("ADD SHAPE", OFX_UI_FONT_MEDIUM)); 
-        _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingCreateNewQuad));
-        _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingCreateNewTriangle));
+        _toolsCanvas->addWidgetDown(spacer);        
+        _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewQuad, "GUI/quad.png", kSettingMappingCreateNewQuad));
+        _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewTriangle, "GUI/triangle.png", kSettingMappingCreateNewTriangle));
     }
     
     // add mapping shape's details
-    _canvas->addWidgetDown(spacer);
-    _canvas->addWidgetDown(new ofxUILabel("SHAPE DATA", OFX_UI_FONT_MEDIUM));
-    _canvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingShowShapesId));
+//    _toolsCanvas->addWidgetDown(spacer);
+//    _toolsCanvas->addWidgetDown(new ofxUILabel("SHAPE DATA", OFX_UI_FONT_MEDIUM));
+//    _toolsCanvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingShowShapesId));
 
     
     // ----
-    ofAddListener(_canvas->newGUIEvent, this, &ofxMtlMapping2DControls::uiEvent);
+    ofAddListener(_toolsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::toolsUiEvent);
     
     load();
     
@@ -75,12 +80,22 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     }
     
     // ---- So that nobody touch those
-    ((ofxUIToggle *)_canvas->getWidget(kSettingMappingLoad))->setVisible(false);
+//    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(false);
     
+    
+    // ---- Shapes list
+    _shapesListCanvas = new ofxUIScrollableCanvas(width, 0, width, ofGetHeight());
+    _shapesListCanvas->setScrollArea(width, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
+    _shapesListCanvas->setScrollableDirections(false, true);
+    _shapesListCanvas->setColorBack(ofColor(0, 210, 255, 90));
+    _shapesListCanvas->autoSizeToFitWidgets();
+
+    ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
+
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::uiEvent(ofxUIEventArgs &event)
+void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
         
@@ -96,30 +111,29 @@ void ofxMtlMapping2DControls::uiEvent(ofxUIEventArgs &event)
     else if (name == kSettingMappingEditShapes) {
         _editShapes = getToggleValue(name);
 
-        ((ofxUILabel *)_canvas->getWidget("MAPPING MODE"))->setVisible(_editShapes);
-        ((ofxUIToggle *)_canvas->getWidget(kSettingMappingModeInput))->setVisible(_editShapes);
-        ((ofxUIToggle *)_canvas->getWidget(kSettingMappingModeOutput))->setVisible(_editShapes);
-        
-        ((ofxUILabel *)_canvas->getWidget("SHAPE DATA"))->setVisible(_editShapes);
-        ((ofxUIToggle *)_canvas->getWidget(kSettingMappingShowShapesId))->setVisible(_editShapes);
-        
-        ((ofxUILabel *)_canvas->getWidget("ADD SHAPE"))->setVisible(_editShapes);
-        ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(_editShapes);
-        ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setVisible(_editShapes);
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setVisible(_editShapes);
+
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(_editShapes);
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
     }
-    else if (name == kSettingMappingShowShapesId) {
-        _showShapesId = getToggleValue(name);
-    }
+//    else if (name == kSettingMappingShowShapesId) {
+//        _showShapesId = getToggleValue(name);
+//    }
     
     
     // ---- Creating a new shape
     else if (name == kSettingMappingCreateNewQuad) {
         // will happen only if ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled is true
-        _createNewQuad = getToggleValue(name);
+        if(getToggleValue(name)) {
+            _createNewQuad = true;
+        }
     }
     else if (name == kSettingMappingCreateNewTriangle) {
         // will happen only if ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled is true
-        _createNewTriangle = getToggleValue(name);
+        if(getToggleValue(name)) {
+            _createNewTriangle = true;
+        }
     }
     
     
@@ -129,30 +143,93 @@ void ofxMtlMapping2DControls::uiEvent(ofxUIEventArgs &event)
             _mappingModeChanged = true;
             _mappingMode = MAPPING_MODE_OUTPUT;
 
-            ((ofxUIToggle *)_canvas->getWidget(kSettingMappingModeInput))->setValue(false);
+            ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setValue(false);
             
             // ----
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
-                ((ofxUILabel *)_canvas->getWidget("ADD SHAPE"))->setVisible(true);
-                ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(true);
-                ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(true);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(true);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(true);
             }
         }
         else if (name == kSettingMappingModeInput) {
             _mappingModeChanged = true;
             _mappingMode = MAPPING_MODE_INPUT;
             
-            ((ofxUIToggle *)_canvas->getWidget(kSettingMappingModeOutput))->setValue(false);
+            ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setValue(false);
             
             // ----
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
-                ((ofxUILabel *)_canvas->getWidget("ADD SHAPE"))->setVisible(false);
-                ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(false);
-                ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(false);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(false);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(false);
             }
         }
     }
 }
+
+
+
+#pragma mark -
+#pragma mark Shapes List Related
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::shapesListUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+    
+    vector<string> result = ofSplitString(name, " ");
+    int shapeId = ofToInt(result[1]);
+
+    setAsActiveShapeWithId(shapeId);
+    
+    _selectedShapeId = shapeId;
+}
+
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::addShapeToList(int shapeID)
+{
+    shapeCounter++;
+    _shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID)), false, kToggleSize, kToggleSize));
+
+    resizeShapeList();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::clearShapesList()
+{
+    _shapesListCanvas->removeWidgets();
+    _shapesListCanvas->resetPlacer();
+    resizeShapeList();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::resizeShapeList()
+{
+    _shapesListCanvas->autoSizeToFitWidgets();
+    _shapesListCanvas->getRect()->setY(.0f);
+    _shapesListCanvas->getRect()->setWidth(kControlsMappingShapesListPanelWidth);
+    
+    float listHeight = _shapesListCanvas->getRect()->height;
+    if(listHeight < ofGetHeight()) {
+        _shapesListCanvas->getRect()->setHeight(ofGetHeight());
+    } else {
+        _shapesListCanvas->getRect()->setHeight(listHeight + kBottomSpacerHeight);
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID)
+{    
+    for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
+        ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
+        if ( shapeToggle->getName() == ("Shape " + ofToString(shapeID)) ) {
+            shapeToggle->setValue(true);
+        } else {
+            shapeToggle->setValue(false);
+        }
+    }
+}
+
 
 #pragma mark -
 #pragma mark Reset widgets
@@ -160,24 +237,24 @@ void ofxMtlMapping2DControls::uiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::resetSaveMapping()
 {
     _saveMapping = false;
-    ((ofxUIToggle *)_canvas->getWidget(kSettingMappingSave))->setValue(false);
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingSave))->setValue(false);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::resetLoadMapping()
 {
     _loadMapping = false;
-    ((ofxUIToggle *)_canvas->getWidget(kSettingMappingLoad))->setValue(false);
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setValue(false);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::resetCreateNewShape()
 {
     _createNewQuad = false;
-    ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewQuad))->setValue(false);
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setValue(false);
     
     _createNewTriangle = false;
-    ((ofxUIToggle *)_canvas->getWidget(kSettingMappingCreateNewTriangle))->setValue(false);
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setValue(false);
 }
 
 //--------------------------------------------------------------
@@ -185,4 +262,80 @@ void ofxMtlMapping2DControls::resetMappingChangedFlag()
 {
     _mappingModeChanged = false;
 }
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::resetSelectedShapeId()
+{
+    _selectedShapeId = -1;
+}
+
+
+#pragma mark -
+#pragma mark Interface Methods
+//--------------------------------------------------------------
+bool ofxMtlMapping2DControls::getToggleValue(const string& name)
+{
+    return ((ofxUIToggle *)_toolsCanvas->getWidget(name))->getValue();
+}
+
+//--------------------------------------------------------------
+float ofxMtlMapping2DControls::getSliderValue(const string& name)
+{
+    return ((ofxUISlider *)_toolsCanvas->getWidget(name))->getScaledValue();
+}
+
+//--------------------------------------------------------------
+ofPoint ofxMtlMapping2DControls::get2DPadValue(const string& name)
+{
+    return ((ofxUI2DPad *)_toolsCanvas->getWidget(name))->getScaledValue();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::save()
+{
+    _toolsCanvas->saveSettings(_file);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::load()
+{
+    _toolsCanvas->loadSettings(_file);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::enable()
+{
+    _toolsCanvas->enable();
+    _shapesListCanvas->enable();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::disable()
+{
+    _toolsCanvas->disable();
+    _shapesListCanvas->disable();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::toggle()
+{
+    _toolsCanvas->toggleVisible();
+    _shapesListCanvas->toggleVisible();
+}
+
+//--------------------------------------------------------------
+bool ofxMtlMapping2DControls::isEnabled()
+{
+    return _toolsCanvas->isEnabled();
+}
+
+//--------------------------------------------------------------
+bool ofxMtlMapping2DControls::isHit(int x, int y) {
+    if (_toolsCanvas->isHit(x, y) || _shapesListCanvas->isHit(x, y)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 

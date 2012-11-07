@@ -2,10 +2,12 @@
 
 #include "ofEvents.h"
 
-#include "ofxMtlMapping2DControlsInterface.h"
 #include "ofxMtlMapping2DMode.h"
+#include "ofxUI.h"
 
-#define kControlsMappingPanelWidth 320
+#define kControlsMappingToolsPanelWidth 39
+#define kControlsMappingShapesListPanelWidth 150
+
 
 #define kSettingMappingSave                 "MAPPING:SAVE"
 #define kSettingMappingLoad                 "MAPPING:LOAD"
@@ -21,28 +23,17 @@
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-class ofxMtlMapping2DControls : public ofxMtlMapping2DControlsInterface
+class ofxMtlMapping2DControls
 {
-    private:
-        static ofxMtlMapping2DControls *_mapping2DControls;
-        
-        bool _saveMapping;
-        bool _loadMapping;
-        
-        bool _editShapes;
-        bool _createNewQuad;
-        bool _createNewTriangle;
-        bool _showShapesId;
     
-        bool _mappingModeChanged;
-        ofxMtlMapping2DMode _mappingMode;
-                            
     public:
         static ofxMtlMapping2DControls * mapping2DControls();
 
         ofxMtlMapping2DControls(int width, const string& file);
         
-        void uiEvent(ofxUIEventArgs &event);
+        void toolsUiEvent(ofxUIEventArgs &event);
+        void shapesListUiEvent(ofxUIEventArgs &event);
+
     
         const bool& saveMapping() { return _saveMapping; }
         void resetSaveMapping();
@@ -59,5 +50,52 @@ class ofxMtlMapping2DControls : public ofxMtlMapping2DControlsInterface
         ofxMtlMapping2DMode mappingMode() { return _mappingMode; }
         void resetMappingChangedFlag();
 
+        int shapeCounter;
     
+        void save();
+        void load();
+        
+        void enable();
+        void disable();
+        void toggle();
+        bool isEnabled();
+        bool isHit(int x, int y);
+    
+        void addShapeToList(int shapeID);
+        void clearShapesList();
+        void setAsActiveShapeWithId(int shapeID);
+        const int& selectedShapeId() { return _selectedShapeId; }
+        void resetSelectedShapeId();
+
+    protected:
+        ofxUIScrollableCanvas *_toolsCanvas;
+        string _file;
+        
+        static const int kSliderHeight = 16;
+        static const int kSpacerHeight = 20;
+        static const int kToggleSize = 24;
+        static const int kBottomSpacerHeight = 100; // padding to be able to scroll until the end/bottom of the UI canvas
+        
+        bool getToggleValue(const string& name);
+        float getSliderValue(const string& name);
+        ofPoint get2DPadValue(const string& name);
+        
+    private:
+        static ofxMtlMapping2DControls *_mapping2DControls;
+        
+        bool _saveMapping;
+        bool _loadMapping;
+        
+        bool _editShapes;
+        bool _createNewQuad;
+        bool _createNewTriangle;
+        bool _showShapesId;
+        int _selectedShapeId;
+    
+        bool _mappingModeChanged;
+        ofxMtlMapping2DMode _mappingMode;
+        
+        ofxUIScrollableCanvas *_shapesListCanvas;
+        void resizeShapeList();
+
 };

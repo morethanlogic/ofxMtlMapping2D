@@ -69,6 +69,21 @@ void ofxMtlMapping2D::update()
         return;
     }
     
+    // ----
+    // Selected shape with UI
+    if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId() != -1) {
+        list<ofxMtlMapping2DShape*>::iterator it;
+        for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+            ofxMtlMapping2DShape* shape = *it;
+            if(shape->shapeId == ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId()) {
+                shape->setAsActiveShape(true);
+                break;
+            }
+        }
+        ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeId();
+        //return;
+    }
+    
     if(ofxMtlMapping2DControls::mapping2DControls()->mappingModeChanged()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetMappingChangedFlag();
 
@@ -191,25 +206,42 @@ void ofxMtlMapping2D::render()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::createQuad(float _x, float _y)
 {
+    ofxMtlMapping2DShape::nextShapeId++;
+
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DQuad();
-    newShape->init(_pmShapes.size(), true);
+    newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     _pmShapes.push_front(newShape);
+    
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::createTriangle(float _x, float _y)
 {
+    ofxMtlMapping2DShape::nextShapeId++;
+
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DTriangle();
-    newShape->init(_pmShapes.size(), true);
+    newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     _pmShapes.push_front(newShape);
+    
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::deleteShape()
 {
     if (ofxMtlMapping2DShape::activeShape) {
+        ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
         _pmShapes.remove(ofxMtlMapping2DShape::activeShape);
         ofxMtlMapping2DShape::resetActiveShapeVars();
+    }
+    
+    // Re populate the UI List
+    list<ofxMtlMapping2DShape*>::reverse_iterator it;
+    for (it=_pmShapes.rbegin(); it!=_pmShapes.rend(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId);
+
     }
 }
 
@@ -392,7 +424,6 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
     _pmShapes.clear();
     ofxMtlMapping2DShape::resetActiveShapeVars();
     
-    int nbOfShapes = -1;
     
     //LOAD XML
     // ----
@@ -410,6 +441,9 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
 		feedBackMessage = "unable to load shapes.xml check data/ folder";
 	}
     ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
+    
+    
+    int shapeId = -1;
     
     // ----
 	//this is a more advanced use of ofXMLSettings
@@ -434,9 +468,8 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
 		if(numShapeTags > 0){			
 			for(int i = 0; i < numShapeTags; i++){
 				ofxMtlMapping2DShape* newShape;
-                nbOfShapes++;
 				
-//				int id = _shapesListXML.getAttribute("shape", "id", 0, i);
+				shapeId = _shapesListXML.getAttribute("shape", "id", 0, i);
 				
 				_shapesListXML.pushTag("shape", i);
 				
@@ -495,12 +528,14 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
                     newShape->inputPolygon->vertices.push_back(newVertex);
                 }
                 
-                newShape->inputPolygon->init(nbOfShapes);
+                newShape->inputPolygon->init(shapeId);
                 _shapesListXML.popTag();
                 
                 
-                newShape->init(nbOfShapes);
+                newShape->init(shapeId);
                 _pmShapes.push_front(newShape);
+                
+                ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId);
 				
 				_shapesListXML.popTag();
 				
@@ -511,6 +546,8 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
 		//sets the root back to the xml document
 		_shapesListXML.popTag();
 	}
+    
+    ofxMtlMapping2DShape::nextShapeId = shapeId;
 }
 
 //--------------------------------------------------------------

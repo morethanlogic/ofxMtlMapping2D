@@ -15,6 +15,7 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
 	
     public:
         // ----
+        static int nextShapeId;
         static ofxMtlMapping2DShape* activeShape;
         static ofxMtlMapping2DShape* previousActiveShape;
         static int activeShapeCurrVertexId;
@@ -34,11 +35,9 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
         void drawID();
         virtual void render() {};
     
+        void setAsActiveShape(bool fromUI = false);
 
     protected:
-//        virtual void destroy();
-        void setAsActiveShape();
-
         virtual void calcHomography() {};
         virtual void createDefaultShape() {};
     

@@ -33,8 +33,8 @@ void testApp::draw(){
     
     
     // Draw some instructions.
-    ofSetColor(0);
-    ofDrawBitmapString("'m' open the mapping controls.\n", 20, 20);
+//    ofSetColor(0);
+//    ofDrawBitmapString("'m' open the mapping controls.\n", 20, 20);
 }
 
 //--------------------------------------------------------------
