@@ -151,6 +151,7 @@
 		F3A2B23316470EA000FAE417 /* mtlUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mtlUtils.h; sourceTree = "<group>"; };
 		F3A2B24D1647180900FAE417 /* license.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.md; sourceTree = "<group>"; };
 		F3A2B24E1647180A00FAE417 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		F3C2A1D4164D903B00964358 /* ofxMtlMapping2DShapeType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxMtlMapping2DShapeType.h; path = ../ofxMtlMapping2DShapeType.h; sourceTree = "<group>"; };
 		F3ECC219163C3F2800A8E1F1 /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		F3ECC21A163C3F2800A8E1F1 /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
 		a37751e607c69f0a39d83cecdbe8e750 /* ofxUIFPS.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxUIFPS.h; path = ../../../../../../Developer/Frameworks/openFrameworks/addons/ofxUI/src/ofxUIFPS.h; sourceTree = SOURCE_ROOT; };
@@ -363,6 +364,7 @@
 		F3A2B22316470EA000FAE417 /* shapes */ = {
 			isa = PBXGroup;
 			children = (
+				F3C2A1D4164D903B00964358 /* ofxMtlMapping2DShapeType.h */,
 				F3A2B22416470EA000FAE417 /* ofxMtlMapping2DInput.cpp */,
 				F3A2B22516470EA000FAE417 /* ofxMtlMapping2DInput.h */,
 				F3A2B22616470EA000FAE417 /* ofxMtlMapping2DPolygon.cpp */,
