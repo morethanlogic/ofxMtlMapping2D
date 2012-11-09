@@ -261,6 +261,17 @@ void ofxMtlMapping2DPolygon::disableVertices()
     }
 }
 
+//--------------------------------------------------------------
+ofxMtlMapping2DVertex* ofxMtlMapping2DPolygon::getVertex(int index)
+{
+    list<ofxMtlMapping2DVertex*>::iterator it;
+    it = vertices.begin();
+    advance(it, index);
+
+    return *it;
+}
+
+
 
 #pragma mark -
 #pragma mark Modify Shape at run time

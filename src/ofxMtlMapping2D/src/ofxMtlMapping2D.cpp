@@ -2,12 +2,33 @@
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
+#include "ofxMtlMapping2DShapeType.h"
 
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 struct Comparator {
     bool operator()(ofxMtlMapping2DShape* first, ofxMtlMapping2DShape* second) const {
         return first->shapeId > second->shapeId;
     }
 };
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+list<ofxMtlMapping2DShape*> ofxMtlMapping2D::_pmShapes;
+
+//--------------------------------------------------------------
+ofxMtlMapping2DShape* ofxMtlMapping2D::shapeWithId(int shapeId)
+{
+    list<ofxMtlMapping2DShape*>::iterator it;
+    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        if(shape->shapeId == shapeId) {
+            return shape;
+        }
+    }
+    
+    return NULL;
+}
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -75,21 +96,6 @@ void ofxMtlMapping2D::update()
         ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
         createTriangle(ofGetWidth()/2, ofGetHeight()/2);
         return;
-    }
-    
-    // ----
-    // Selected shape with UI
-    if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId() != -1) {
-        list<ofxMtlMapping2DShape*>::iterator it;
-        for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
-            ofxMtlMapping2DShape* shape = *it;
-            if(shape->shapeId == ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId()) {
-                shape->setAsActiveShape(true);
-                break;
-            }
-        }
-        ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeId();
-        //return;
     }
     
     // ----
@@ -217,10 +223,11 @@ void ofxMtlMapping2D::createQuad(float _x, float _y)
     ofxMtlMapping2DShape::nextShapeId++;
 
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DQuad();
+    newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     _pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId);
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_QUAD);
 }
 
 //--------------------------------------------------------------
@@ -229,10 +236,11 @@ void ofxMtlMapping2D::createTriangle(float _x, float _y)
     ofxMtlMapping2DShape::nextShapeId++;
 
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DTriangle();
+    newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     _pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId);
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_TRIANGLE);
 }
 
 //--------------------------------------------------------------
@@ -249,7 +257,7 @@ void ofxMtlMapping2D::deleteShape()
     list<ofxMtlMapping2DShape*>::reverse_iterator it;
     for (it=_pmShapes.rbegin(); it!=_pmShapes.rend(); it++) {
         ofxMtlMapping2DShape* shape = *it;
-        ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId);
+        ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
 
     }
 }
@@ -489,11 +497,14 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
                 string shapeType = _shapesListXML.getValue("setting", "nan", 0);
 
                 if (shapeType == "quad") {
-                     newShape = new ofxMtlMapping2DQuad();
+                    newShape = new ofxMtlMapping2DQuad();
+                    newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
                 } else if (shapeType == "triangle") {
                     newShape = new ofxMtlMapping2DTriangle();
+                    newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
                 } else {
                     newShape = new ofxMtlMapping2DQuad();
+                    newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
                 }
                 
                 if(numShapeSettingTags > 0) {
@@ -545,7 +556,7 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
                 newShape->init(shapeId);
                 _pmShapes.push_front(newShape);
                 
-                ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId);
+                ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId, newShape->shapeType);
 				
 				_shapesListXML.popTag();
 				

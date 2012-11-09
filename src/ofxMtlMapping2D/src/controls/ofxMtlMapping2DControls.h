@@ -4,6 +4,7 @@
 
 #include "ofxMtlMapping2DMode.h"
 #include "ofxUI.h"
+#include "ofxMtlMapping2DShapeType.h"
 
 #define kControlsMappingToolsPanelWidth 39
 #define kControlsMappingShapesListPanelWidth 150
@@ -20,6 +21,7 @@
 
 #define kSettingMappingModeOutput           "MAPPING_MODE:OUTPUT"
 #define kSettingMappingModeInput            "MAPPING_MODE:INPUT"
+
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -61,13 +63,12 @@ class ofxMtlMapping2DControls
         bool isEnabled();
         bool isHit(int x, int y);
     
-        void addShapeToList(int shapeID);
+        void addShapeToList(int shapeID, int shapeType);
         void clearShapesList();
-        void setAsActiveShapeWithId(int shapeID);
-        const int& selectedShapeId() { return _selectedShapeId; }
-        void resetSelectedShapeId();
+        void setAsActiveShapeWithId(int shapeID, int shapeType);
+    
         void unselectShapesToggles();
-
+    
     protected:
         ofxUIScrollableCanvas *_toolsCanvas;
         string _file;
@@ -83,7 +84,8 @@ class ofxMtlMapping2DControls
         
     private:
         static ofxMtlMapping2DControls *_mapping2DControls;
-        
+        map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
+
         bool _saveMapping;
         bool _loadMapping;
         
@@ -91,12 +93,10 @@ class ofxMtlMapping2DControls
         bool _createNewQuad;
         bool _createNewTriangle;
         bool _showShapesId;
-        int _selectedShapeId;
     
         bool _mappingModeChanged;
         ofxMtlMapping2DMode _mappingMode;
         
         ofxUIScrollableCanvas *_shapesListCanvas;
         void resizeShapeList();
-
 };

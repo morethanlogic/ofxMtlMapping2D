@@ -14,6 +14,43 @@ ofxMtlMapping2DInput::~ofxMtlMapping2DInput()
 }
 
 #pragma mark -
+#pragma mark Lifecycle
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DInput::update(bool isQuad)
+{
+    
+    if (activePolygon == this && isQuad) {
+        list<ofxMtlMapping2DVertex*>::iterator it;
+        for (it=vertices.begin(); it!=vertices.end(); it++) {
+            ofxMtlMapping2DVertex* vertex = *it;
+            
+            if(ofxMtlMapping2DVertex::activeVertex == vertex) {
+                int i = distance(vertices.begin(), it);
+                
+                if (i == 0) {
+                    getVertex(1)->snapIt(getVertex(1)->x, vertex->y);
+                    getVertex(3)->snapIt(vertex->x, getVertex(3)->y);
+                } else if (i == 1) {
+                    getVertex(0)->snapIt(getVertex(0)->x, vertex->y);
+                    getVertex(2)->snapIt(vertex->x, getVertex(2)->y);
+                } else if (i == 2) {
+                    getVertex(1)->snapIt(vertex->x, getVertex(1)->y);
+                    getVertex(3)->snapIt(getVertex(3)->x, vertex->y);
+                } else {
+                    getVertex(0)->snapIt(vertex->x, getVertex(0)->y);
+                    getVertex(2)->snapIt(getVertex(2)->x, vertex->y);
+                }
+            }
+        }
+    }
+    
+    // ----
+    _super::update();
+
+}
+
+#pragma mark -
 #pragma mark Homography
 
 //--------------------------------------------------------------

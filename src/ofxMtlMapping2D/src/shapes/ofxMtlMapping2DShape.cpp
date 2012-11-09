@@ -56,7 +56,11 @@ void ofxMtlMapping2DShape::update()
     
     if (activeShape == this) {
         if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            inputPolygon->update();
+            if (shapeType == MAPPING_2D_SHAPE_QUAD) {
+                inputPolygon->update(true);
+            } else {
+                inputPolygon->update(false);
+            }
         }
 	}
 }
@@ -111,7 +115,7 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             if (fromUI) {
                 setAsActive();
             } else {
-                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
             }
         }
     
@@ -125,7 +129,7 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             if (fromUI) {
                 inputPolygon->setAsActive();
             } else {
-                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId);
+                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
             }
         }
     }

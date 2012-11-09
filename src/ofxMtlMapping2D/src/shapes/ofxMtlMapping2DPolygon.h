@@ -3,6 +3,7 @@
 //OF
 #include "ofMain.h"
 
+#include "ofxMtlMapping2DShapeType.h"
 #include "ofxMtlMapping2DSettings.h"
 #include "mtlUtils.h"
 #include "ofxMtlMapping2DVertex.h"
@@ -27,6 +28,7 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         ~ofxMtlMapping2DPolygon();
     
         int shapeId;
+        int shapeType;
         list<ofxMtlMapping2DVertex*> vertices;
         ofPolyline *polyline;
         ofRectangle boundingBox;
@@ -40,6 +42,8 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         virtual void render() {};
         void setAsActive();
         void setAsIdle();
+    
+        ofxMtlMapping2DVertex* getVertex(int index);
 
         // ---- ofxMSAInteractiveObject related
         void enable();

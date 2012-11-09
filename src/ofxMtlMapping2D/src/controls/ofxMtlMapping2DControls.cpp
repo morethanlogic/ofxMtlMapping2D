@@ -1,5 +1,7 @@
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DSettings.h"
+#include "ofxMtlMapping2D.h"
+#include "ofxMtlMapping2DShape.h"
 
 #include "ofMain.h"
 
@@ -18,6 +20,24 @@ ofxMtlMapping2DControls * ofxMtlMapping2DControls::mapping2DControls()
 //--------------------------------------------------------------
 ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
 {
+    // ---- Shapes list
+    // set default values
+    shapeCounter = 0;
+    
+    _shapesListCanvas = new ofxUIScrollableCanvas(width, 0, width, ofGetHeight());
+    _shapesListCanvas->setScrollArea(width, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
+    _shapesListCanvas->setScrollableDirections(false, true);
+    _shapesListCanvas->setColorBack(ofColor(0, 210, 255, 90));
+    _shapesListCanvas->autoSizeToFitWidgets();
+    
+    ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
+    
+    
+    
+    // ---- Tool box
+    shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
+    shapeTypesAsString[MAPPING_2D_SHAPE_TRIANGLE] = "triangle";
+    
     // set default values
     _saveMapping = false;
     _loadMapping = false;
@@ -27,8 +47,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     _showShapesId = true;
     _mappingModeChanged = true; // initialized to true so that when the app launch the 'shapes' are correctly setted.
     _mappingMode = MAPPING_MODE_OUTPUT;
-    _selectedShapeId = -1;
-    shapeCounter = 0;
+
     
     static const int kWidgetWidth = width - 16;
     
@@ -83,14 +102,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
 //    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(false);
     
     
-    // ---- Shapes list
-    _shapesListCanvas = new ofxUIScrollableCanvas(width, 0, width, ofGetHeight());
-    _shapesListCanvas->setScrollArea(width, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
-    _shapesListCanvas->setScrollableDirections(false, true);
-    _shapesListCanvas->setColorBack(ofColor(0, 210, 255, 90));
-    _shapesListCanvas->autoSizeToFitWidgets();
 
-    ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
 
 }
 
@@ -116,6 +128,8 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(_editShapes);
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
+        
+        _shapesListCanvas->setVisible(_editShapes);
     }
 //    else if (name == kSettingMappingShowShapesId) {
 //        _showShapesId = getToggleValue(name);
@@ -135,7 +149,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _createNewTriangle = true;
         }
     }
-    
     
     // ----
     if (getToggleValue(name)) {
@@ -178,18 +191,27 @@ void ofxMtlMapping2DControls::shapesListUiEvent(ofxUIEventArgs &event)
     
     vector<string> result = ofSplitString(name, " ");
     int shapeId = ofToInt(result[1]);
-
-    setAsActiveShapeWithId(shapeId);
+    string shapeTypeAsString = result[2];
+    int shapeType = -1;
     
-    _selectedShapeId = shapeId;
+    map<ofxMtlMapping2DShapeType,string>::iterator it;
+    for ( it = shapeTypesAsString.begin() ; it != shapeTypesAsString.end(); it++ ) {
+        if (it->second == shapeTypeAsString)
+        {
+            shapeType = it->first;
+            break;
+        }
+    }
+    
+    setAsActiveShapeWithId(shapeId, shapeType);
 }
 
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::addShapeToList(int shapeID)
+void ofxMtlMapping2DControls::addShapeToList(int shapeID, int shapeType)
 {
     shapeCounter++;
-    _shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID)), false, kToggleSize, kToggleSize));
+    _shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second), false, kToggleSize, kToggleSize));
 
     resizeShapeList();
 }
@@ -218,11 +240,16 @@ void ofxMtlMapping2DControls::resizeShapeList()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID)
+void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID, int shapeType)
 {    
+    // ----
+    ofxMtlMapping2DShape* shape = ofxMtlMapping2D::shapeWithId(shapeID);
+    shape->setAsActiveShape(true);
+    
+    // ----
     for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
         ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
-        if ( shapeToggle->getName() == ("Shape " + ofToString(shapeID)) ) {
+        if ( shapeToggle->getName() == ("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second) ) {
             shapeToggle->setValue(true);
         } else {
             shapeToggle->setValue(false);
@@ -270,13 +297,6 @@ void ofxMtlMapping2DControls::resetMappingChangedFlag()
 {
     _mappingModeChanged = false;
 }
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DControls::resetSelectedShapeId()
-{
-    _selectedShapeId = -1;
-}
-
 
 #pragma mark -
 #pragma mark Interface Methods
@@ -328,7 +348,7 @@ void ofxMtlMapping2DControls::disable()
 void ofxMtlMapping2DControls::toggle()
 {
     _toolsCanvas->toggleVisible();
-    _shapesListCanvas->toggleVisible();
+    _shapesListCanvas->setVisible(_toolsCanvas->isVisible());
 }
 
 //--------------------------------------------------------------
