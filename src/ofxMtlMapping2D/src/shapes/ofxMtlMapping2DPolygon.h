@@ -19,6 +19,7 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         // ----
         static ofxMtlMapping2DPolygon* activePolygon;
         static ofxMtlMapping2DPolygon* previousActivePolygon;
+        static int activeVertexId;
         static void resetActivePolygonVars();
 
         // ----

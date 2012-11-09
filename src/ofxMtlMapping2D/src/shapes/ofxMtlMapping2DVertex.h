@@ -36,6 +36,7 @@ public:
     virtual void onDragOver(int x, int y, int button);
     virtual void onDragOutside(int x, int y, int button);
     virtual void onPress(int x, int y, int button);
+    virtual void onPressOutside(int x, int y, int button);
     virtual void onRelease(int x, int y, int button);
     virtual void onReleaseOutside(int x, int y, int button);
     

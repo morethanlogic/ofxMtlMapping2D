@@ -2,6 +2,7 @@
 
 ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::activePolygon         = NULL;
 ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
+int ofxMtlMapping2DPolygon::activeVertexId = -1;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -9,6 +10,7 @@ void ofxMtlMapping2DPolygon::resetActivePolygonVars(){
     ofxMtlMapping2DPolygon::activePolygon = NULL;
     ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
     ofxMtlMapping2DVertex::activeVertex = NULL;
+    ofxMtlMapping2DPolygon::activeVertexId = -1;
 }
 
 
@@ -62,7 +64,12 @@ void ofxMtlMapping2DPolygon::update()
 	if (activePolygon == this) {        
         list<ofxMtlMapping2DVertex*>::iterator it;
         for (it=vertices.begin(); it!=vertices.end(); it++) {
-            ofxMtlMapping2DVertex* vertex = *it;                
+            ofxMtlMapping2DVertex* vertex = *it;
+            
+            if(ofxMtlMapping2DVertex::activeVertex == vertex) {
+                activeVertexId = distance(vertices.begin(), it);
+            }
+            
             if (vertex->toBeRemoved) {
                 vertex->kill();
                 vertices.remove(vertex);
@@ -214,6 +221,7 @@ void ofxMtlMapping2DPolygon::setAsActive()
 	if (activePolygon != this) {
         previousActivePolygon = activePolygon;
         activePolygon = this;
+        activeVertexId = -1;
         
         if (previousActivePolygon) {
             previousActivePolygon->setAsIdle();

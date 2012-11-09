@@ -18,7 +18,6 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
         static int nextShapeId;
         static ofxMtlMapping2DShape* activeShape;
         static ofxMtlMapping2DShape* previousActiveShape;
-        static int activeShapeCurrVertexId;
         static void resetActiveShapeVars();
     
         // ----

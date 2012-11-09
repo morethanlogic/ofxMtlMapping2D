@@ -356,7 +356,7 @@ void ofxMtlMapping2D::keyPressed(int key)
         case 356:
             //left
             if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
-                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeShapeCurrVertexId >=0) {
+                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->left();
                 }
             }
@@ -364,7 +364,7 @@ void ofxMtlMapping2D::keyPressed(int key)
                 
         case 357: //up
             if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
-                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeShapeCurrVertexId >=0) {
+                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->up();
                 }
             }
@@ -372,7 +372,7 @@ void ofxMtlMapping2D::keyPressed(int key)
         
         case 358: //right
             if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
-                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeShapeCurrVertexId >=0) {
+                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->right();
                 }
             }
@@ -380,7 +380,7 @@ void ofxMtlMapping2D::keyPressed(int key)
                 
         case 359: //down
             if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
-                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeShapeCurrVertexId >=0) {
+                if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->down();
                 }
             }
@@ -394,27 +394,28 @@ void ofxMtlMapping2D::keyPressed(int key)
             deleteShape();
             break;
             
+//        case 'b':
+//            if ((ofxMtlMapping2DShape::activeShapeId + 1) >= _pmShapes.size()) {
+//                _pmShapes[0]->setAsActiveShape();
+//            } else {
+//                _pmShapes[(ofxMtlMapping2DShape::activeShapeId + 1)]->setAsActiveShape();
+//            }
+//        break;
+
+            
         case 'n':
             if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
                 if(ofxMtlMapping2DShape::activeShape) {
-                    ofxMtlMapping2DShape::activeShapeCurrVertexId++;
-                    if(ofxMtlMapping2DShape::activeShapeCurrVertexId >=  ofxMtlMapping2DShape::activeShape->vertices.size()) {
-                        ofxMtlMapping2DShape::activeShapeCurrVertexId = 0;
-                    }
+                    ofxMtlMapping2DShape::activeVertexId++;
+                    ofxMtlMapping2DShape::activeVertexId %= ofxMtlMapping2DShape::activeShape->vertices.size();
                     
                     //-----
-                    list<ofxMtlMapping2DVertex*>::iterator it;
-                    
-                    int vertexCounter = 0;
-                    for (it=ofxMtlMapping2DShape::activeShape->vertices.begin(); it!=ofxMtlMapping2DShape::activeShape->vertices.end(); it++) {
+                    if (ofxMtlMapping2DShape::activeShape->vertices.size() > ofxMtlMapping2DShape::activeVertexId)
+                    {
+                        list<ofxMtlMapping2DVertex*>::iterator it = ofxMtlMapping2DShape::activeShape->vertices.begin();
+                        advance(it, ofxMtlMapping2DShape::activeVertexId);
                         ofxMtlMapping2DVertex* vertex = *it;
-                        
-                        if(vertexCounter == ofxMtlMapping2DShape::activeShapeCurrVertexId) {
-                            vertex->setAsActive();
-                            break;
-                        }
-                        
-                        vertexCounter++;
+                        vertex->setAsActive();
                     }
                 }
             }

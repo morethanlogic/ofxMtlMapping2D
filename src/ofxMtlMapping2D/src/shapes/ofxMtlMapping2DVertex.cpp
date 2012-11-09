@@ -34,7 +34,11 @@ void ofxMtlMapping2DVertex::init(float _x, float _y)
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::kill()
 {
-	killMe();
+    if(activeVertex == this) {
+		activeVertex = NULL;
+	}
+    
+    killMe();
 }
 
 //--------------------------------------------------------------
@@ -170,6 +174,14 @@ void ofxMtlMapping2DVertex::onPress(int x, int y, int button)
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2DVertex::onPressOutside(int x, int y, int button)
+{
+    if(activeVertex == this) {
+		activeVertex = NULL;
+	}
+}
+
+//--------------------------------------------------------------
 void ofxMtlMapping2DVertex::setAsActive() 
 {
     activeVertex = this;
@@ -178,9 +190,6 @@ void ofxMtlMapping2DVertex::setAsActive()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::onRelease(int x, int y, int button) 
 {
-	if(activeVertex == this) {
-		activeVertex = NULL;
-	}
 }
 
 //--------------------------------------------------------------
