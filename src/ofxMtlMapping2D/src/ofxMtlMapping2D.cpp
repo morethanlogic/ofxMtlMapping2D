@@ -59,9 +59,10 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::init(int width, int height)
+void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, string uiXmlFilePath)
 {
-    ofxMtlMapping2DControls::mapping2DControls()->disable();
+    // The first we call ofxMtlMapping2DControls::mapping2DControls() we pass the xml file to use as param.
+    ofxMtlMapping2DControls::mapping2DControls(uiXmlFilePath)->disable();
     
     // ----
     _fbo.allocate(width, height, GL_RGBA);
@@ -70,7 +71,8 @@ void ofxMtlMapping2D::init(int width, int height)
     ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
     
     // ----
-    loadShapesList("mapping/xml/shapes.xml");
+    _mappingXmlFilePath = mappingXmlFilePath;
+    loadShapesList();
     
 }
 
@@ -80,14 +82,14 @@ void ofxMtlMapping2D::update()
     // ---- save mapping to xml
     if(ofxMtlMapping2DControls::mapping2DControls()->saveMapping()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetSaveMapping();
-        saveShapesList("mapping/xml/shapes.xml");
+        saveShapesList();
     }
     
     
     // ---- load mapping from xml
     if(ofxMtlMapping2DControls::mapping2DControls()->loadMapping()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetLoadMapping();
-        loadShapesList("mapping/xml/shapes.xml");
+        loadShapesList();
     }
     
     
@@ -388,7 +390,7 @@ void ofxMtlMapping2D::keyPressed(int key)
             
         case 's':
             ofxMtlMapping2DControls::mapping2DControls()->save();
-            saveShapesList("mapping/xml/shapes.xml");
+            saveShapesList();
 
             break;
             
@@ -466,7 +468,7 @@ void ofxMtlMapping2D::keyPressed(int key)
 #pragma mark -
 #pragma mark Load and Save Shapes List
 //--------------------------------------------------------------
-void ofxMtlMapping2D::loadShapesList(string _xmlPath)
+void ofxMtlMapping2D::loadShapesList()
 {
     // Delete everything
     while(!_pmShapes.empty()) delete _pmShapes.back(), _pmShapes.pop_back();
@@ -478,16 +480,16 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
     // ----
 	//the string is printed at the top of the app
 	//to give the user some feedback
-	string feedBackMessage = "loading shapes.xml";
+	string feedBackMessage = "loading " + _mappingXmlFilePath;
 	ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     
 	//we load our settings file
 	//if it doesn't exist we can still make one
 	//by hitting the 's' key
-	if( _shapesListXML.loadFile(_xmlPath) ){
-		feedBackMessage = "shapes.xml loaded!";
+	if( _shapesListXML.loadFile(_mappingXmlFilePath) ){
+		feedBackMessage = _mappingXmlFilePath + " loaded!";
 	}else{
-		feedBackMessage = "unable to load shapes.xml check data/ folder";
+		feedBackMessage = "unable to load " + _mappingXmlFilePath + " check data/ folder";
 	}
     ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     
@@ -603,7 +605,7 @@ void ofxMtlMapping2D::loadShapesList(string _xmlPath)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::saveShapesList(string _xmlPath)
+void ofxMtlMapping2D::saveShapesList()
 {
     
     list<ofxMtlMapping2DShape*> pmShapesCopy;
@@ -668,7 +670,7 @@ void ofxMtlMapping2D::saveShapesList(string _xmlPath)
 	}
 	
 	//Save to file
-	newShapesListXML.saveFile(_xmlPath);
+	newShapesListXML.saveFile(_mappingXmlFilePath);
     ofLog(OF_LOG_NOTICE, "Status > settings saved to xml!");
 
 }

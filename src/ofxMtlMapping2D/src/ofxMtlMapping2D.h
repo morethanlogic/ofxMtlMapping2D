@@ -24,7 +24,7 @@ class ofxMtlMapping2D {
         ofxMtlMapping2D();
         virtual ~ofxMtlMapping2D();
         
-        void init(int width, int height);
+        void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml");
         void update();
         
         void bind();
@@ -38,6 +38,7 @@ class ofxMtlMapping2D {
         void chessBoard(int nbOfCol = 10);
 
     private:
+        string _mappingXmlFilePath;
         ofFbo _fbo;
         ofxXmlSettings _shapesListXML;
         static list<ofxMtlMapping2DShape*> _pmShapes;
@@ -49,6 +50,6 @@ class ofxMtlMapping2D {
         void createTriangle(float _x, float _y);
         void deleteShape();
     
-        void loadShapesList(string _xmlPath);
-        void saveShapesList(string _xmlPath);
+        void loadShapesList();
+        void saveShapesList();
 };

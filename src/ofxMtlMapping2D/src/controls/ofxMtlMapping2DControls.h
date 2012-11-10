@@ -9,7 +9,6 @@
 #define kControlsMappingToolsPanelWidth 39
 #define kControlsMappingShapesListPanelWidth 150
 
-
 #define kSettingMappingSave                 "MAPPING:SAVE"
 #define kSettingMappingLoad                 "MAPPING:LOAD"
 
@@ -29,10 +28,10 @@ class ofxMtlMapping2DControls
 {
     
     public:
+        static ofxMtlMapping2DControls * mapping2DControls(string xmlFilePath);
         static ofxMtlMapping2DControls * mapping2DControls();
 
-        ofxMtlMapping2DControls(int width, const string& file);
-        
+    
         void toolsUiEvent(ofxUIEventArgs &event);
         void shapesListUiEvent(ofxUIEventArgs &event);
 
@@ -86,9 +85,12 @@ class ofxMtlMapping2DControls
         ofPoint get2DPadValue(const string& name);
         
     private:
+        ofxMtlMapping2DControls(int width, const string& file);
+
         static ofxMtlMapping2DControls *_mapping2DControls;
         map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
 
+        void setUIShapeEditingState(bool isOn);
         bool _saveMapping;
         bool _loadMapping;
         

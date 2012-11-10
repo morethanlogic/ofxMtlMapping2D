@@ -6,7 +6,7 @@ void testApp::setup(){
     
     // ----
     _mapping = new ofxMtlMapping2D();
-    _mapping->init(ofGetWidth(), ofGetHeight());
+    _mapping->init(ofGetWidth(), ofGetHeight(), "mapping/xml/shapes.xml", "mapping/controls/mapping.xml");
 }
 
 //--------------------------------------------------------------
