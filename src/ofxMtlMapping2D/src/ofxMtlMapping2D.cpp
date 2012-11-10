@@ -379,19 +379,16 @@ void ofxMtlMapping2D::keyPressed(int key)
             break;
             
         case 'l':
-            ofxMtlMapping2DControls::mapping2DControls()->disable();
-            
+            loadShapesList();
             break;
             
         case 'm':
             ofxMtlMapping2DControls::mapping2DControls()->toggle();
-            
             break;
             
         case 's':
             ofxMtlMapping2DControls::mapping2DControls()->save();
             saveShapesList();
-
             break;
             
         case 356:
@@ -470,6 +467,9 @@ void ofxMtlMapping2D::keyPressed(int key)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::loadShapesList()
 {
+    // UI
+    ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
+    
     // Delete everything
     while(!_pmShapes.empty()) delete _pmShapes.back(), _pmShapes.pop_back();
     _pmShapes.clear();

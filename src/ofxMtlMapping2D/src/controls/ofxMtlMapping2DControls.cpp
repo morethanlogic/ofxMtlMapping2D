@@ -74,7 +74,9 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     
     // Edit
     _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/edit.png", kSettingMappingEditShapes));
-    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/save.png", kSettingMappingSave));
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/file-down.png", kSettingMappingSave));
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/file-up.png", kSettingMappingLoad));
+
 
     // add mapping controls Output / Input
     ofxUISpacer *spacer = new ofxUISpacer(kWidgetWidth, kSpacerHeight);
@@ -108,13 +110,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     } else if (getToggleValue(kSettingMappingModeInput)) {
         _mappingMode = MAPPING_MODE_INPUT;
     }
-    
-    // ---- So that nobody touch those
-//    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(false);
-    
-    
-
-
 }
 
 
@@ -192,7 +187,8 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
     _editShapes = isOn;
     
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingSave))->setVisible(_editShapes);
-    
+    ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(_editShapes);
+
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setVisible(_editShapes);
     
