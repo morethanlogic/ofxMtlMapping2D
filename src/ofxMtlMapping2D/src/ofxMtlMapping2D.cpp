@@ -99,6 +99,18 @@ void ofxMtlMapping2D::update()
     }
     
     // ----
+    // Selected shape with UI
+    if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeChanged()) {
+        ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeChangedFlag();
+
+        ofxMtlMapping2DShape* shape = shapeWithId(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId());
+        if(shape) {
+            shape->setAsActiveShape(true);
+        }
+    }
+
+    
+    // ----
     // We changed of mode - Output / Input
     if(ofxMtlMapping2DControls::mapping2DControls()->mappingModeChanged()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetMappingChangedFlag();

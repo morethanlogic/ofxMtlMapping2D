@@ -65,6 +65,9 @@ class ofxMtlMapping2DControls
     
         void addShapeToList(int shapeID, int shapeType);
         void clearShapesList();
+        const bool& selectedShapeChanged() { return _selectedShapeChanged; }
+        void resetSelectedShapeChangedFlag();
+        const int& selectedShapeId() { return _selectedShapeId; }
         void setAsActiveShapeWithId(int shapeID, int shapeType);
     
         void unselectShapesToggles();
@@ -93,6 +96,8 @@ class ofxMtlMapping2DControls
         bool _createNewQuad;
         bool _createNewTriangle;
         bool _showShapesId;
+        bool _selectedShapeChanged;
+        int _selectedShapeId;
     
         bool _mappingModeChanged;
         ofxMtlMapping2DMode _mappingMode;

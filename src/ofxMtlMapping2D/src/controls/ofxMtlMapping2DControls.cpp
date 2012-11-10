@@ -1,6 +1,5 @@
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DSettings.h"
-#include "ofxMtlMapping2D.h"
 #include "ofxMtlMapping2DShape.h"
 
 #include "ofMain.h"
@@ -22,6 +21,8 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
 {
     // ---- Shapes list
     // set default values
+    _selectedShapeId = -1;
+    _selectedShapeChanged = false;
     shapeCounter = 0;
     
     _shapesListCanvas = new ofxUIScrollableCanvas(width, 0, width, ofGetHeight());
@@ -204,6 +205,9 @@ void ofxMtlMapping2DControls::shapesListUiEvent(ofxUIEventArgs &event)
     }
     
     setAsActiveShapeWithId(shapeId, shapeType);
+    
+    _selectedShapeId = shapeId;
+    _selectedShapeChanged = true;
 }
 
 
@@ -242,10 +246,6 @@ void ofxMtlMapping2DControls::resizeShapeList()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID, int shapeType)
 {    
-    // ----
-    ofxMtlMapping2DShape* shape = ofxMtlMapping2D::shapeWithId(shapeID);
-    shape->setAsActiveShape(true);
-    
     // ----
     for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
         ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
@@ -296,6 +296,12 @@ void ofxMtlMapping2DControls::resetCreateNewShape()
 void ofxMtlMapping2DControls::resetMappingChangedFlag()
 {
     _mappingModeChanged = false;
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::resetSelectedShapeChangedFlag()
+{
+    _selectedShapeChanged = false;
 }
 
 #pragma mark -
