@@ -41,6 +41,7 @@ class ofxMtlMapping2D {
         ofFbo _fbo;
         ofxXmlSettings _shapesListXML;
         static list<ofxMtlMapping2DShape*> _pmShapes;
+        list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
 
         void render();
     

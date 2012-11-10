@@ -31,6 +31,20 @@ ofxMtlMapping2DShape* ofxMtlMapping2D::shapeWithId(int shapeId)
 }
 
 //--------------------------------------------------------------
+list<ofxMtlMapping2DShape*>::iterator ofxMtlMapping2D::iteratorForShapeWithId(int shapeId)
+{
+    list<ofxMtlMapping2DShape*>::iterator it;
+    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        if(shape->shapeId == shapeId) {
+            return it;
+        }
+    }
+    
+    return _pmShapes.end();
+}
+
+//--------------------------------------------------------------
 //--------------------------------------------------------------
 ofxMtlMapping2D::ofxMtlMapping2D() 
 {
@@ -103,9 +117,14 @@ void ofxMtlMapping2D::update()
     if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeChanged()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeChangedFlag();
 
-        ofxMtlMapping2DShape* shape = shapeWithId(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId());
-        if(shape) {
+        list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId());
+        if(it != _pmShapes.end()) {
+            ofxMtlMapping2DShape* shape = *it;
             shape->setAsActiveShape(true);
+            
+            // Put active shape at the top of the list
+            _pmShapes.push_front(shape);
+            _pmShapes.erase(it);
         }
     }
 
