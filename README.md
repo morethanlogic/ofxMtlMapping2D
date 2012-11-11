@@ -14,14 +14,14 @@ C++ openFrameworks addon to achieve 2D projection-mapping of textures to physica
 Some projects using this addon
 ------------
 
-<table border="0" bgcolor="#FFFFFF">
+<table style="border-style: hidden; background:#FFFFFF">
 <tr>
-<td><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Echos.jpg" alt="Echos"></a></td>
-<td><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Barcode.jpg" alt="Barcode"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Echos.jpg" alt="Echos"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Barcode.jpg" alt="Barcode"></a></td>
 </tr>
 <tr>
-<td><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_DesignOpenHouse_.jpg" alt="Open house"></a></td>
-<td><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_SamRobertBand_.jpg" alt="Sam Robert's Band"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_DesignOpenHouse_.jpg" alt="Open house"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_SamRobertBand_.jpg" alt="Sam Robert's Band"></a></td>
 </tr>
 </table>
 
