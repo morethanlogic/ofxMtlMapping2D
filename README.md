@@ -11,7 +11,7 @@ C++ openFrameworks addon to achieve 2D projection-mapping of textures to physica
 **Input mode**  
 ![input mode](http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_input.png)
 
-Some of our projects using this addon
+Some projects using this addon
 ------------
 
 <table border="0" bgcolor="#FFFFFF">
