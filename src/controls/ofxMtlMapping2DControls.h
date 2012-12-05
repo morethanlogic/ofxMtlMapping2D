@@ -14,7 +14,8 @@
 
 #define kSettingMappingEditShapes           "MAPPING:EDIT_SHAPES"
 #define kSettingMappingCreateNewQuad        "MAPPING:CREATE_NEW_QUAD"
-#define kSettingMappingCreateNewTriangle    "MAPPING:CREATE_NEW_TRAINGLE"
+#define kSettingMappingCreateNewTriangle    "MAPPING:CREATE_NEW_TRIANGLE"
+#define kSettingMappingCreateNewMask        "MAPPING:CREATE_NEW_MASK"
 
 #define kSettingMappingShowShapesId         "MAPPING:SHOW_SHAPES_ID"
 
@@ -44,6 +45,7 @@ class ofxMtlMapping2DControls
         const bool& editShapes() { return _editShapes; }
         const bool& createNewQuad() { return _createNewQuad; }
         const bool& createNewTriangle() { return _createNewTriangle; }
+        const bool& createNewMask() { return _createNewMask; }
         void resetCreateNewShape();
         const bool& showShapesId() { return _showShapesId; }
     
@@ -55,7 +57,10 @@ class ofxMtlMapping2DControls
     
         void save();
         void load();
-        
+    
+        void showInputModeToggle();
+        void hideInputModeToggle();
+    
         void enable();
         void disable();
         void toggle();
@@ -97,6 +102,7 @@ class ofxMtlMapping2DControls
         bool _editShapes;
         bool _createNewQuad;
         bool _createNewTriangle;
+        bool _createNewMask;
         bool _showShapesId;
         bool _selectedShapeChanged;
         int _selectedShapeId;

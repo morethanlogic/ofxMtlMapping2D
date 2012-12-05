@@ -114,6 +114,12 @@ void ofxMtlMapping2D::update()
         return;
     }
     
+    if(ofxMtlMapping2DControls::mapping2DControls()->createNewMask()) {
+        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
+        createMask(ofGetWidth()/2, ofGetHeight()/2);
+        return;
+    }
+    
     // ----
     // Selected shape with UI
     if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeChanged()) {
@@ -146,15 +152,17 @@ void ofxMtlMapping2D::update()
             for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
                 ofxMtlMapping2DShape* shape = *it;
                 shape->enable();
-                //shape->inputPolygon->disable();                
-                shape->inputPolygon->setAsIdle();
+                
+                if(shape->inputPolygon) {
+                    // If this Shape is textured and has an 'inputPolygon'
+                    shape->inputPolygon->setAsIdle();
+                }
             }
         // ---- INPUT MODE
         } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
             list<ofxMtlMapping2DShape*>::iterator it;
             for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
                 ofxMtlMapping2DShape* shape = *it;
-                //shape->disable();
                 shape->setAsIdle();
                 shape->inputPolygon->enable();
             }
@@ -238,13 +246,27 @@ void ofxMtlMapping2D::drawFbo()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::render()
 {
-    _fbo.getTextureReference().bind();
     list<ofxMtlMapping2DShape*>::iterator it;
+    
+    // Textured shapes
+    _fbo.getTextureReference().bind();
     for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
-        shape->render();
+        
+        if (shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+            shape->render();
+        }
     }
     _fbo.getTextureReference().unbind();
+    
+    // Masks - non textured shapes
+    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        
+        if (shape->shapeType == MAPPING_2D_SHAPE_MASK) {
+            shape->render();
+        }
+    }
 }
 
 
@@ -274,6 +296,19 @@ void ofxMtlMapping2D::createTriangle(float _x, float _y)
     _pmShapes.push_front(newShape);
     
     ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_TRIANGLE);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::createMask(float _x, float _y)
+{
+    ofxMtlMapping2DShape::nextShapeId++;
+    
+    ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DMask();
+    newShape->shapeType = MAPPING_2D_SHAPE_MASK;
+    newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
+    _pmShapes.push_front(newShape);
+    
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_MASK);
 }
 
 //--------------------------------------------------------------
@@ -355,12 +390,15 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
     if(ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled && ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
         // Add vertex to the selected shape
         if(ofxMtlMapping2DShape::activeShape) {
-            ofxMtlMapping2DShape* shape = ofxMtlMapping2DShape::activeShape;
-            if (shape) {
-                ofLog(OF_LOG_NOTICE, "Add vertex to shape %i", shape->shapeId);
-                shape->addPoint(x, y);
-            } else {
-                ofLog(OF_LOG_NOTICE, "No shape has been selected, can not add a vertex");
+            // Only if the shape is a Mask
+            if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_MASK) {
+                ofxMtlMapping2DShape* shape = ofxMtlMapping2DShape::activeShape;
+                if (shape) {
+                    ofLog(OF_LOG_NOTICE, "Add vertex to shape %i", shape->shapeId);
+                    shape->addPoint(x, y);
+                } else {
+                    ofLog(OF_LOG_NOTICE, "No shape has been selected, can not add a vertex");
+                }
             }
         }
     }
@@ -535,6 +573,9 @@ void ofxMtlMapping2D::loadShapesList()
                 } else if (shapeType == "triangle") {
                     newShape = new ofxMtlMapping2DTriangle();
                     newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
+                } else if (shapeType == "mask") {
+                    newShape = new ofxMtlMapping2DMask();
+                    newShape->shapeType = MAPPING_2D_SHAPE_MASK;
                 } else {
                     newShape = new ofxMtlMapping2DQuad();
                     newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
@@ -563,28 +604,29 @@ void ofxMtlMapping2D::loadShapesList()
                 _shapesListXML.popTag();
                 
                 
-                //INPUT QUADS
-                _shapesListXML.pushTag("inputPolygon", 0);
+                if(newShape->shapeType != MAPPING_2D_SHAPE_MASK) {
+                    //INPUT QUADS
+                    _shapesListXML.pushTag("inputPolygon", 0);
 
-                //Create a new vertex
-                newShape->inputPolygon = new ofxMtlMapping2DInput();
-            
-                //INPUT VERTICES
-                numVertexItemTags = _shapesListXML.getNumTags("vertex");
-                for (int k = 0; k < numVertexItemTags; k++) {
-                    int x = _shapesListXML.getAttribute("vertex", "x", 0, k); 
-                    int y = _shapesListXML.getAttribute("vertex", "y", 0, k);
-                    
                     //Create a new vertex
-                    ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
-                    newVertex->init(x-newVertex->width/2, y-newVertex->height/2);
-                    newVertex->isDefiningTectureCoord = true;
-                    newShape->inputPolygon->vertices.push_back(newVertex);
+                    newShape->inputPolygon = new ofxMtlMapping2DInput();
+                
+                    //INPUT VERTICES
+                    numVertexItemTags = _shapesListXML.getNumTags("vertex");
+                    for (int k = 0; k < numVertexItemTags; k++) {
+                        int x = _shapesListXML.getAttribute("vertex", "x", 0, k); 
+                        int y = _shapesListXML.getAttribute("vertex", "y", 0, k);
+                        
+                        //Create a new vertex
+                        ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
+                        newVertex->init(x-newVertex->width/2, y-newVertex->height/2);
+                        newVertex->isDefiningTectureCoord = true;
+                        newShape->inputPolygon->vertices.push_back(newVertex);
+                    }
+                    
+                    newShape->inputPolygon->init(shapeId);
+                    _shapesListXML.popTag();
                 }
-                
-                newShape->inputPolygon->init(shapeId);
-                _shapesListXML.popTag();
-                
                 
                 newShape->init(shapeId);
                 _pmShapes.push_front(newShape);
@@ -651,19 +693,20 @@ void ofxMtlMapping2D::saveShapesList()
         }
         newShapesListXML.popTag();
         
-        //Input Quads
-        tagNum = newShapesListXML.addTag("inputPolygon");
-        newShapesListXML.pushTag("inputPolygon", tagNum);
-        //Vertices
-        for (itVertex=shape->inputPolygon->vertices.begin(); itVertex!=shape->inputPolygon->vertices.end(); itVertex++) {
-            ofxMtlMapping2DVertex* vertex = *itVertex;
-            
-            int tagNum = newShapesListXML.addTag("vertex");
-            newShapesListXML.addAttribute("vertex", "x", (int)vertex->center.x, tagNum);
-            newShapesListXML.addAttribute("vertex", "y", (int)vertex->center.y, tagNum);
-        }
-        newShapesListXML.popTag();
-		
+        if(shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+            //Input Quads
+            tagNum = newShapesListXML.addTag("inputPolygon");
+            newShapesListXML.pushTag("inputPolygon", tagNum);
+            //Vertices
+            for (itVertex=shape->inputPolygon->vertices.begin(); itVertex!=shape->inputPolygon->vertices.end(); itVertex++) {
+                ofxMtlMapping2DVertex* vertex = *itVertex;
+                
+                int tagNum = newShapesListXML.addTag("vertex");
+                newShapesListXML.addAttribute("vertex", "x", (int)vertex->center.x, tagNum);
+                newShapesListXML.addAttribute("vertex", "y", (int)vertex->center.y, tagNum);
+            }
+            newShapesListXML.popTag();
+		}
 		newShapesListXML.popTag();
 		
 		shapeCounter++;
