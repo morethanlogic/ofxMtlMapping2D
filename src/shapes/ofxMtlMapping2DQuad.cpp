@@ -14,9 +14,7 @@ ofxMtlMapping2DQuad::~ofxMtlMapping2DQuad(){
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DQuad::render()
-{
-    ofSetColor(255, 255, 255, 255);
-    
+{    
     glPushMatrix();
     glMultMatrixf(inputPolygon->homoMatrix);
     glBegin(GL_POLYGON);

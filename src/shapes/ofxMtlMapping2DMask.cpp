@@ -15,9 +15,7 @@ ofxMtlMapping2DMask::~ofxMtlMapping2DMask(){
 //--------------------------------------------------------------
 void ofxMtlMapping2DMask::render()
 {
-    ofSetColor(255, 255, 255, 255);
     ofFill();
-    
     glPushMatrix();
     glBegin(GL_POLYGON);
     
