@@ -154,7 +154,7 @@ void ofxMtlMapping2D::update()
     }
     
     // ----
-    // Let update the Shapes
+    // Update the Shapes
     list<ofxMtlMapping2DShape*>::iterator it;
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
