@@ -3,6 +3,7 @@
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
 #include "ofxMtlMapping2DShapeType.h"
+#include "ofxMtlMapping2DShapes.h"
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -13,35 +14,17 @@ struct Comparator {
 };
 
 //--------------------------------------------------------------
-//--------------------------------------------------------------
-list<ofxMtlMapping2DShape*> ofxMtlMapping2D::_pmShapes;
-
-//--------------------------------------------------------------
-ofxMtlMapping2DShape* ofxMtlMapping2D::shapeWithId(int shapeId)
-{
-    list<ofxMtlMapping2DShape*>::iterator it;
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
-        ofxMtlMapping2DShape* shape = *it;
-        if(shape->shapeId == shapeId) {
-            return shape;
-        }
-    }
-    
-    return NULL;
-}
-
-//--------------------------------------------------------------
 list<ofxMtlMapping2DShape*>::iterator ofxMtlMapping2D::iteratorForShapeWithId(int shapeId)
 {
     list<ofxMtlMapping2DShape*>::iterator it;
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         if(shape->shapeId == shapeId) {
             return it;
         }
     }
     
-    return _pmShapes.end();
+    return ofxMtlMapping2DShapes::pmShapes.end();
 }
 
 //--------------------------------------------------------------
@@ -54,8 +37,8 @@ ofxMtlMapping2D::ofxMtlMapping2D()
 ofxMtlMapping2D::~ofxMtlMapping2D() 
 {
     // ----
-    while(!_pmShapes.empty()) delete _pmShapes.back(), _pmShapes.pop_back();
-	_pmShapes.clear();
+    while(!ofxMtlMapping2DShapes::pmShapes.empty()) delete ofxMtlMapping2DShapes::pmShapes.back(), ofxMtlMapping2DShapes::pmShapes.pop_back();
+	ofxMtlMapping2DShapes::pmShapes.clear();
 }
 
 //--------------------------------------------------------------
@@ -126,13 +109,13 @@ void ofxMtlMapping2D::update()
         ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeChangedFlag();
 
         list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId());
-        if(it != _pmShapes.end()) {
+        if(it != ofxMtlMapping2DShapes::pmShapes.end()) {
             ofxMtlMapping2DShape* shape = *it;
             shape->setAsActiveShape(true);
             
             // Put active shape at the top of the list
-            _pmShapes.push_front(shape);
-            _pmShapes.erase(it);
+            ofxMtlMapping2DShapes::pmShapes.push_front(shape);
+            ofxMtlMapping2DShapes::pmShapes.erase(it);
         }
     }
 
@@ -149,7 +132,7 @@ void ofxMtlMapping2D::update()
         // ---- OUTPUT MODE
         if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
             list<ofxMtlMapping2DShape*>::iterator it;
-            for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
                 ofxMtlMapping2DShape* shape = *it;
                 shape->enable();
                 
@@ -161,7 +144,7 @@ void ofxMtlMapping2D::update()
         // ---- INPUT MODE
         } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
             list<ofxMtlMapping2DShape*>::iterator it;
-            for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
                 ofxMtlMapping2DShape* shape = *it;
                 shape->setAsIdle();
                 shape->inputPolygon->enable();
@@ -173,7 +156,7 @@ void ofxMtlMapping2D::update()
     // ----
     // Let update the Shapes
     list<ofxMtlMapping2DShape*>::iterator it;
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         shape->update();
     }
@@ -200,7 +183,7 @@ void ofxMtlMapping2D::draw()
         
         // ----
         list<ofxMtlMapping2DShape*>::iterator it;
-        for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+        for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
             ofxMtlMapping2DShape* shape = *it;
             
             if(shape != ofxMtlMapping2DShape::activeShape) {
@@ -250,7 +233,7 @@ void ofxMtlMapping2D::render()
     
     // Textured shapes
     _fbo.getTextureReference().bind();
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         
         if (shape->shapeType != MAPPING_2D_SHAPE_MASK) {
@@ -260,7 +243,7 @@ void ofxMtlMapping2D::render()
     _fbo.getTextureReference().unbind();
     
     // Masks - non textured shapes
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         
         if (shape->shapeType == MAPPING_2D_SHAPE_MASK) {
@@ -280,7 +263,7 @@ void ofxMtlMapping2D::createQuad(float _x, float _y)
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DQuad();
     newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
-    _pmShapes.push_front(newShape);
+    ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
     ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_QUAD);
 }
@@ -293,7 +276,7 @@ void ofxMtlMapping2D::createTriangle(float _x, float _y)
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DTriangle();
     newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
-    _pmShapes.push_front(newShape);
+    ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
     ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_TRIANGLE);
 }
@@ -306,7 +289,7 @@ void ofxMtlMapping2D::createMask(float _x, float _y)
     ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DMask();
     newShape->shapeType = MAPPING_2D_SHAPE_MASK;
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
-    _pmShapes.push_front(newShape);
+    ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
     ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_MASK);
 }
@@ -316,14 +299,14 @@ void ofxMtlMapping2D::deleteShape()
 {
     if (ofxMtlMapping2DShape::activeShape) {
         ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
-        _pmShapes.remove(ofxMtlMapping2DShape::activeShape);
+        ofxMtlMapping2DShapes::pmShapes.remove(ofxMtlMapping2DShape::activeShape);
         delete ofxMtlMapping2DShape::activeShape;
         ofxMtlMapping2DShape::resetActiveShapeVars();
     }
     
     // Re populate the UI List
     list<ofxMtlMapping2DShape*>::reverse_iterator it;
-    for (it=_pmShapes.rbegin(); it!=_pmShapes.rend(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
 
@@ -335,7 +318,7 @@ void ofxMtlMapping2D::deleteShape()
 //{
 //    // Disable all the shapes.
 //    list<ofxMtlMapping2DShape*>::iterator it;
-//    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+//    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
 //        ofxMtlMapping2DShape* shape = *it;
 //        shape->disable();
 //    }
@@ -362,7 +345,7 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
     // ----
     // Select an existing shape
     list<ofxMtlMapping2DShape*>::iterator it;
-    for (it=_pmShapes.begin(); it!=_pmShapes.end(); it++) {
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         bool grabbedOne = false;
         if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
@@ -379,8 +362,8 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
         
         if(grabbedOne) {
             // Put active shape at the top of the list
-            _pmShapes.push_front(shape);
-            _pmShapes.erase(it);
+            ofxMtlMapping2DShapes::pmShapes.push_front(shape);
+            ofxMtlMapping2DShapes::pmShapes.erase(it);
             
             return;
         }
@@ -471,10 +454,10 @@ void ofxMtlMapping2D::keyPressed(int key)
             break;
             
 //        case 'b':
-//            if ((ofxMtlMapping2DShape::activeShapeId + 1) >= _pmShapes.size()) {
-//                _pmShapes[0]->setAsActiveShape();
+//            if ((ofxMtlMapping2DShape::activeShapeId + 1) >= ofxMtlMapping2DShapes::pmShapes.size()) {
+//                ofxMtlMapping2DShapes::pmShapes[0]->setAsActiveShape();
 //            } else {
-//                _pmShapes[(ofxMtlMapping2DShape::activeShapeId + 1)]->setAsActiveShape();
+//                ofxMtlMapping2DShapes::pmShapes[(ofxMtlMapping2DShape::activeShapeId + 1)]->setAsActiveShape();
 //            }
 //        break;
 
@@ -509,8 +492,8 @@ void ofxMtlMapping2D::loadShapesList()
     ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
     
     // Delete everything
-    while(!_pmShapes.empty()) delete _pmShapes.back(), _pmShapes.pop_back();
-    _pmShapes.clear();
+    while(!ofxMtlMapping2DShapes::pmShapes.empty()) delete ofxMtlMapping2DShapes::pmShapes.back(), ofxMtlMapping2DShapes::pmShapes.pop_back();
+    ofxMtlMapping2DShapes::pmShapes.clear();
     ofxMtlMapping2DShape::resetActiveShapeVars();
     
     
@@ -629,7 +612,7 @@ void ofxMtlMapping2D::loadShapesList()
                 }
                 
                 newShape->init(shapeId);
-                _pmShapes.push_front(newShape);
+                ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
                 
                 ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId, newShape->shapeType);
 				
@@ -651,8 +634,8 @@ void ofxMtlMapping2D::saveShapesList()
 {
     
     list<ofxMtlMapping2DShape*> pmShapesCopy;
-    pmShapesCopy.resize (_pmShapes.size());
-    copy (_pmShapes.begin(), _pmShapes.end(), pmShapesCopy.begin());
+    pmShapesCopy.resize (ofxMtlMapping2DShapes::pmShapes.size());
+    copy (ofxMtlMapping2DShapes::pmShapes.begin(), ofxMtlMapping2DShapes::pmShapes.end(), pmShapesCopy.begin());
     pmShapesCopy.sort(Comparator());
 
     ofxXmlSettings newShapesListXML;
@@ -673,9 +656,7 @@ void ofxMtlMapping2D::saveShapesList()
         //Shape settings
         map<string,string>::iterator itShape;
         for ( itShape=shape->shapeSettings.begin() ; itShape != shape->shapeSettings.end(); itShape++ ) {
-            int tagNum = newShapesListXML.addTag("setting");
-            cout << (*itShape).first << " => " << (*itShape).second << endl;
-            
+            int tagNum = newShapesListXML.addTag("setting");            
             newShapesListXML.addAttribute("setting", "key", (*itShape).first, tagNum);
             newShapesListXML.setValue("setting", (*itShape).second, tagNum);
         }

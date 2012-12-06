@@ -19,9 +19,7 @@
 //========================================================================
 class ofxMtlMapping2D {
     
-    public:
-        static ofxMtlMapping2DShape* shapeWithId(int shapeId);
-    
+    public:    
         ofxMtlMapping2D();
         virtual ~ofxMtlMapping2D();
         
@@ -42,7 +40,6 @@ class ofxMtlMapping2D {
         string _mappingXmlFilePath;
         ofFbo _fbo;
         ofxXmlSettings _shapesListXML;
-        static list<ofxMtlMapping2DShape*> _pmShapes;
         list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
 
         void render();
