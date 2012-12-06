@@ -1,6 +1,7 @@
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DShape.h"
+#include "ofxMtlMapping2DShapes.h"
 
 #include "ofMain.h"
 
@@ -197,6 +198,16 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
 {
     _editShapes = isOn;
     
+    if (!_editShapes) {
+        // Set all Shapes and their InteractiveObj
+        list<ofxMtlMapping2DShape*>::iterator it;
+        for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+            ofxMtlMapping2DShape* shape = *it;
+            shape->setAsIdle();
+        }
+    }
+    
+    // ----
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingSave))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(_editShapes);
 
