@@ -233,6 +233,7 @@ void ofxMtlMapping2D::render()
     
     // Textured shapes
     _fbo.getTextureReference().bind();
+    ofSetColor(255, 255, 255, 255);
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         
@@ -243,6 +244,7 @@ void ofxMtlMapping2D::render()
     _fbo.getTextureReference().unbind();
     
     // Masks - non textured shapes
+    ofSetColor(0, 0, 0, 255);
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         
