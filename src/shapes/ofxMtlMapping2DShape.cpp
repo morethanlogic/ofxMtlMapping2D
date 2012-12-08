@@ -48,7 +48,7 @@ void ofxMtlMapping2DShape::update()
     if(activePolygon != this && activePolygon != inputPolygon)
         return;
     
-    if((activePolygon == this || activePolygon == inputPolygon) && inputPolygon) {
+    if((activePolygon == this || activePolygon == inputPolygon) && (inputPolygon || shapeType == MAPPING_2D_SHAPE_MASK)) {
         setAsActiveShape();
         
         // ---- recalculate the homography transformation matrix (for textured Shapes - for now only Quads) .
