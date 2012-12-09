@@ -10,6 +10,7 @@
 #include "ofxMtlMapping2DVertex.h"
 #include "ofxMtlMapping2DQuad.h"
 #include "ofxMtlMapping2DTriangle.h"
+#include "ofxMtlMapping2DMask.h"
 #include "ofxMtlMapping2DShape.h"
 
 #include "mtlUtils.h"
@@ -18,9 +19,7 @@
 //========================================================================
 class ofxMtlMapping2D {
     
-    public:
-        static ofxMtlMapping2DShape* shapeWithId(int shapeId);
-    
+    public:    
         ofxMtlMapping2D();
         virtual ~ofxMtlMapping2D();
         
@@ -41,13 +40,13 @@ class ofxMtlMapping2D {
         string _mappingXmlFilePath;
         ofFbo _fbo;
         ofxXmlSettings _shapesListXML;
-        static list<ofxMtlMapping2DShape*> _pmShapes;
         list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
 
         void render();
     
         void createQuad(float _x, float _y);
         void createTriangle(float _x, float _y);
+        void createMask(float _x, float _y);
         void deleteShape();
     
         void loadShapesList();

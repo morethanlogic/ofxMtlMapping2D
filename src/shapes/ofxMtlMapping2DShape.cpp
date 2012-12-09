@@ -18,6 +18,7 @@ void ofxMtlMapping2DShape::resetActiveShapeVars(){
 //--------------------------------------------------------------
 ofxMtlMapping2DShape::ofxMtlMapping2DShape()
 {
+    inputPolygon = NULL;
 }
 
 //--------------------------------------------------------------
@@ -47,10 +48,10 @@ void ofxMtlMapping2DShape::update()
     if(activePolygon != this && activePolygon != inputPolygon)
         return;
     
-    if(activePolygon == this || activePolygon == inputPolygon) {
+    if((activePolygon == this || activePolygon == inputPolygon) && (inputPolygon || shapeType == MAPPING_2D_SHAPE_MASK)) {
         setAsActiveShape();
         
-        // ---- recalculate the homography transformation matrix.
+        // ---- recalculate the homography transformation matrix (for textured Shapes - for now only Quads) .
         calcHomography();
     }
     
@@ -108,6 +109,14 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
     // ---- OUTPUT MODE
     if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
         if (activeShape != this) {
+            // ----
+            if (shapeType == MAPPING_2D_SHAPE_MASK) {
+                ofxMtlMapping2DControls::mapping2DControls()->hideInputModeToggle();
+            } else {
+                ofxMtlMapping2DControls::mapping2DControls()->showInputModeToggle();
+            }
+            
+            // ----
             previousActiveShape = activeShape;
             activeShape = this;
             

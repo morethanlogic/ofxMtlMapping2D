@@ -1,6 +1,7 @@
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DShape.h"
+#include "ofxMtlMapping2DShapes.h"
 
 #include "ofMain.h"
 
@@ -48,6 +49,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     // ---- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
     shapeTypesAsString[MAPPING_2D_SHAPE_TRIANGLE] = "triangle";
+    shapeTypesAsString[MAPPING_2D_SHAPE_MASK] = "mask";
     
     // set default values
     _saveMapping = false;
@@ -55,6 +57,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     _editShapes = false;
     _createNewQuad = false;
     _createNewTriangle = false;
+    _createNewMask = false;
     _showShapesId = true;
     _mappingModeChanged = true; // initialized to true so that when the app launch the 'shapes' are correctly setted.
     _mappingMode = MAPPING_MODE_OUTPUT;
@@ -92,6 +95,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
         _toolsCanvas->addWidgetDown(spacer);        
         _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewQuad, "GUI/quad.png", kSettingMappingCreateNewQuad));
         _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewTriangle, "GUI/triangle.png", kSettingMappingCreateNewTriangle));
+        _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewMask, "GUI/triangle.png", kSettingMappingCreateNewMask));
     }
     
     // add mapping shape's details
@@ -151,6 +155,12 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _createNewTriangle = true;
         }
     }
+    else if (name == kSettingMappingCreateNewMask) {
+        // will happen only if ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled is true
+        if(getToggleValue(name)) {
+            _createNewMask = true;
+        }
+    }
     
     // ----
     if (getToggleValue(name)) {
@@ -164,6 +174,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(true);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(true);
             }
         }
         else if (name == kSettingMappingModeInput) {
@@ -176,6 +187,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(false);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(false);
             }
         }
     }
@@ -186,6 +198,16 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
 {
     _editShapes = isOn;
     
+    if (!_editShapes) {
+        // Set all Shapes and their InteractiveObj
+        list<ofxMtlMapping2DShape*>::iterator it;
+        for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+            ofxMtlMapping2DShape* shape = *it;
+            shape->setAsIdle();
+        }
+    }
+    
+    // ----
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingSave))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingLoad))->setVisible(_editShapes);
 
@@ -194,6 +216,7 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
     
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
+    ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(_editShapes);
     
     _shapesListCanvas->setVisible(_editShapes);
 }
@@ -307,6 +330,9 @@ void ofxMtlMapping2DControls::resetCreateNewShape()
     
     _createNewTriangle = false;
     ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setValue(false);
+    
+    _createNewMask = false;
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setValue(false);
 }
 
 //--------------------------------------------------------------
@@ -319,6 +345,20 @@ void ofxMtlMapping2DControls::resetMappingChangedFlag()
 void ofxMtlMapping2DControls::resetSelectedShapeChangedFlag()
 {
     _selectedShapeChanged = false;
+}
+
+#pragma mark -
+#pragma mark Set avalaible options
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::showInputModeToggle()
+{
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setVisible(true);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::hideInputModeToggle()
+{
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setVisible(false);
 }
 
 #pragma mark -

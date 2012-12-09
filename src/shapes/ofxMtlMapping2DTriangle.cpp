@@ -14,9 +14,7 @@ ofxMtlMapping2DTriangle::~ofxMtlMapping2DTriangle(){
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DTriangle::render()
-{
-    ofSetColor(255, 255, 255, 255);
-    
+{    
     glPushMatrix();
     glBegin(GL_POLYGON);
     
