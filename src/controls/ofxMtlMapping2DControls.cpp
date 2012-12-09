@@ -205,6 +205,10 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
             ofxMtlMapping2DShape* shape = *it;
             shape->setAsIdle();
         }
+        
+        // ----
+        ofxMtlMapping2DShape::resetActiveShapeVars();
+        ofxMtlMapping2DShape::resetActivePolygonVars();
     }
     
     // ----
