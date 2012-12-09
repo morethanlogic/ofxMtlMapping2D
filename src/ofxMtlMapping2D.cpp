@@ -123,11 +123,7 @@ void ofxMtlMapping2D::update()
     // ----
     // We changed of mode - Output / Input
     if(ofxMtlMapping2DControls::mapping2DControls()->mappingModeChanged()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetMappingChangedFlag();
-        
-        ofxMtlMapping2DControls::mapping2DControls()->unselectShapesToggles();
-        ofxMtlMapping2DShape::resetActiveShapeVars();
-        ofxMtlMapping2DPolygon::resetActivePolygonVars();
+        ofxMtlMapping2DControls::mapping2DControls()->resetMappingChangedFlag();        
         
         // ---- OUTPUT MODE
         if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {

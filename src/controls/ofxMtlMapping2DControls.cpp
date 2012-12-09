@@ -164,10 +164,15 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     
     // ----
     if (getToggleValue(name)) {
-        if (name == kSettingMappingModeOutput) {
-            _mappingModeChanged = true;
-            _mappingMode = MAPPING_MODE_OUTPUT;
+        unselectShapesToggles();
+        ofxMtlMapping2DShape::resetActiveShapeVars();
+        ofxMtlMapping2DPolygon::resetActivePolygonVars();
+        
+        _mappingModeChanged = true;
 
+        if (name == kSettingMappingModeOutput) {
+            _mappingMode = MAPPING_MODE_OUTPUT;
+            
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setValue(false);
             
             // ----
@@ -178,7 +183,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             }
         }
         else if (name == kSettingMappingModeInput) {
-            _mappingModeChanged = true;
             _mappingMode = MAPPING_MODE_INPUT;
             
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setValue(false);
