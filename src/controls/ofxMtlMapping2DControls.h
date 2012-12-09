@@ -112,4 +112,6 @@ class ofxMtlMapping2DControls
         
         ofxUIScrollableCanvas *_shapesListCanvas;
         void resizeShapeList();
+        void refreshShapesListForMappingMode(ofxMtlMapping2DMode mappingMode);
+
 };

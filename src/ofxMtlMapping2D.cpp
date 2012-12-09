@@ -7,13 +7,6 @@
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-struct Comparator {
-    bool operator()(ofxMtlMapping2DShape* first, ofxMtlMapping2DShape* second) const {
-        return first->shapeId > second->shapeId;
-    }
-};
-
-//--------------------------------------------------------------
 list<ofxMtlMapping2DShape*>::iterator ofxMtlMapping2D::iteratorForShapeWithId(int shapeId)
 {
     list<ofxMtlMapping2DShape*>::iterator it;
@@ -352,9 +345,11 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
                 shape->enable();
             }
         } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            if(shape->inputPolygon->hitTest(x, y)) {
-                grabbedOne = true;
-                shape->inputPolygon->enable();
+            if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+                if(shape->inputPolygon->hitTest(x, y)) {
+                    grabbedOne = true;
+                    shape->inputPolygon->enable();
+                }
             }
         }
         

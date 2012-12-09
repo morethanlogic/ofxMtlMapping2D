@@ -194,6 +194,9 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(false);
             }
         }
+        
+        refreshShapesListForMappingMode(_mappingMode);
+
     }
 }
 
@@ -274,6 +277,24 @@ void ofxMtlMapping2DControls::clearShapesList()
     _shapesListCanvas->removeWidgets();
     _shapesListCanvas->resetPlacer();
     resizeShapeList();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::refreshShapesListForMappingMode(ofxMtlMapping2DMode mappingMode)
+{
+    clearShapesList();
+    
+    // Re populate the UI List
+    ofxMtlMapping2DShapes::pmShapes.sort(Comparator());
+
+    list<ofxMtlMapping2DShape*>::reverse_iterator it;
+    for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        
+        if (mappingMode == MAPPING_MODE_OUTPUT || (mappingMode == MAPPING_MODE_INPUT && shape->shapeType != MAPPING_2D_SHAPE_MASK)) {
+            ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
+        }
+    }
 }
 
 //--------------------------------------------------------------

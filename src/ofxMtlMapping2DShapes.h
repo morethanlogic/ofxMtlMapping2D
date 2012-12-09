@@ -5,6 +5,15 @@
 #include "ofxMtlMapping2DShape.h"
 
 //--------------------------------------------------------------
+//--------------------------------------------------------------
+struct Comparator {
+    bool operator()(ofxMtlMapping2DShape* first, ofxMtlMapping2DShape* second) const {
+        return first->shapeId > second->shapeId;
+    }
+};
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 class ofxMtlMapping2DShapes {
     
     public:
