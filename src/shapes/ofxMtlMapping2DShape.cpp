@@ -48,7 +48,7 @@ void ofxMtlMapping2DShape::update()
     if(activePolygon != this && activePolygon != inputPolygon)
         return;
     
-    if((activePolygon == this || activePolygon == inputPolygon) && (inputPolygon || shapeType == MAPPING_2D_SHAPE_MASK)) {
+    if((activePolygon == this || activePolygon == inputPolygon) && (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK)) {
         setAsActiveShape();
         
         // ---- recalculate the homography transformation matrix (for textured Shapes - for now only Quads) .
@@ -79,7 +79,9 @@ void ofxMtlMapping2DShape::draw()
 
     // ---- INPUT MODE
     } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-        inputPolygon->draw();
+        if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
+            inputPolygon->draw();
+        }
     }
     
     if(ofxMtlMapping2DControls::mapping2DControls()->showShapesId())  {
@@ -99,7 +101,9 @@ void ofxMtlMapping2DShape::drawID()
     
     // ---- INPUT MODE
     } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-        inputPolygon->drawID();
+        if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
+            inputPolygon->drawID();
+        }
     }
 }
 
