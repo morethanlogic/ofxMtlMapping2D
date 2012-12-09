@@ -318,6 +318,7 @@ void ofxMtlMapping2DPolygon::addPoint(int x, int y)
 				return;
 			}
 		}
+        return;
 	}
 	
 	//Create a new vertex
