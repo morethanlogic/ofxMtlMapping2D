@@ -15,16 +15,12 @@ ofxMtlMapping2DMask::~ofxMtlMapping2DMask(){
 //--------------------------------------------------------------
 void ofxMtlMapping2DMask::render()
 {
-    ofFill();
-    glPushMatrix();
-    glBegin(GL_POLYGON);
-    
+    ofBeginShape();
+    ofFill();    
     for (int i = 0; i < polyline->size(); i++) {
-        glVertex2f(polyline->getVertices()[i].x, polyline->getVertices()[i].y);
+        ofVertex(polyline->getVertices()[i].x, polyline->getVertices()[i].y);
     }
-    
-    glEnd();
-    glPopMatrix();
+    ofEndShape(true);
 }
 
 //--------------------------------------------------------------
