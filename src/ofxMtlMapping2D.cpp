@@ -692,6 +692,15 @@ void ofxMtlMapping2D::saveShapesList()
 
 }
 
+#pragma mark -
+#pragma mark Getters
+//--------------------------------------------------------------
+vector<ofPolyline*> ofxMtlMapping2D::getMaskShapes()
+{
+    return ofxMtlMapping2DShapes::getShapesOutputPolylineWithType(MAPPING_2D_SHAPE_MASK);
+}
+
+#pragma mark -
 //--------------------------------------------------------------
 void ofxMtlMapping2D::chessBoard(int nbOfCol)
 {

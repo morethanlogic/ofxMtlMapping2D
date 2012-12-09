@@ -20,6 +20,9 @@ class ofxMtlMapping2DShapes {
     
         static list<ofxMtlMapping2DShape*> pmShapes;
         static ofxMtlMapping2DShape* shapeWithId(int shapeId);
+        static vector<ofPolyline*> getShapesOutputPolylineWithType(int shapeType);
+        static vector<ofPolyline*> getShapesInputPolyline();
+
 
 
 };

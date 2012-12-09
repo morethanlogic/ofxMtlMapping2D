@@ -34,6 +34,7 @@ class ofxMtlMapping2D {
         void mousePressed(int x, int y, int button);
         void keyPressed(int key);
     
+        vector<ofPolyline*> getMaskShapes();
         void chessBoard(int nbOfCol = 10);
 
     private:
