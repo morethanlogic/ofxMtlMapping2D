@@ -32,9 +32,21 @@ void testApp::draw(){
     //_mapping->drawFbo();
     
     
+    
+//    ofBeginShape();
+//    ofFill();
+//    ofSetColor(0, 255, 0);
+//    for (int i = 0; i < _mapping->getMaskShapes()[0]->size(); i++) {
+//        ofVertex(_mapping->getMaskShapes()[0]->getVertices()[i].x, _mapping->getMaskShapes()[0]->getVertices()[i].y);
+//    }
+//    ofEndShape(true);
+    
+    
     // Draw some instructions.
-//    ofSetColor(0);
-//    ofDrawBitmapString("'m' open the mapping controls.\n", 20, 20);
+    /*
+    ofSetColor(0);
+    ofDrawBitmapString("'m' open the mapping controls.\n", 20, 20);
+     */
 }
 
 //--------------------------------------------------------------
