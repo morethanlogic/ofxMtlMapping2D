@@ -23,7 +23,7 @@ class ofxMtlMapping2D {
         ofxMtlMapping2D();
         virtual ~ofxMtlMapping2D();
         
-        void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml");
+        void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
         void update();
         
         void bind();

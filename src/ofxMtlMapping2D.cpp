@@ -35,13 +35,13 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, string uiXmlFilePath)
+void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, string uiXmlFilePath, int numSample)
 {
     // The first we call ofxMtlMapping2DControls::mapping2DControls() we pass the xml file to use as param.
     ofxMtlMapping2DControls::mapping2DControls(uiXmlFilePath)->disable();
     
     // ----
-    _fbo.allocate(width, height, GL_RGBA);
+    _fbo.allocate(width, height, GL_RGBA, numSample);
 
     // ----
     ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
