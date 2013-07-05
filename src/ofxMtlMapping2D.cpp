@@ -195,7 +195,7 @@ void ofxMtlMapping2D::draw()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::bind()
 {
-    _fbo.bind();
+    _fbo.begin();
     ofClear(.0f, .0f, .0f, .0f);
     ofClearAlpha();
 }
@@ -203,7 +203,7 @@ void ofxMtlMapping2D::bind()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::unbind()
 {
-    _fbo.unbind();
+    _fbo.end();
 }
 
 //--------------------------------------------------------------
