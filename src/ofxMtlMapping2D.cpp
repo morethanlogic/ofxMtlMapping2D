@@ -84,6 +84,12 @@ void ofxMtlMapping2D::update()
         return;
     }
     
+    if(ofxMtlMapping2DControls::mapping2DControls()->createNewGrid()) {
+        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
+        createGrid(ofGetWidth()/2, ofGetHeight()/2);
+        return;
+    }
+    
     if(ofxMtlMapping2DControls::mapping2DControls()->createNewTriangle()) {
         ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
         createTriangle(ofGetWidth()/2, ofGetHeight()/2);
@@ -257,6 +263,19 @@ void ofxMtlMapping2D::createQuad(float _x, float _y)
     ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
     ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_QUAD);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::createGrid(float _x, float _y)
+{
+    ofxMtlMapping2DShape::nextShapeId++;
+    
+    ofxMtlMapping2DShape* newShape = new ofxMtlMapping2DGrid();
+    newShape->shapeType = MAPPING_2D_SHAPE_GRID;
+    newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
+    ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
+    
+    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_GRID);
 }
 
 //--------------------------------------------------------------

@@ -23,9 +23,10 @@ ofxMtlMapping2DVertex::~ofxMtlMapping2DVertex()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DVertex::init(float _x, float _y) 
+void ofxMtlMapping2DVertex::init(float _x, float _y, int _index) 
 {
-	setPos(_x, _y);
+	index = _index;
+    setPos(_x, _y);
 	
 	//Center
 	updateCenter();

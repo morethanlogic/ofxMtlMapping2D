@@ -57,7 +57,7 @@ void ofxMtlMapping2DShape::update()
     
     if (activeShape == this) {
         if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            if (shapeType == MAPPING_2D_SHAPE_QUAD) {
+            if (shapeType == MAPPING_2D_SHAPE_QUAD || shapeType == MAPPING_2D_SHAPE_GRID) {
                 inputPolygon->update(true);
             } else {
                 inputPolygon->update(false);
