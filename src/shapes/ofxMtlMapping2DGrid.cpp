@@ -32,7 +32,23 @@ void ofxMtlMapping2DGrid::updateVertices(){
 	//upadate the control quads
 	for (int c_i = 0; c_i < controlQuads.size(); c_i++) {
 		ControlQuad * c_quad = controlQuads[c_i];
-
+        // ---
+        list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
+        advance(it, c_quad->TL_Index);
+        ofxMtlMapping2DVertex* TL_vertex = *it;
+        
+        it = vertices.begin();
+        advance(it, c_quad->BL_Index);
+        ofxMtlMapping2DVertex* BL_vertex = *it;
+        
+        it = vertices.begin();
+        advance(it, c_quad->TR_Index);
+        ofxMtlMapping2DVertex* TR_vertex = *it;
+        
+        it = vertices.begin();
+        advance(it, c_quad->BR_Index);
+        ofxMtlMapping2DVertex* BR_vertex = *it;
+        
         // update the internal quads
         for (int i_i = 0; i_i < c_quad->internalQuads.size(); i_i++) {
             InternalQuad * i_quad = c_quad->internalQuads[i_i];
@@ -41,23 +57,6 @@ void ofxMtlMapping2DGrid::updateVertices(){
             vector<ofPoint> left, right;
             left.resize(resolution.y+1);
             right.resize(resolution.y+1);
-            
-            // ---
-            list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
-            advance(it, c_quad->TL_Index);
-            ofxMtlMapping2DVertex* TL_vertex = *it;
-            
-            it = vertices.begin();
-            advance(it, c_quad->BL_Index);
-            ofxMtlMapping2DVertex* BL_vertex = *it;
-            
-            it = vertices.begin();
-            advance(it, c_quad->TR_Index);
-            ofxMtlMapping2DVertex* TR_vertex = *it;
-            
-            it = vertices.begin();
-            advance(it, c_quad->BR_Index);
-            ofxMtlMapping2DVertex* BR_vertex = *it;            
             
             // ---
             for (int y = 0; y <= resolution.y; y++) {
@@ -69,7 +68,7 @@ void ofxMtlMapping2DGrid::updateVertices(){
             vector<vector<SelectablePoint> >grid;
             grid.resize(resolution.x+1);
             for (int x = 0; x <= resolution.x; x++) {
-                grid[x].resize(resolution.x+1);
+                grid[x].resize(resolution.y+1);
                 for (int y = 0; y <= resolution.y; y++) {
                     ofPoint l = left[y];
                     ofPoint r = right[y];
