@@ -22,32 +22,7 @@ void ofxMtlMapping2DGrid::update()
 {
     ofxMtlMapping2DShape::update();
     
-    if (activePolygon == this) {
-        for (int c_i = 0; c_i < controlQuads.size(); c_i++) {
-            ControlQuad * c_quad = controlQuads[c_i];
-            
-            list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
-            advance(it, c_quad->TL_Index);
-            ofxMtlMapping2DVertex* vertex = *it;
-            c_quad->TL.set(vertex->center.x, vertex->center.y, 0);
-                        
-            it = vertices.begin();
-            advance(it, c_quad->BL_Index);
-            vertex = *it;
-            c_quad->BL.set(vertex->center.x, vertex->center.y, 0);
-            
-            it = vertices.begin();
-            advance(it, c_quad->TR_Index);
-            vertex = *it;
-            c_quad->TR.set(vertex->center.x, vertex->center.y, 0);
-            
-            it = vertices.begin();
-            advance(it, c_quad->BR_Index);
-            vertex = *it;
-            c_quad->BR.set(vertex->center.x, vertex->center.y, 0);
-            
-        }
-        
+    if (activePolygon == this) {        
         updateVertices();
 	}
 }
@@ -58,15 +33,6 @@ void ofxMtlMapping2DGrid::updateVertices(){
 	for (int c_i = 0; c_i < controlQuads.size(); c_i++) {
 		ControlQuad * c_quad = controlQuads[c_i];
 
-		for (int c_pi = 0; c_pi < 4; c_pi++) {
-			int index = c_quad->index + c_pi;
-			SelectablePoint * c_vertex;
-			if(c_pi == 0) c_vertex = &(c_quad->TL);
-			else if(c_pi == 1) c_vertex = &(c_quad->BL);
-			else if(c_pi == 2) c_vertex = &(c_quad->TR);
-			else if(c_pi == 3) c_vertex = &(c_quad->BR);
-		}
-
         // update the internal quads
         for (int i_i = 0; i_i < c_quad->internalQuads.size(); i_i++) {
             InternalQuad * i_quad = c_quad->internalQuads[i_i];
@@ -76,10 +42,29 @@ void ofxMtlMapping2DGrid::updateVertices(){
             left.resize(resolution.y+1);
             right.resize(resolution.y+1);
             
+            // ---
+            list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
+            advance(it, c_quad->TL_Index);
+            ofxMtlMapping2DVertex* TL_vertex = *it;
+            
+            it = vertices.begin();
+            advance(it, c_quad->BL_Index);
+            ofxMtlMapping2DVertex* BL_vertex = *it;
+            
+            it = vertices.begin();
+            advance(it, c_quad->TR_Index);
+            ofxMtlMapping2DVertex* TR_vertex = *it;
+            
+            it = vertices.begin();
+            advance(it, c_quad->BR_Index);
+            ofxMtlMapping2DVertex* BR_vertex = *it;            
+            
+            // ---
             for (int y = 0; y <= resolution.y; y++) {
-                left[y] =	c_quad->TL + ((c_quad->BL - c_quad->TL) / resolution.y) * (float)y;
-                right[y] =	c_quad->TR + ((c_quad->BR - c_quad->TR) / resolution.y) * (float)y;
+                left[y] =	TL_vertex->center + ((BL_vertex->center - TL_vertex->center) / resolution.y) * (float)y;
+                right[y] =	TR_vertex->center + ((BR_vertex->center - TR_vertex->center) / resolution.y) * (float)y;
             }
+            
             // interpolate all internal points
             vector<vector<SelectablePoint> >grid;
             grid.resize(resolution.x+1);
@@ -246,13 +231,8 @@ void ofxMtlMapping2DGrid::onGridChange(int & value)
             cout << "c_quad->BL_Index ::" << c_quad->BL_Index << endl;
             cout << "c_quad->TR_Index ::" << c_quad->TR_Index << endl;
             cout << "c_quad->BR_Index ::" << c_quad->BR_Index << endl;
-            
             cout << "--------------" << endl;
             
-            c_quad->TL.set(c_Start.x, c_Start.y, 0);
-            c_quad->BL.set(c_Start.x, c_Start.y + c_Size.y, 0);
-            c_quad->TR.set(c_Start.x + c_Size.x, c_Start.y, 0);
-            c_quad->BR.set(c_Start.x + c_Size.x, c_Start.y + c_Size.y, 0);
             controlQuads.push_back(c_quad);
             
             c_index+=4;
