@@ -18,8 +18,11 @@ void ofxMtlMapping2DGrid::update()
 {
     ofxMtlMapping2DShape::update();
     
-    if (activePolygon == this) {
+    if (activeShape == this) {
         updateVertices();
+        
+        // --- Generate the texture coordinates;
+        onCoordinatesChange();
 	}
 }
 
@@ -247,28 +250,24 @@ void ofxMtlMapping2DGrid::onCoordinatesChange()
 {    
 	internalMesh.clearTexCoords();
     
-//  coordinatesStart.x =  inputPolygon->polyline->getVertices()[0].x;
-//	coordinatesStart.y =  inputPolygon->polyline->getVertices()[0].y;
-//	coordinatesEnd.x =  inputPolygon->polyline->getVertices()[2].x;
-//	coordinatesEnd.y =  inputPolygon->polyline->getVertices()[2].y;
-    
     ofVec2f coordinatesStart;
     ofVec2f coordinatesEnd;
     
-    coordinatesStart.x =  0;
-	coordinatesStart.y =  0;
-	coordinatesEnd.x =  ofGetWidth();
-	coordinatesEnd.y =  ofGetHeight();
-    
+    coordinatesStart.x =  inputPolygon->polyline->getVertices()[0].x;
+    coordinatesStart.y =  inputPolygon->polyline->getVertices()[0].y;
+    coordinatesEnd.x =  inputPolygon->polyline->getVertices()[2].x;
+    coordinatesEnd.y =  inputPolygon->polyline->getVertices()[2].y;
+        
+    // ---
     ofVec2f uvSize = coordinatesEnd - coordinatesStart;
     float uvCellWidth = uvSize.x / (gridNbCols * gridHorizontalResolution);
     float uvCellHeight = uvSize.y / (gridNbRows * gridVerticalResolution);
     
     for (int y = 0; y <= (gridNbRows * gridVerticalResolution); y++) {
-		float uvCellY =  y * uvCellHeight;
+		float uvCellY =  coordinatesStart.y + y * uvCellHeight;
         
         for (int x = 0; x <= (gridNbCols * gridHorizontalResolution); x++) {
-            float uvCellX = x * uvCellWidth;
+            float uvCellX = coordinatesStart.x + x * uvCellWidth;
             
             internalMesh.addTexCoord(ofVec2f(uvCellX, uvCellY));
         }
