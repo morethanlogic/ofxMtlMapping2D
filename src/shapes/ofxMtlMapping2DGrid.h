@@ -18,9 +18,9 @@ class ofxMtlMapping2DGrid: public ofxMtlMapping2DShape {
         virtual void createDefaultShape();
         virtual void render();
     
-        void drawInternalMesh();
-        void onCoordinatesChange();
         void updateVertices();
+        void updateUVMap();
+        void drawInternalMesh();
     
         ofVboMesh internalMesh;
     

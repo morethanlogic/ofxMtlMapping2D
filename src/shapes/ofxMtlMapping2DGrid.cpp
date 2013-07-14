@@ -20,9 +20,7 @@ void ofxMtlMapping2DGrid::update()
     
     if (activeShape == this) {
         updateVertices();
-        
-        // --- Generate the texture coordinates;
-        onCoordinatesChange();
+        updateUVMap();
 	}
 }
 
@@ -242,11 +240,11 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     inputPolygon->init(shapeId);
     
     // --- Generate the texture coordinates;
-	onCoordinatesChange();
+	updateUVMap();
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DGrid::onCoordinatesChange()
+void ofxMtlMapping2DGrid::updateUVMap()
 {    
 	internalMesh.clearTexCoords();
     
