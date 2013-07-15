@@ -37,6 +37,10 @@ void ofxMtlMapping2DShape::init(int sId, bool defaultShape)
 {
     _super::init(sId, defaultShape);
     
+    if (!defaultShape) {
+        initShape();
+    }
+    
     calcHomography();
 }
 
@@ -133,10 +137,7 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             }
             
             // Is a grid
-            if (activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
-                ofxMtlMapping2DSettings::gridNbCols = ((ofxMtlMapping2DGrid*)activeShape)->getNbCols();
-                ofxMtlMapping2DSettings::gridNbRows = ((ofxMtlMapping2DGrid*)activeShape)->getNbRows();
-                
+            if (activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {                
                 ofxMtlMapping2DControls::mapping2DControls()->showGridSettingsCanvas();
             } else {
                ofxMtlMapping2DControls::mapping2DControls()->hideGridSettingsCanvas();

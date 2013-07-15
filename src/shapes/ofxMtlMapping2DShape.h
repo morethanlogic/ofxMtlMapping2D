@@ -39,6 +39,7 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
     protected:
         virtual void calcHomography() {};
         virtual void createDefaultShape() {};
+        virtual void initShape() {};
     
     private:
         typedef ofxMtlMapping2DPolygon _super;

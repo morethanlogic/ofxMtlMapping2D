@@ -8,7 +8,7 @@ const bool  ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled     
 ofTrueTypeFont ofxMtlMapping2DSettings::infoFont;
 
 // ---
-float ofxMtlMapping2DSettings::gridNbCols = 2.0f;
-float ofxMtlMapping2DSettings::gridNbRows = 2.0f;
+float ofxMtlMapping2DSettings::gridDefaultNbCols = 2.0f;
+float ofxMtlMapping2DSettings::gridDefaultNbRows = 2.0f;
 
 

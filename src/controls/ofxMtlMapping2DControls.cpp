@@ -57,9 +57,9 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     
     ofxUISlider *nSlider;
     _gridSettingsCanvas->addLabel("GRID SETTINGS");
-    nSlider = _gridSettingsCanvas->addSlider("NB COLS", .0, 20.0, &ofxMtlMapping2DSettings::gridNbCols);
+    nSlider = _gridSettingsCanvas->addSlider("NB COLS", 1.0, 20.0, &ofxMtlMapping2DSettings::gridDefaultNbCols);
     nSlider->setIncrement(1.0f);
-    nSlider = _gridSettingsCanvas->addSlider("NB ROWS", .0, 20.0, &ofxMtlMapping2DSettings::gridNbRows);
+    nSlider = _gridSettingsCanvas->addSlider("NB ROWS", 1.0, 20.0, &ofxMtlMapping2DSettings::gridDefaultNbRows);
     nSlider->setIncrement(1.0f);
     
     _gridSettingsCanvas->autoSizeToFitWidgets();
@@ -204,26 +204,32 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setValue(false);
             
-            // ----
+            // ---
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(true);
             }
+            
+            // ---
+            showGridSettingsCanvas();
         }
         else if (name == kSettingMappingModeInput) {
             _mappingMode = MAPPING_MODE_INPUT;
             
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setValue(false);
             
-            // ----
+            // ---
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(false);
             }
+            
+            // ---
+            hideGridSettingsCanvas();
         }
         
         refreshShapesListForMappingMode(_mappingMode);
@@ -244,9 +250,19 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
             shape->setAsIdle();
         }
         
-        // ----
+        // ---
         ofxMtlMapping2DShape::resetActiveShapeVars();
         ofxMtlMapping2DShape::resetActivePolygonVars();
+        
+        // ---
+        _shapesListCanvas->disable();
+        hideGridSettingsCanvas();
+        
+    } else {
+        
+        // ---
+        _shapesListCanvas->enable();
+        showGridSettingsCanvas();
     }
     
     // ----
@@ -260,8 +276,6 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(_editShapes);
-    
-    _shapesListCanvas->setVisible(_editShapes);
 }
 
 
@@ -373,16 +387,6 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::gridSettingsListUiEvent(ofxUIEventArgs &event)
 {
-    string name = event.widget->getName();
-
-    if (name == "NB COLS") {
-        ofxMtlMapping2DSettings::gridNbCols = ceil(((ofxUISlider *)_gridSettingsCanvas->getWidget(name))->getScaledValue());
-    }
-    else if (name == "NB ROWS") {
-        ofxMtlMapping2DSettings::gridNbRows = ceil(((ofxUISlider *)_gridSettingsCanvas->getWidget(name))->getScaledValue());
-    }
-    
-    // ---
     if(ofxMtlMapping2DShape::activeShape) {
         if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
             ((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->updateGrid();
@@ -392,11 +396,24 @@ void ofxMtlMapping2DControls::gridSettingsListUiEvent(ofxUIEventArgs &event)
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::showGridSettingsCanvas()
-{    
-    ((ofxUISlider *)_gridSettingsCanvas->getWidget("NB COLS"))->setValue(ofxMtlMapping2DSettings::gridNbCols);
-    ((ofxUISlider *)_gridSettingsCanvas->getWidget("NB ROWS"))->setValue(ofxMtlMapping2DSettings::gridNbRows);
-    
-    _gridSettingsCanvas->enable();
+{
+    if(isEnabled() && ofxMtlMapping2DShape::activeShape) {
+        if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+            _gridSettingsCanvas->removeWidgets();
+            _gridSettingsCanvas->resetPlacer();
+            
+            ofxUISlider *nSlider;
+            _gridSettingsCanvas->addLabel("GRID SETTINGS");
+            nSlider = _gridSettingsCanvas->addSlider("NB COLS", 1.0, 20.0, &(((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->gridNbCols));
+            nSlider->setIncrement(1.0f);
+            nSlider = _gridSettingsCanvas->addSlider("NB ROWS", 1.0, 20.0, &(((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->gridNbRows));
+            nSlider->setIncrement(1.0f);
+             
+            _shapesListCanvas->autoSizeToFitWidgets();
+
+            _gridSettingsCanvas->enable();
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -508,6 +525,7 @@ void ofxMtlMapping2DControls::disable()
 {
     _toolsCanvas->disable();
     _shapesListCanvas->disable();
+    _gridSettingsCanvas->disable();
 }
 
 //--------------------------------------------------------------
@@ -516,9 +534,11 @@ void ofxMtlMapping2DControls::toggle()
     _toolsCanvas->toggleVisible();
     
     if (_toolsCanvas->isVisible() && _editShapes) {
-        _shapesListCanvas->setVisible(true);
+        _shapesListCanvas->enable();
+        showGridSettingsCanvas();
     } else {
-        _shapesListCanvas->setVisible(false);
+        _shapesListCanvas->disable();
+        hideGridSettingsCanvas();
     }
 }
 
@@ -530,7 +550,7 @@ bool ofxMtlMapping2DControls::isEnabled()
 
 //--------------------------------------------------------------
 bool ofxMtlMapping2DControls::isHit(int x, int y) {
-    if (_toolsCanvas->isHit(x, y) || _shapesListCanvas->isHit(x, y)) {
+    if (_toolsCanvas->isHit(x, y) || _shapesListCanvas->isHit(x, y) || _gridSettingsCanvas->isHit(x, y)) {
         return true;
     } else {
         return false;

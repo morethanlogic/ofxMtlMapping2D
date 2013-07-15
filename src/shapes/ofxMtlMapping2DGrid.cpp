@@ -132,7 +132,12 @@ void ofxMtlMapping2DGrid::render()
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::createDefaultShape()
 {	           
-    updateGridAndMesh();
+    shapeSettings["type"] = "grid";
+    shapeSettings["cols"] = ofToString(ofxMtlMapping2DSettings::gridDefaultNbCols);
+    shapeSettings["rows"] = ofToString(ofxMtlMapping2DSettings::gridDefaultNbRows);
+
+    // ---
+    updateGridAndMesh(true);
     
     // ---
     //Create a new vertex
@@ -142,12 +147,9 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     int x = 0;
     int y = 0;
     
-    // ---
-    shapeSettings["type"] = "grid";
-    
+    // --- Input
     inputPolygon = new ofxMtlMapping2DInput();
     
-    // --- Input
     ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     newVertex->isDefiningTectureCoord = true;
@@ -182,20 +184,33 @@ void ofxMtlMapping2DGrid::createDefaultShape()
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2DGrid::initShape()
+{            
+
+    
+    updateGridAndMesh();
+    updateUVMap();
+    updateVertices();
+}
+
+//--------------------------------------------------------------
 void ofxMtlMapping2DGrid::updateGrid()
 {
-    updateGridAndMesh();
+    shapeSettings["cols"] = ofToString(gridNbCols);
+    shapeSettings["rows"] = ofToString(gridNbRows);
+    
+    updateGridAndMesh(true);
     updateUVMap();
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DGrid::updateGridAndMesh()
+void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
 {
     // ---
     gridWidth = 600;
     gridHeight = 600;
-    gridNbCols = ofxMtlMapping2DSettings::gridNbCols;
-    gridNbRows = ofxMtlMapping2DSettings::gridNbRows;
+    gridNbCols = ofToInt(shapeSettings["cols"]);
+    gridNbRows = ofToInt(shapeSettings["rows"]);
     gridHorizontalResolution = 12;
     gridVerticalResolution = 12;
     
@@ -205,36 +220,38 @@ void ofxMtlMapping2DGrid::updateGridAndMesh()
     gridCellHeight = gridQuadHeight / gridVerticalResolution;
     
     // --- Controls
-    ofxMtlMapping2DVertex* newVertex;
-    
-    if (vertices.size() != 0) {        
-        while(!vertices.empty()) delete vertices.back(), vertices.pop_back();
-        vertices.clear();
+    if (startFresh) {
+        ofxMtlMapping2DVertex* newVertex;
         
-        polyline->clear();
-        
-        // ----
-        //ofxMtlMapping2DShape::resetActiveShapeVars();
-        //ofxMtlMapping2DPolygon::resetActivePolygonVars();
-        
-        //ofxMtlMapping2DControls::mapping2DControls()->unselectShapesToggles();
-    }
-        
-    // --- new shape
-    for (int y = 0; y <= gridNbRows; y++) {
-        float controlPointY = y * gridQuadHeight;
-        
-        for (int x = 0; x <= gridNbCols; x++) {
-            float controlPointX = x * gridQuadWidth;
+        if (vertices.size() != 0) {        
+            while(!vertices.empty()) delete vertices.back(), vertices.pop_back();
+            vertices.clear();
             
-            // ---
-            newVertex = new ofxMtlMapping2DVertex();
-            newVertex->init(controlPointX - newVertex->width/2, controlPointY - newVertex->height/2);
-            vertices.push_back(newVertex);
+            polyline->clear();
+            
+            // ----
+            //ofxMtlMapping2DShape::resetActiveShapeVars();
+            //ofxMtlMapping2DPolygon::resetActivePolygonVars();
+            
+            //ofxMtlMapping2DControls::mapping2DControls()->unselectShapesToggles();
         }
+            
+        // --- new shape
+        for (int y = 0; y <= gridNbRows; y++) {
+            float controlPointY = y * gridQuadHeight;
+            
+            for (int x = 0; x <= gridNbCols; x++) {
+                float controlPointX = x * gridQuadWidth;
+                
+                // ---
+                newVertex = new ofxMtlMapping2DVertex();
+                newVertex->init(controlPointX - newVertex->width/2, controlPointY - newVertex->height/2);
+                vertices.push_back(newVertex);
+            }
+        }
+        
+            enableVertices();
     }
-    
-    enableVertices();
     
     // --- Internal mesh vertices
     internalMesh.clearVertices();

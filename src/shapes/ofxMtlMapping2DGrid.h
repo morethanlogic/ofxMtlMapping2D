@@ -19,12 +19,16 @@ class ofxMtlMapping2DGrid: public ofxMtlMapping2DShape {
         int getNbCols() { return gridNbCols; }
         int getNbRows() { return gridNbRows; }
     
+        float gridNbCols;
+        float gridNbRows;
+    
     protected:
         virtual void createDefaultShape();
+        virtual void initShape();
         virtual void render();
     
         void updateVertices();
-        void updateGridAndMesh();
+        void updateGridAndMesh(bool startFresh = false);
         void updateUVMap();
         void drawInternalMesh();
     
@@ -32,8 +36,6 @@ class ofxMtlMapping2DGrid: public ofxMtlMapping2DShape {
     
         int gridWidth;
         int gridHeight;
-        int gridNbCols;
-        int gridNbRows;
         int gridHorizontalResolution;
         int gridVerticalResolution;
     

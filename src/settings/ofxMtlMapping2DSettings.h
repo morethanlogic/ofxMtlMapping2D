@@ -14,6 +14,6 @@ class ofxMtlMapping2DSettings {
         static ofTrueTypeFont infoFont;
     
         // ---
-        static float gridNbCols;
-        static float gridNbRows;
+        static float gridDefaultNbCols;
+        static float gridDefaultNbRows;
 };

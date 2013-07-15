@@ -560,22 +560,31 @@ void ofxMtlMapping2D::loadShapesList()
                 //SHAPES SETTINGS
                 int numShapeSettingTags = _shapesListXML.getNumTags("setting");
                 
-                string shapeType = _shapesListXML.getValue("setting", "nan", 0);
+                for(int j = 0; j < numShapeSettingTags; j++){
+                    string key = _shapesListXML.getAttribute("setting", "key", "nc", j);
+                    
+                    if (key == "type") {
+                        string shapeType = _shapesListXML.getValue("setting", "nan", j);
 
-                if (shapeType == "quad") {
-                    newShape = new ofxMtlMapping2DQuad();
-                    newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
-                } else if (shapeType == "triangle") {
-                    newShape = new ofxMtlMapping2DTriangle();
-                    newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
-                } else if (shapeType == "mask") {
-                    newShape = new ofxMtlMapping2DMask();
-                    newShape->shapeType = MAPPING_2D_SHAPE_MASK;
-                } else {
-                    newShape = new ofxMtlMapping2DQuad();
-                    newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
+                        if (shapeType == "quad") {
+                            newShape = new ofxMtlMapping2DQuad();
+                            newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
+                        } else if (shapeType == "grid") {
+                            newShape = new ofxMtlMapping2DGrid();
+                            newShape->shapeType = MAPPING_2D_SHAPE_GRID;
+                        } else if (shapeType == "triangle") {
+                            newShape = new ofxMtlMapping2DTriangle();
+                            newShape->shapeType = MAPPING_2D_SHAPE_TRIANGLE;
+                        } else if (shapeType == "mask") {
+                            newShape = new ofxMtlMapping2DMask();
+                            newShape->shapeType = MAPPING_2D_SHAPE_MASK;
+                        } else {
+                            newShape = new ofxMtlMapping2DQuad();
+                            newShape->shapeType = MAPPING_2D_SHAPE_QUAD;
+                        }
+                    }
                 }
-                
+                                
                 if(numShapeSettingTags > 0) {
                     for(int j = 0; j < numShapeSettingTags; j++){
                         string key = _shapesListXML.getAttribute("setting", "key", "nc", j); 
