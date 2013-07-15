@@ -14,11 +14,17 @@ class ofxMtlMapping2DGrid: public ofxMtlMapping2DShape {
         void update();
         void draw();
     
+        void updateGrid();
+    
+        int getNbCols() { return gridNbCols; }
+        int getNbRows() { return gridNbRows; }
+    
     protected:
         virtual void createDefaultShape();
         virtual void render();
     
         void updateVertices();
+        void updateGridAndMesh();
         void updateUVMap();
         void drawInternalMesh();
     

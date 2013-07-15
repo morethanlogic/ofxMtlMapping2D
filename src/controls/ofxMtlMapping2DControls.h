@@ -36,6 +36,7 @@ class ofxMtlMapping2DControls
     
         void toolsUiEvent(ofxUIEventArgs &event);
         void shapesListUiEvent(ofxUIEventArgs &event);
+        void gridSettingsListUiEvent(ofxUIEventArgs &event);
 
     
         const bool& saveMapping() { return _saveMapping; }
@@ -54,6 +55,9 @@ class ofxMtlMapping2DControls
         const bool& mappingModeChanged() { return _mappingModeChanged; }
         ofxMtlMapping2DMode mappingMode() { return _mappingMode; }
         void resetMappingChangedFlag();
+    
+        void showGridSettingsCanvas();
+        void hideGridSettingsCanvas();
 
         int shapeCounter;
     
@@ -116,5 +120,7 @@ class ofxMtlMapping2DControls
         ofxUIScrollableCanvas *_shapesListCanvas;
         void resizeShapeList();
         void refreshShapesListForMappingMode(ofxMtlMapping2DMode mappingMode);
+    
+        ofxUICanvas *_gridSettingsCanvas;
 
 };

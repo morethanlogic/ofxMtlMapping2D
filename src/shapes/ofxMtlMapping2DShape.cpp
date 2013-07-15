@@ -1,5 +1,6 @@
 #include "ofxMtlMapping2DShape.h"
 #include "ofxMtlMapping2DControls.h"
+#include "ofxMtlMapping2DGrid.h"
 
 int ofxMtlMapping2DShape::nextShapeId = 0;
 ofxMtlMapping2DShape*  ofxMtlMapping2DShape::activeShape = NULL;
@@ -129,6 +130,16 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
                 setAsActive();
             } else {
                 ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
+            }
+            
+            // Is a grid
+            if (activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+                ofxMtlMapping2DSettings::gridNbCols = ((ofxMtlMapping2DGrid*)activeShape)->getNbCols();
+                ofxMtlMapping2DSettings::gridNbRows = ((ofxMtlMapping2DGrid*)activeShape)->getNbRows();
+                
+                ofxMtlMapping2DControls::mapping2DControls()->showGridSettingsCanvas();
+            } else {
+               ofxMtlMapping2DControls::mapping2DControls()->hideGridSettingsCanvas();
             }
         }
     

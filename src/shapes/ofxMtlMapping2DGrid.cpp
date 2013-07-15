@@ -1,4 +1,5 @@
 #include "ofxMtlMapping2DGrid.h"
+#include "ofxMtlMapping2DControls.h"
 
 
 //--------------------------------------------------------------
@@ -130,71 +131,8 @@ void ofxMtlMapping2DGrid::render()
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::createDefaultShape()
-{	       
-    // ---
-    gridWidth = 600;
-    gridHeight = 600;
-    gridNbCols = 2;
-    gridNbRows = 2;
-    gridHorizontalResolution = 6;
-    gridVerticalResolution = 6;
-    
-    gridQuadWidth = gridWidth / gridNbCols;
-    gridQuadHeight = gridHeight / gridNbRows;
-    gridCellWidth = gridQuadWidth / gridHorizontalResolution;
-    gridCellHeight = gridQuadHeight / gridVerticalResolution;
-    
-    // --- Controls
-    ofxMtlMapping2DVertex* newVertex;
-    
-    for (int y = 0; y <= gridNbRows; y++) {
-		float controlPointY = y * gridQuadHeight;
-        
-        for (int x = 0; x <= gridNbCols; x++) {
-            float controlPointX = x * gridQuadWidth;
-            
-            // ---
-            newVertex = new ofxMtlMapping2DVertex();
-            newVertex->init(controlPointX - newVertex->width/2, controlPointY - newVertex->height/2);
-            vertices.push_back(newVertex);
-        }
-    }
-    
-    // --- Internal mesh vertices
-    internalMesh.clearVertices();
-        
-    for (int y = 0; y <= (gridNbRows * gridVerticalResolution); y++) {
-		float vertexY =  y * gridCellHeight;
-        
-        for (int x = 0; x <= (gridNbCols * gridHorizontalResolution); x++) {
-            float vertexX = x * gridCellWidth;
-            
-            internalMesh.addVertex(ofVec3f(vertexX, vertexY, .0f));
-        }
-    }
-    
-    // --- Internal mesh indices
-    int nbOfVertices = (gridNbCols * gridHorizontalResolution) * (gridNbRows * gridVerticalResolution);
-    
-    for (int y = 0; y < (gridNbRows * gridVerticalResolution); y++) {        
-        for (int x = 0; x < (gridNbCols * gridHorizontalResolution); x++) {
-            
-            int vertexIndex = y * ((gridNbCols * gridHorizontalResolution) + 1) + x;
-            
-            int topLeft = vertexIndex;
-            int topRight = vertexIndex + 1;
-            int bottomRight = (vertexIndex + 1) + ((gridNbCols * gridHorizontalResolution) + 1);
-            int bottomLeft = vertexIndex + ((gridNbCols * gridHorizontalResolution) + 1);
-            
-            internalMesh.addIndex(topLeft);
-            internalMesh.addIndex(topRight);
-            internalMesh.addIndex(bottomLeft);
-            
-            internalMesh.addIndex(topRight);
-            internalMesh.addIndex(bottomRight);
-            internalMesh.addIndex(bottomLeft);            
-        }
-    }
+{	           
+    updateGridAndMesh();
     
     // ---
     //Create a new vertex
@@ -210,7 +148,7 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     inputPolygon = new ofxMtlMapping2DInput();
     
     // --- Input
-    newVertex = new ofxMtlMapping2DVertex();
+    ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
@@ -241,6 +179,100 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     
     // --- Generate the texture coordinates;
 	updateUVMap();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DGrid::updateGrid()
+{
+    updateGridAndMesh();
+    updateUVMap();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DGrid::updateGridAndMesh()
+{
+    // ---
+    gridWidth = 600;
+    gridHeight = 600;
+    gridNbCols = ofxMtlMapping2DSettings::gridNbCols;
+    gridNbRows = ofxMtlMapping2DSettings::gridNbRows;
+    gridHorizontalResolution = 12;
+    gridVerticalResolution = 12;
+    
+    gridQuadWidth = gridWidth / gridNbCols;
+    gridQuadHeight = gridHeight / gridNbRows;
+    gridCellWidth = gridQuadWidth / gridHorizontalResolution;
+    gridCellHeight = gridQuadHeight / gridVerticalResolution;
+    
+    // --- Controls
+    ofxMtlMapping2DVertex* newVertex;
+    
+    if (vertices.size() != 0) {        
+        while(!vertices.empty()) delete vertices.back(), vertices.pop_back();
+        vertices.clear();
+        
+        polyline->clear();
+        
+        // ----
+        //ofxMtlMapping2DShape::resetActiveShapeVars();
+        //ofxMtlMapping2DPolygon::resetActivePolygonVars();
+        
+        //ofxMtlMapping2DControls::mapping2DControls()->unselectShapesToggles();
+    }
+        
+    // --- new shape
+    for (int y = 0; y <= gridNbRows; y++) {
+        float controlPointY = y * gridQuadHeight;
+        
+        for (int x = 0; x <= gridNbCols; x++) {
+            float controlPointX = x * gridQuadWidth;
+            
+            // ---
+            newVertex = new ofxMtlMapping2DVertex();
+            newVertex->init(controlPointX - newVertex->width/2, controlPointY - newVertex->height/2);
+            vertices.push_back(newVertex);
+        }
+    }
+    
+    enableVertices();
+    
+    // --- Internal mesh vertices
+    internalMesh.clearVertices();
+    
+    for (int y = 0; y <= (gridNbRows * gridVerticalResolution); y++) {
+		float vertexY =  y * gridCellHeight;
+        
+        for (int x = 0; x <= (gridNbCols * gridHorizontalResolution); x++) {
+            float vertexX = x * gridCellWidth;
+            
+            internalMesh.addVertex(ofVec3f(vertexX, vertexY, .0f));
+        }
+    }
+    
+    // --- Internal mesh indices
+    internalMesh.clearIndices();
+    
+    int nbOfVertices = (gridNbCols * gridHorizontalResolution) * (gridNbRows * gridVerticalResolution);
+    
+    for (int y = 0; y < (gridNbRows * gridVerticalResolution); y++) {
+        for (int x = 0; x < (gridNbCols * gridHorizontalResolution); x++) {
+            
+            int vertexIndex = y * ((gridNbCols * gridHorizontalResolution) + 1) + x;
+            
+            int topLeft = vertexIndex;
+            int topRight = vertexIndex + 1;
+            int bottomRight = (vertexIndex + 1) + ((gridNbCols * gridHorizontalResolution) + 1);
+            int bottomLeft = vertexIndex + ((gridNbCols * gridHorizontalResolution) + 1);
+            
+            internalMesh.addIndex(topLeft);
+            internalMesh.addIndex(topRight);
+            internalMesh.addIndex(bottomLeft);
+            
+            internalMesh.addIndex(topRight);
+            internalMesh.addIndex(bottomRight);
+            internalMesh.addIndex(bottomLeft);
+        }
+    }
 }
 
 //--------------------------------------------------------------

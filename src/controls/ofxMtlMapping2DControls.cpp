@@ -2,6 +2,7 @@
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DShape.h"
 #include "ofxMtlMapping2DShapes.h"
+#include "ofxMtlMapping2DGrid.h"
 
 #include "ofMain.h"
 
@@ -45,6 +46,25 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
     
     
+    // --- Grid settings
+    int gridSettingCanvasWidth = 200.0f;
+    _gridSettingsCanvas = new ofxUICanvas();
+    _gridSettingsCanvas->setPosition(gridSettingCanvasWidth + kControlsMappingShapesListPanelWidth + 400, 0);
+    _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
+    _gridSettingsCanvas->setColorFill(ofxUIColor(200));
+    _gridSettingsCanvas->setColorFillHighlight(ofxUIColor(255));
+    _gridSettingsCanvas->setColorBack(ofxUIColor(255, 20, 20, 250));
+    
+    ofxUISlider *nSlider;
+    _gridSettingsCanvas->addLabel("GRID SETTINGS");
+    nSlider = _gridSettingsCanvas->addSlider("NB COLS", .0, 20.0, &ofxMtlMapping2DSettings::gridNbCols);
+    nSlider->setIncrement(1.0f);
+    nSlider = _gridSettingsCanvas->addSlider("NB ROWS", .0, 20.0, &ofxMtlMapping2DSettings::gridNbRows);
+    nSlider->setIncrement(1.0f);
+    
+    _gridSettingsCanvas->autoSizeToFitWidgets();
+    ofAddListener(_gridSettingsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::gridSettingsListUiEvent);
+    _gridSettingsCanvas->disable();
     
     // ---- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
@@ -346,6 +366,45 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
         shapeToggle->setValue(false);
     }
 }
+
+#pragma mark -
+#pragma mark Grid settings
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::gridSettingsListUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+
+    if (name == "NB COLS") {
+        ofxMtlMapping2DSettings::gridNbCols = ceil(((ofxUISlider *)_gridSettingsCanvas->getWidget(name))->getScaledValue());
+    }
+    else if (name == "NB ROWS") {
+        ofxMtlMapping2DSettings::gridNbRows = ceil(((ofxUISlider *)_gridSettingsCanvas->getWidget(name))->getScaledValue());
+    }
+    
+    // ---
+    if(ofxMtlMapping2DShape::activeShape) {
+        if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+            ((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->updateGrid();
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::showGridSettingsCanvas()
+{    
+    ((ofxUISlider *)_gridSettingsCanvas->getWidget("NB COLS"))->setValue(ofxMtlMapping2DSettings::gridNbCols);
+    ((ofxUISlider *)_gridSettingsCanvas->getWidget("NB ROWS"))->setValue(ofxMtlMapping2DSettings::gridNbRows);
+    
+    _gridSettingsCanvas->enable();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::hideGridSettingsCanvas()
+{
+    _gridSettingsCanvas->disable();
+}
+
 
 #pragma mark -
 #pragma mark Reset widgets
