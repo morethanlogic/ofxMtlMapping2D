@@ -9,6 +9,8 @@ ofxMtlMapping2DVertex::ofxMtlMapping2DVertex()
 	disableAllEvents();
 	enableMouseEvents();
 	enabled = false;
+    bIsOnAnEdge = true;
+    edgeIndex = -1;
 	
 	//Vertex
 	setSize(30, 30);

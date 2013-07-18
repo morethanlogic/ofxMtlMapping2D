@@ -35,11 +35,11 @@ ofxMtlMapping2DShape::~ofxMtlMapping2DShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::init(int sId, bool defaultShape)
 {
-    _super::init(sId, defaultShape);
-    
     if (!defaultShape) {
         initShape();
     }
+    
+    _super::init(sId, defaultShape);
     
     calcHomography();
 }

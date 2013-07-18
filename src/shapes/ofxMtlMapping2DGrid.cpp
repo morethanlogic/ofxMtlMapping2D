@@ -186,8 +186,7 @@ void ofxMtlMapping2DGrid::createDefaultShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::initShape()
 {            
-
-    
+    cout << "GRID INIT SHAPE" << endl;
     updateGridAndMesh();
     updateUVMap();
     updateVertices();
@@ -245,12 +244,54 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
                 
                 // ---
                 newVertex = new ofxMtlMapping2DVertex();
+                if (y == 0) {
+                    newVertex->edgeIndex = 0;
+                } else if(y == gridNbRows) {
+                    newVertex->edgeIndex = 2;
+                } else if (x == 0) {
+                    newVertex->edgeIndex = 3;
+                } else if (x == gridNbCols) {
+                    newVertex->edgeIndex = 1;
+                } else {
+                    newVertex->edgeIndex = -1;
+                    newVertex->bIsOnAnEdge = false;
+                }
                 newVertex->init(controlPointX - newVertex->width/2, controlPointY - newVertex->height/2);
                 vertices.push_back(newVertex);
             }
         }
         
             enableVertices();
+    } else {
+        cout << "1." << endl;
+        for (int y = 0; y <= gridNbRows; y++) {
+            int rowControlPointIndex =  y * (gridNbCols + 1);
+            cout << "2." << endl;
+            cout << "rowControlPointIndex :: " << rowControlPointIndex << endl;
+            for (int x = 0; x <= gridNbCols; x++) {
+                int controlPointIndex = rowControlPointIndex + x;
+                cout << "3." << endl;
+                cout << "controlPointIndex :: " << controlPointIndex << endl;
+                
+                list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
+                advance(it, controlPointIndex);
+                ofxMtlMapping2DVertex* controlVertex = *it;
+                
+                // ---
+                if (y == 0) {
+                    controlVertex->edgeIndex = 0;
+                } else if(y == gridNbRows) {
+                    controlVertex->edgeIndex = 2;
+                } else if (x == 0) {
+                    controlVertex->edgeIndex = 3;
+                } else if (x == gridNbCols) {
+                    controlVertex->edgeIndex = 1;
+                } else {
+                    controlVertex->edgeIndex = -1;
+                    controlVertex->bIsOnAnEdge = false;
+                }
+            }
+        }
     }
     
     // --- Internal mesh vertices

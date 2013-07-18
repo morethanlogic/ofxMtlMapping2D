@@ -44,6 +44,8 @@ public:
     bool isDefiningTectureCoord;
     ofVec2f center;
     int index;
+    bool bIsOnAnEdge;
+    int edgeIndex;
     
     void setAsActive();
     

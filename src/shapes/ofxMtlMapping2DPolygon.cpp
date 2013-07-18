@@ -102,35 +102,39 @@ void ofxMtlMapping2DPolygon::draw()
 
     // ----
     //Shape
-    ofBeginShape();
-        ofFill();
-        if(activePolygon == this) {
-            ofSetColor(240, 0, 255, 200);
-        } else {
-            ofSetColor(240, 0, 255, 40);
-        }
-        
-        for (it=vertices.begin(); it!=vertices.end(); it++) {
-            ofxMtlMapping2DVertex* vertex = *it;
-            ofVertex(vertex->center.x, vertex->center.y);
-        }
-    ofEndShape(true);
-    
-    if(activePolygon != this) {
-        //ofBeginShape();
-        glBegin(GL_LINE_LOOP);
-            ofSetColor(240, 0, 255, 220);
-            ofNoFill();
+    if (shapeType != MAPPING_2D_SHAPE_GRID) {
+        ofBeginShape();
+            ofFill();
+            if(activePolygon == this) {
+                ofSetColor(240, 0, 255, 200);
+            } else {
+                ofSetColor(240, 0, 255, 40);
+            }
             
             for (it=vertices.begin(); it!=vertices.end(); it++) {
                 ofxMtlMapping2DVertex* vertex = *it;
-                glVertex2f(vertex->center.x, vertex->center.y);
+                ofVertex(vertex->center.x, vertex->center.y);
             }
-            ofFill();
-        glEnd();
-        //ofEndShape(true);
+        ofEndShape(true);
+        
+        if(activePolygon != this) {
+            //ofBeginShape();
+            glBegin(GL_LINE_LOOP);
+                ofSetColor(240, 0, 255, 220);
+                ofNoFill();
+                
+                for (it=vertices.begin(); it!=vertices.end(); it++) {
+                    ofxMtlMapping2DVertex* vertex = *it;
+                    glVertex2f(vertex->center.x, vertex->center.y);
+                }
+                ofFill();
+            glEnd();
+            //ofEndShape(true);
+        }
+    } else {
+        ofSetColor(0, 255, 0);
+        polyline->draw();
     }
-    
 
     // ----
     //Vertices
@@ -190,9 +194,35 @@ void ofxMtlMapping2DPolygon::updatePolyline()
     polyline->clear();
     
     list<ofxMtlMapping2DVertex*>::iterator it;
-    for (it=vertices.begin(); it!=vertices.end(); it++) {
-        ofxMtlMapping2DVertex* vertex = *it;
-        polyline->addVertex(vertex->center.x, vertex->center.y);
+    
+    if (shapeType == MAPPING_2D_SHAPE_GRID) {
+        for (int i=0; i <= 1; i++) {
+            for (it=vertices.begin(); it!=vertices.end(); it++) {
+                ofxMtlMapping2DVertex* vertex = *it;
+                cout << "vertex->edgeIndex :: " << vertex->edgeIndex << endl;
+                if (vertex->bIsOnAnEdge && vertex->edgeIndex == i) {
+                    // We check this for the grids, so that we don't add the vertices forming the interior of the grid
+                    polyline->addVertex(vertex->center.x, vertex->center.y);
+                }
+            }
+        }
+        
+        for (int i=2; i <= 3; i++) {
+            for (it=vertices.end(); it!=vertices.begin(); it--) {
+                ofxMtlMapping2DVertex* vertex = *it;
+                
+                if (vertex->bIsOnAnEdge && vertex->edgeIndex == i) {
+                    // We check this for the grids, so that we don't add the vertices forming the interior of the grid
+                    polyline->addVertex(vertex->center.x, vertex->center.y);
+                }
+            }
+        }
+        
+    } else {
+        for (it=vertices.begin(); it!=vertices.end(); it++) {
+            ofxMtlMapping2DVertex* vertex = *it;
+            polyline->addVertex(vertex->center.x, vertex->center.y);
+        }
     }
     
     // ----
