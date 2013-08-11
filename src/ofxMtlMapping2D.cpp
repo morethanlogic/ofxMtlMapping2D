@@ -50,6 +50,9 @@ void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, str
     _mappingXmlFilePath = mappingXmlFilePath;
     loadShapesList();
     
+    // ---
+    addListeners();
+    
 }
 
 //--------------------------------------------------------------
@@ -335,7 +338,40 @@ void ofxMtlMapping2D::deleteShape()
 //}
 
 #pragma mark -
-#pragma mark Mouse event
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::addListeners() {
+//	ofAddListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
+//	ofAddListener(ofEvents().mouseMoved, this, &ofxMtlMapping2D::mouseMoved);
+//	ofAddListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
+//	ofAddListener(ofEvents().mouseReleased, this, &ofxMtlMapping2D::mouseReleased);
+//    
+//    ofAddListener(ofEvents().keyPressed, this, &ofxMtlLayerManager::keyPressed);
+    ofAddListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::removeListeners() {
+//	ofRemoveListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
+//	ofRemoveListener(ofEvents().mouseMoved, this, &ofxMtlMapping2D::mouseMoved);
+//	ofRemoveListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
+//	ofRemoveListener(ofEvents().mouseReleased, this, &ofxMtlMapping2D::mouseReleased);
+//    
+//    ofRemoveListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
+    ofRemoveListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
+
+}
+
+#pragma mark -
+#pragma mark Events
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
+{
+    ofxMtlMapping2DControls::mapping2DControls()->windowResized();
+}
+
+
 //--------------------------------------------------------------
 void ofxMtlMapping2D::mousePressed(int x, int y, int button)
 {
