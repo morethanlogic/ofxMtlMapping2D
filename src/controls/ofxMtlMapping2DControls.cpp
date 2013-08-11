@@ -114,6 +114,10 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     } else if (getToggleValue(kSettingMappingModeInput)) {
         _mappingMode = MAPPING_MODE_INPUT;
     }
+    
+    // ---
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingEditShapes))->setValue(false);
+    setUIShapeEditingState(false);
 }
 
 

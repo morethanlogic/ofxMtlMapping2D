@@ -601,10 +601,13 @@ void ofxMtlMapping2D::loadShapesList()
                     }
                     
                     newShape->inputPolygon->init(shapeId);
+                    newShape->inputPolygon->disable();
+                    
                     _shapesListXML.popTag();
                 }
                 
                 newShape->init(shapeId);
+                newShape->disable();
                 ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
                 
                 ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId, newShape->shapeType);
