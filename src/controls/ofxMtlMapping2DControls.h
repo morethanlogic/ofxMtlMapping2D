@@ -81,7 +81,8 @@ class ofxMtlMapping2DControls
         void setAsActiveShapeWithId(int shapeID, int shapeType);
     
         void unselectShapesToggles();
-    
+        void windowResized();
+
     protected:
         ofxUIScrollableCanvas *_toolsCanvas;
         string _file;

@@ -49,11 +49,11 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     // --- Grid settings
     int gridSettingCanvasWidth = 200.0f;
     _gridSettingsCanvas = new ofxUICanvas();
-    _gridSettingsCanvas->setPosition(gridSettingCanvasWidth + kControlsMappingShapesListPanelWidth + 400, 0);
+    _gridSettingsCanvas->setPosition(width, ofGetHeight() - 90);
     _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
     _gridSettingsCanvas->setColorFill(ofxUIColor(200));
     _gridSettingsCanvas->setColorFillHighlight(ofxUIColor(255));
-    _gridSettingsCanvas->setColorBack(ofxUIColor(255, 20, 20, 250));
+    _gridSettingsCanvas->setColorBack(ofColor(0, 210, 255, 90));
     
     ofxUISlider *nSlider;
     _gridSettingsCanvas->addLabel("GRID SETTINGS");
@@ -384,6 +384,13 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
         shapeToggle->setValue(false);
     }
 }
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::windowResized()
+{
+    _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
+}
+
 
 #pragma mark -
 #pragma mark Grid settings
