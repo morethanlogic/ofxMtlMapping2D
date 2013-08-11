@@ -141,8 +141,8 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     
     // ---
     //Create a new vertex
-    int xOffset = ofGetWidth()/2.0;
-    int yOffset = ofGetHeight()/2.0;
+    int xOffset = .0f; //ofGetWidth()/2.0;
+    int yOffset = .0f; //ofGetHeight()/2.0;
     
     int x = 0;
     int y = 0;
@@ -155,22 +155,22 @@ void ofxMtlMapping2DGrid::createDefaultShape()
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
-    x = 100;
+    x = ofGetWidth();
     y = 0;
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
-    x = 100;
-    y = 100;
+    x = ofGetWidth();
+    y = ofGetHeight();
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
     x = 0;
-    y = 100;
+    y = ofGetHeight();
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     newVertex->isDefiningTectureCoord = true;
@@ -206,8 +206,8 @@ void ofxMtlMapping2DGrid::updateGrid()
 void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
 {
     // ---
-    gridWidth = 600;
-    gridHeight = 600;
+    gridWidth = ofGetWidth();
+    gridHeight = ofGetHeight();
     gridNbCols = ofToInt(shapeSettings["cols"]);
     gridNbRows = ofToInt(shapeSettings["rows"]);
     gridHorizontalResolution = 12;
