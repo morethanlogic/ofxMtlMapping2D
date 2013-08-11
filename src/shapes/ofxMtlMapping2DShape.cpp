@@ -1,5 +1,6 @@
 #include "ofxMtlMapping2DShape.h"
 #include "ofxMtlMapping2DControls.h"
+#include "ofxMtlMapping2DGrid.h"
 
 int ofxMtlMapping2DShape::nextShapeId = 0;
 ofxMtlMapping2DShape*  ofxMtlMapping2DShape::activeShape = NULL;
@@ -34,6 +35,10 @@ ofxMtlMapping2DShape::~ofxMtlMapping2DShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::init(int sId, bool defaultShape)
 {
+    if (!defaultShape) {
+        initShape();
+    }
+    
     _super::init(sId, defaultShape);
     
     calcHomography();
@@ -57,7 +62,7 @@ void ofxMtlMapping2DShape::update()
     
     if (activeShape == this) {
         if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            if (shapeType == MAPPING_2D_SHAPE_QUAD) {
+            if (shapeType == MAPPING_2D_SHAPE_QUAD || shapeType == MAPPING_2D_SHAPE_GRID) {
                 inputPolygon->update(true);
             } else {
                 inputPolygon->update(false);
@@ -129,6 +134,13 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
                 setAsActive();
             } else {
                 ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
+            }
+            
+            // Is a grid
+            if (activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {                
+                ofxMtlMapping2DControls::mapping2DControls()->showGridSettingsCanvas();
+            } else {
+               ofxMtlMapping2DControls::mapping2DControls()->hideGridSettingsCanvas();
             }
         }
     

@@ -2,6 +2,7 @@
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DShape.h"
 #include "ofxMtlMapping2DShapes.h"
+#include "ofxMtlMapping2DGrid.h"
 
 #include "ofMain.h"
 
@@ -45,9 +46,29 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
     
     
+    // --- Grid settings
+    int gridSettingCanvasWidth = 200.0f;
+    _gridSettingsCanvas = new ofxUICanvas();
+    _gridSettingsCanvas->setPosition(gridSettingCanvasWidth + kControlsMappingShapesListPanelWidth + 400, 0);
+    _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
+    _gridSettingsCanvas->setColorFill(ofxUIColor(200));
+    _gridSettingsCanvas->setColorFillHighlight(ofxUIColor(255));
+    _gridSettingsCanvas->setColorBack(ofxUIColor(255, 20, 20, 250));
+    
+    ofxUISlider *nSlider;
+    _gridSettingsCanvas->addLabel("GRID SETTINGS");
+    nSlider = _gridSettingsCanvas->addSlider("NB COLS", 1.0, 20.0, &ofxMtlMapping2DSettings::gridDefaultNbCols);
+    nSlider->setIncrement(1.0f);
+    nSlider = _gridSettingsCanvas->addSlider("NB ROWS", 1.0, 20.0, &ofxMtlMapping2DSettings::gridDefaultNbRows);
+    nSlider->setIncrement(1.0f);
+    
+    _gridSettingsCanvas->autoSizeToFitWidgets();
+    ofAddListener(_gridSettingsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::gridSettingsListUiEvent);
+    _gridSettingsCanvas->disable();
     
     // ---- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
+    shapeTypesAsString[MAPPING_2D_SHAPE_GRID] = "grid";
     shapeTypesAsString[MAPPING_2D_SHAPE_TRIANGLE] = "triangle";
     shapeTypesAsString[MAPPING_2D_SHAPE_MASK] = "mask";
     
@@ -56,6 +77,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     _loadMapping = false;
     _editShapes = false;
     _createNewQuad = false;
+    _createNewGrid = false;
     _createNewTriangle = false;
     _createNewMask = false;
     _showShapesId = true;
@@ -94,6 +116,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
         _toolsCanvas->addWidgetDown(spacer);        
         _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewQuad, "GUI/quad.png", kSettingMappingCreateNewQuad));
+        _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewGrid, "GUI/quad.png", kSettingMappingCreateNewGrid));
         _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewTriangle, "GUI/triangle.png", kSettingMappingCreateNewTriangle));
         _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, _createNewMask, "GUI/mask.png", kSettingMappingCreateNewMask));
     }
@@ -153,6 +176,12 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _createNewQuad = true;
         }
     }
+    else if (name == kSettingMappingCreateNewGrid) {
+        // will happen only if ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled is true
+        if(getToggleValue(name)) {
+            _createNewGrid = true;
+        }
+    }
     else if (name == kSettingMappingCreateNewTriangle) {
         // will happen only if ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled is true
         if(getToggleValue(name)) {
@@ -179,24 +208,32 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeInput))->setValue(false);
             
-            // ----
+            // ---
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(true);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(true);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(true);
             }
+            
+            // ---
+            showGridSettingsCanvas();
         }
         else if (name == kSettingMappingModeInput) {
             _mappingMode = MAPPING_MODE_INPUT;
             
             ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setValue(false);
             
-            // ----
+            // ---
             if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(false);
+                ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(false);
                 ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(false);
             }
+            
+            // ---
+            hideGridSettingsCanvas();
         }
         
         refreshShapesListForMappingMode(_mappingMode);
@@ -217,9 +254,19 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
             shape->setAsIdle();
         }
         
-        // ----
+        // ---
         ofxMtlMapping2DShape::resetActiveShapeVars();
         ofxMtlMapping2DShape::resetActivePolygonVars();
+        
+        // ---
+        _shapesListCanvas->disable();
+        hideGridSettingsCanvas();
+        
+    } else {
+        
+        // ---
+        _shapesListCanvas->enable();
+        showGridSettingsCanvas();
     }
     
     // ----
@@ -230,10 +277,9 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingModeOutput))->setVisible(_editShapes);
     
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setVisible(_editShapes);
+    ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(_editShapes);
     ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(_editShapes);
-    
-    _shapesListCanvas->setVisible(_editShapes);
 }
 
 
@@ -340,6 +386,48 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 }
 
 #pragma mark -
+#pragma mark Grid settings
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::gridSettingsListUiEvent(ofxUIEventArgs &event)
+{
+    if(ofxMtlMapping2DShape::activeShape) {
+        if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+            ((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->updateGrid();
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::showGridSettingsCanvas()
+{
+    if(isEnabled() && ofxMtlMapping2DShape::activeShape) {
+        if (ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+            _gridSettingsCanvas->removeWidgets();
+            _gridSettingsCanvas->resetPlacer();
+            
+            ofxUISlider *nSlider;
+            _gridSettingsCanvas->addLabel("GRID SETTINGS");
+            nSlider = _gridSettingsCanvas->addSlider("NB COLS", 1.0, 20.0, &(((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->gridNbCols));
+            nSlider->setIncrement(1.0f);
+            nSlider = _gridSettingsCanvas->addSlider("NB ROWS", 1.0, 20.0, &(((ofxMtlMapping2DGrid*)ofxMtlMapping2DShape::activeShape)->gridNbRows));
+            nSlider->setIncrement(1.0f);
+             
+            _shapesListCanvas->autoSizeToFitWidgets();
+
+            _gridSettingsCanvas->enable();
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::hideGridSettingsCanvas()
+{
+    _gridSettingsCanvas->disable();
+}
+
+
+#pragma mark -
 #pragma mark Reset widgets
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::resetSaveMapping()
@@ -360,6 +448,9 @@ void ofxMtlMapping2DControls::resetCreateNewShape()
 {
     _createNewQuad = false;
     ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewQuad))->setValue(false);
+    
+    _createNewGrid = false;
+    ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewGrid))->setValue(false);
     
     _createNewTriangle = false;
     ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setValue(false);
@@ -438,6 +529,7 @@ void ofxMtlMapping2DControls::disable()
 {
     _toolsCanvas->disable();
     _shapesListCanvas->disable();
+    _gridSettingsCanvas->disable();
 }
 
 //--------------------------------------------------------------
@@ -446,9 +538,11 @@ void ofxMtlMapping2DControls::toggle()
     _toolsCanvas->toggleVisible();
     
     if (_toolsCanvas->isVisible() && _editShapes) {
-        _shapesListCanvas->setVisible(true);
+        _shapesListCanvas->enable();
+        showGridSettingsCanvas();
     } else {
-        _shapesListCanvas->setVisible(false);
+        _shapesListCanvas->disable();
+        hideGridSettingsCanvas();
     }
 }
 
@@ -460,7 +554,7 @@ bool ofxMtlMapping2DControls::isEnabled()
 
 //--------------------------------------------------------------
 bool ofxMtlMapping2DControls::isHit(int x, int y) {
-    if (_toolsCanvas->isHit(x, y) || _shapesListCanvas->isHit(x, y)) {
+    if (_toolsCanvas->isHit(x, y) || _shapesListCanvas->isHit(x, y) || _gridSettingsCanvas->isHit(x, y)) {
         return true;
     } else {
         return false;

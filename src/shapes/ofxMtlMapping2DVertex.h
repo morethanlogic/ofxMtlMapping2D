@@ -26,7 +26,7 @@ public:
     
     void snapIt(float _x, float _y);
 	
-    void init(float _x, float _y);
+    void init(float _x, float _y, int _index = -1);
     
     static ofxMtlMapping2DVertex* getActiveVertex();
     
@@ -43,6 +43,9 @@ public:
     bool toBeRemoved;
     bool isDefiningTectureCoord;
     ofVec2f center;
+    int index;
+    bool bIsOnAnEdge;
+    int edgeIndex;
     
     void setAsActive();
     
