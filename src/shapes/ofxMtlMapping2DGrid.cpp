@@ -119,7 +119,6 @@ void ofxMtlMapping2DGrid::draw()
 {
     ofSetColor(ofColor::white);
     controlMesh.drawWireframe();
-//    controlMesh.drawVertices();
     
     //drawInternalMesh();
     
@@ -196,7 +195,6 @@ void ofxMtlMapping2DGrid::createDefaultShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::initShape()
 {            
-    cout << "GRID INIT SHAPE" << endl;
     updateGridAndMesh();
     updateUVMap();
     updateVertices();
@@ -271,7 +269,7 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
             }
         }
         
-            enableVertices();
+        enableVertices();
     } else {
         cout << "1." << endl;
         for (int y = 0; y <= gridNbRows; y++) {
