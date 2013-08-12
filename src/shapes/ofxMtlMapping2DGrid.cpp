@@ -117,8 +117,11 @@ void ofxMtlMapping2DGrid::updateVertices(){
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::draw()
 {
-    ofSetColor(ofColor::white);
-    controlMesh.drawWireframe();
+    // ---- OUTPUT MODE
+    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+        ofSetColor(ofColor::white);
+        controlMesh.drawWireframe();
+    }
     
     //drawInternalMesh();
     
