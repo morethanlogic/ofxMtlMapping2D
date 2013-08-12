@@ -80,6 +80,11 @@ void ofxMtlMapping2DGrid::updateVertices(){
                 }
             }
             
+            // --- Update Control Mesh
+            controlMesh.setVertex(topLeft, topLeftVertex->center);
+            controlMesh.setVertex(topRight, topRightVertex->center);
+            controlMesh.setVertex(bottomRight, bottonRightVertex->center);
+            controlMesh.setVertex(bottomLeft, bottomLeftVertex->center);
             
             // --- Update internal mesh
             int quadStartIndex = (y * ((gridNbCols * gridHorizontalResolution) + 1) * gridVerticalResolution) + (x * gridHorizontalResolution);
@@ -112,8 +117,13 @@ void ofxMtlMapping2DGrid::updateVertices(){
 //--------------------------------------------------------------
 void ofxMtlMapping2DGrid::draw()
 {
+    ofSetColor(ofColor::white);
+    controlMesh.drawWireframe();
+//    controlMesh.drawVertices();
+    
+    //drawInternalMesh();
+    
     ofxMtlMapping2DShape::draw();
-    drawInternalMesh();
 }
 
 //--------------------------------------------------------------
@@ -291,6 +301,37 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
                     controlVertex->bIsOnAnEdge = false;
                 }
             }
+        }
+    }
+    
+    // ---
+    controlMesh.clear();
+
+    list<ofxMtlMapping2DVertex*>::iterator it;
+    for (it=vertices.begin(); it!=vertices.end(); it++) {
+        ofxMtlMapping2DVertex* vertex = *it;
+        
+        controlMesh.addVertex(ofVec3f(vertex->center.x, vertex->center.y, .0f));
+
+    }
+    
+    for (int y = 0; y < gridNbRows; y++) {
+        for (int x = 0; x < gridNbCols; x++) {
+            
+            int vertexIndex = y * (gridNbCols + 1) + x;
+            
+            int topLeft = vertexIndex;
+            int topRight = vertexIndex + 1;
+            int bottomRight = (vertexIndex + 1) + (gridNbCols + 1);
+            int bottomLeft = vertexIndex + (gridNbCols + 1);
+            
+            controlMesh.addIndex(topLeft);
+            controlMesh.addIndex(topRight);
+            controlMesh.addIndex(bottomLeft);
+            
+            controlMesh.addIndex(topRight);
+            controlMesh.addIndex(bottomRight);
+            controlMesh.addIndex(bottomLeft);
         }
     }
     

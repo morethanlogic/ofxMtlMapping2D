@@ -32,6 +32,7 @@ class ofxMtlMapping2DGrid: public ofxMtlMapping2DShape {
         void updateUVMap();
         void drawInternalMesh();
     
+        ofMesh    controlMesh;
         ofVboMesh internalMesh;
     
         int gridWidth;
