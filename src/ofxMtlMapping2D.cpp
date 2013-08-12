@@ -315,14 +315,14 @@ void ofxMtlMapping2D::deleteShape()
         ofxMtlMapping2DShapes::pmShapes.remove(ofxMtlMapping2DShape::activeShape);
         delete ofxMtlMapping2DShape::activeShape;
         ofxMtlMapping2DShape::resetActiveShapeVars();
-    }
     
-    // Re populate the UI List
-    list<ofxMtlMapping2DShape*>::reverse_iterator it;
-    for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
-        ofxMtlMapping2DShape* shape = *it;
-        ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
+        // Re populate the UI List
+        list<ofxMtlMapping2DShape*>::reverse_iterator it;
+        for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
+            ofxMtlMapping2DShape* shape = *it;
+            ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
 
+        }
     }
 }
 
