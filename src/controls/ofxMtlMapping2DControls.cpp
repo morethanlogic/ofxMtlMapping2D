@@ -97,6 +97,12 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
     _file = file;
     
     
+    // --- Fullscreen
+    _fullscreenExpandIcon.loadImage("GUI/expand.png");
+    _fullscreenContractIcon.loadImage("GUI/contract.png");
+    
+    _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/expand.png", kSettingMappingFullscreen));
+    
     // Edit
     _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/edit.png", kSettingMappingEditShapes));
     _toolsCanvas->addWidgetDown(new ofxUIImageToggle(kToggleSize, kToggleSize, false, "GUI/file-down.png", kSettingMappingSave));
@@ -151,9 +157,14 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
 void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
-        
+    
+    if (name == kSettingMappingFullscreen) {        
+        ofSetFullscreen(getToggleValue(name));
+    }
+    
+    
     // ----
-    if (name == kSettingMappingSave) {
+    else if (name == kSettingMappingSave) {
         _saveMapping = getToggleValue(name);
     }
     else if (name == kSettingMappingLoad) {
@@ -388,6 +399,13 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::windowResized()
 {
+    if (ofGetWindowMode() == OF_FULLSCREEN) {
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenContractIcon);
+    } else {
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenExpandIcon);
+    }
+    
+    _toolsCanvas->setHeight(ofGetHeight());
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
 }
 

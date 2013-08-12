@@ -12,6 +12,7 @@
 #define kSettingMappingSave                 "MAPPING:SAVE"
 #define kSettingMappingLoad                 "MAPPING:LOAD"
 
+#define kSettingMappingFullscreen           "MAPPING:FULLSCREEN"
 #define kSettingMappingEditShapes           "MAPPING:EDIT_SHAPES"
 #define kSettingMappingCreateNewQuad        "MAPPING:CREATE_NEW_QUAD"
 #define kSettingMappingCreateNewGrid        "MAPPING:CREATE_NEW_GRID"
@@ -123,5 +124,8 @@ class ofxMtlMapping2DControls
         void refreshShapesListForMappingMode(ofxMtlMapping2DMode mappingMode);
     
         ofxUICanvas *_gridSettingsCanvas;
+    
+        ofImage _fullscreenExpandIcon;
+        ofImage _fullscreenContractIcon;
 
 };
