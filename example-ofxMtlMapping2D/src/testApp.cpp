@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     ofSetFrameRate(30);
+    ofBackground(50);
     
     // ----
     _mapping = new ofxMtlMapping2D();
@@ -17,7 +18,7 @@ void testApp::update(){
 }
 
 //--------------------------------------------------------------
-void testApp::draw(){
+void testApp::draw(){    
     // ----
     _mapping->bind();
     
@@ -31,8 +32,7 @@ void testApp::draw(){
     _mapping->draw();
     //_mapping->drawFbo();
     
-    
-    
+
 //    ofBeginShape();
 //    ofFill();
 //    ofSetColor(0, 255, 0);
