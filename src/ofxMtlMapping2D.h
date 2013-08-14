@@ -32,8 +32,8 @@ class ofxMtlMapping2D {
         void drawFbo();
         void draw();
 
-        void mousePressed(int x, int y, int button);
-        void keyPressed(int key);
+        void mousePressed(ofMouseEventArgs &e);
+        void keyPressed(ofKeyEventArgs &e);
         void windowResized(ofResizeEventArgs &e);
 
         vector<ofPolyline*> getMaskShapes();

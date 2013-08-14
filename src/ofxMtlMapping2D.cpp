@@ -341,23 +341,15 @@ void ofxMtlMapping2D::deleteShape()
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::addListeners() {
-//	ofAddListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
-//	ofAddListener(ofEvents().mouseMoved, this, &ofxMtlMapping2D::mouseMoved);
-//	ofAddListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
-//	ofAddListener(ofEvents().mouseReleased, this, &ofxMtlMapping2D::mouseReleased);
-//    
-//    ofAddListener(ofEvents().keyPressed, this, &ofxMtlLayerManager::keyPressed);
+	ofAddListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
+    ofAddListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofAddListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::removeListeners() {
-//	ofRemoveListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
-//	ofRemoveListener(ofEvents().mouseMoved, this, &ofxMtlMapping2D::mouseMoved);
-//	ofRemoveListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
-//	ofRemoveListener(ofEvents().mouseReleased, this, &ofxMtlMapping2D::mouseReleased);
-//    
-//    ofRemoveListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
+	ofRemoveListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);   
+    ofRemoveListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofRemoveListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
 
 }
@@ -365,6 +357,8 @@ void ofxMtlMapping2D::removeListeners() {
 #pragma mark -
 #pragma mark Events
 
+void mousePressed(ofMouseEventArgs &e);
+void keyPressed(ofKeyEventArgs &e);
 //--------------------------------------------------------------
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
@@ -373,9 +367,13 @@ void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::mousePressed(int x, int y, int button)
+void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
 {
-    if (ofxMtlMapping2DControls::mapping2DControls()->isHit(x, y))
+    int eX = e.x;
+    int eY = e.y;
+    int eButton = e.button;
+    
+    if (ofxMtlMapping2DControls::mapping2DControls()->isHit(eX, eY))
         return;
     
     if(!ofxMtlMapping2DControls::mapping2DControls()->editShapes())
@@ -384,7 +382,7 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
     
     // ----
     // A vertex has been selected
-    if (ofxMtlMapping2DVertex::activeVertex || button == 2) {
+    if (ofxMtlMapping2DVertex::activeVertex || eButton == 2) {
       return;
     }
     
@@ -395,14 +393,16 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
         ofxMtlMapping2DShape* shape = *it;
         bool grabbedOne = false;
         if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
-            if(shape->hitTest(x, y)) {
+            if(shape->hitTest(eX, eY)) {
                 grabbedOne = true;
+                shape->select(eX, eY);
                 shape->enable();
             }
         } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
             if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
-                if(shape->inputPolygon->hitTest(x, y)) {
+                if(shape->inputPolygon->hitTest(eX, eY)) {
                     grabbedOne = true;
+                    shape->inputPolygon->select(eX, eY);
                     shape->inputPolygon->enable();
                 }
             }
@@ -426,7 +426,7 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
                 ofxMtlMapping2DShape* shape = ofxMtlMapping2DShape::activeShape;
                 if (shape) {
                     ofLog(OF_LOG_NOTICE, "Add vertex to shape %i", shape->shapeId);
-                    shape->addPoint(x, y);
+                    shape->addPoint(eX, eY);
                 } else {
                     ofLog(OF_LOG_NOTICE, "No shape has been selected, can not add a vertex");
                 }
@@ -439,10 +439,10 @@ void ofxMtlMapping2D::mousePressed(int x, int y, int button)
 #pragma mark -
 #pragma mark Keyboard event
 //--------------------------------------------------------------
-void ofxMtlMapping2D::keyPressed(int key)
-{    
+void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
+{
     // ----
-    switch (key) {
+    switch (e.key) {
         case 9:  // TAB
             ofToggleFullscreen();
             break;

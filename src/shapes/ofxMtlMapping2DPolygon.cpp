@@ -237,6 +237,17 @@ bool ofxMtlMapping2DPolygon::hitTest(int tx, int ty)
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2DPolygon::select(int x, int y)
+{
+    _grabAnchor.set(x, y);
+    
+    if(ofxMtlMapping2DVertex::activeVertex)
+        return;
+    
+    setAsActive();
+}
+
+//--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::setAsActive()
 {
 	if (activePolygon != this) {
@@ -404,17 +415,6 @@ void ofxMtlMapping2DPolygon::onDragOutside(int x, int y, int button)
         updatePosition(x - _grabAnchor.x, y - _grabAnchor.y);
         _grabAnchor.set(x, y);
 	}
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onPress(int x, int y, int button)
-{    
-    _grabAnchor.set(x, y);
-
-    if(ofxMtlMapping2DVertex::activeVertex)
-        return;
-    
-    setAsActive();
 }
 
 //--------------------------------------------------------------

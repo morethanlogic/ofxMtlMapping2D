@@ -43,6 +43,9 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         void setAsActive();
         void setAsIdle();
     
+        void select(int x, int y);
+
+    
         ofxMtlMapping2DVertex* getVertex(int index);
 
         // ---- ofxMSAInteractiveObject related
@@ -56,7 +59,6 @@ class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
         virtual void onMouseMove(int x, int y);
         virtual void onDragOver(int x, int y, int button);
         virtual void onDragOutside(int x, int y, int button);
-        virtual void onPress(int x, int y, int button);
         virtual void onRelease(int x, int y, int button);
         virtual void onReleaseOutside(int x, int y, int button);
  
