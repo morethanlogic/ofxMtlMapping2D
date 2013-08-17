@@ -51,7 +51,6 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-    _mapping->keyPressed(key);
 }
 
 //--------------------------------------------------------------
@@ -71,7 +70,6 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    _mapping->mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------
