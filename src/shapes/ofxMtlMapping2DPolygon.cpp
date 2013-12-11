@@ -171,7 +171,7 @@ void ofxMtlMapping2DPolygon::updatePosition(int xInc, int yInc)
     list<ofxMtlMapping2DVertex*>::iterator it;
 	for (it=vertices.begin(); it!=vertices.end(); it++) {
 		ofxMtlMapping2DVertex* vertex = *it;
-		vertex->setPos(vertex->x + xInc, vertex->y + yInc);
+		vertex->setPosition(vertex->x + xInc, vertex->y + yInc);
         vertex->updateCenter();
 	}
     
@@ -222,7 +222,7 @@ void ofxMtlMapping2DPolygon::updatePolyline()
     
     // ---- Interactive obj
     boundingBox = polyline->getBoundingBox();
-    setPos(boundingBox.x, boundingBox.y);
+    setPosition(boundingBox.x, boundingBox.y);
     setSize(boundingBox.width, boundingBox.height);
 }
 
