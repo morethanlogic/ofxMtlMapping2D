@@ -28,7 +28,7 @@ ofxMtlMapping2DVertex::~ofxMtlMapping2DVertex()
 void ofxMtlMapping2DVertex::init(float _x, float _y, int _index) 
 {
 	index = _index;
-    setPos(_x, _y);
+    setPosition(_x, _y);
 	
 	//Center
 	updateCenter();
@@ -41,7 +41,7 @@ void ofxMtlMapping2DVertex::kill()
 		activeVertex = NULL;
 	}
     
-    killMe();
+    delete this;
 }
 
 //--------------------------------------------------------------
@@ -54,7 +54,7 @@ void ofxMtlMapping2DVertex::update()
 void ofxMtlMapping2DVertex::drawBack()
 {
     ofFill();
-    if(isMouseDown() || activeVertex == this) {
+    if(activeVertex == this) {
         ofSetColor(255, 255, 255, 150);
         ofCircle(x+15, y+15, 20);
     } else if(isMouseOver()) {
@@ -69,7 +69,7 @@ void ofxMtlMapping2DVertex::drawBack()
 void ofxMtlMapping2DVertex::drawTop()
 {
     ofNoFill();
-    if(isMouseDown() || activeVertex == this) {
+    if(activeVertex == this) {
         ofSetColor(255, 255, 0, 150);
     } else if(isMouseOver()) {
         ofSetColor(255, 0, 0, 120);
@@ -96,7 +96,7 @@ void ofxMtlMapping2DVertex::updateCenter()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::snapIt(float _x, float _y) 
 {
-    setPos(_x, _y);
+    setPosition(_x, _y);
     updateCenter();
 }
 
@@ -106,25 +106,29 @@ void ofxMtlMapping2DVertex::snapIt(float _x, float _y)
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::left() 
 {
-    snapIt(x-1, y);
+    if(activeVertex)
+        snapIt(x-1, y);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::up() 
 {
-    snapIt(x, y-1);
+    if(activeVertex)
+        snapIt(x, y-1);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::right() 
 {
-    snapIt(x+1, y);
+    if(activeVertex)
+        snapIt(x+1, y);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::down() 
 {
-    snapIt(x, y+1);
+    if(activeVertex)
+        snapIt(x, y+1);
 }
 
 
