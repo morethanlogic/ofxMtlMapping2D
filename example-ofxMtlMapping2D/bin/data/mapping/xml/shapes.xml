@@ -2,10 +2,10 @@
     <shape id="0">
         <setting key="type">quad</setting>
         <outputVertices>
-            <vertex x="333" y="125"></vertex>
+            <vertex x="131" y="178"></vertex>
             <vertex x="473" y="178"></vertex>
             <vertex x="474" y="428"></vertex>
-            <vertex x="333" y="353"></vertex>
+            <vertex x="126" y="733"></vertex>
         </outputVertices>
         <inputPolygon>
             <vertex x="204" y="92"></vertex>

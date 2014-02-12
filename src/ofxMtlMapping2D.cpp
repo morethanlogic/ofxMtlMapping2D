@@ -227,6 +227,7 @@ void ofxMtlMapping2D::drawFbo()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::render()
 {
+    ofPushStyle();
     list<ofxMtlMapping2DShape*>::iterator it;
     
     // Textured shapes
@@ -250,6 +251,7 @@ void ofxMtlMapping2D::render()
             shape->render();
         }
     }
+    ofPopStyle();
 }
 
 
