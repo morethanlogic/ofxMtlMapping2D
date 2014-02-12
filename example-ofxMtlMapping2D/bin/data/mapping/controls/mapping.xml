@@ -1,11 +1,21 @@
 <Widget>
     <Kind>20</Kind>
+    <Name>MAPPING:FULLSCREEN</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>20</Kind>
     <Name>MAPPING:EDIT_SHAPES</Name>
-    <Value>1</Value>
+    <Value>0</Value>
 </Widget>
 <Widget>
     <Kind>20</Kind>
     <Name>MAPPING:SAVE</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>20</Kind>
+    <Name>MAPPING:LOAD</Name>
     <Value>0</Value>
 </Widget>
 <Widget>
@@ -25,6 +35,16 @@
 </Widget>
 <Widget>
     <Kind>20</Kind>
-    <Name>MAPPING:CREATE_NEW_TRAINGLE</Name>
+    <Name>MAPPING:CREATE_NEW_GRID</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>20</Kind>
+    <Name>MAPPING:CREATE_NEW_TRIANGLE</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>20</Kind>
+    <Name>MAPPING:CREATE_NEW_MASK</Name>
     <Value>0</Value>
 </Widget>

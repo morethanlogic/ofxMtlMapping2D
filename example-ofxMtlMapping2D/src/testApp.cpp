@@ -8,6 +8,21 @@ void testApp::setup(){
     // ----
     _mapping = new ofxMtlMapping2D();
     _mapping->init(ofGetWidth(), ofGetHeight(), "mapping/xml/shapes.xml", "mapping/controls/mapping.xml");
+
+    
+//    //setup our directory
+	dir.setup();
+    //setup our client
+    client.setup();
+    
+    //register for our directory's callbacks
+    ofAddListener(dir.events.serverAnnounced, this, &testApp::serverAnnounced);
+    // not yet implemented
+    //ofAddListener(dir.events.serverUpdated, this, &testApp::serverUpdated);
+    ofAddListener(dir.events.serverRetired, this, &testApp::serverRetired);
+    
+    dirIdx = -1;
+
 }
 
 //--------------------------------------------------------------
@@ -22,8 +37,10 @@ void testApp::draw(){
     // ----
     _mapping->bind();
     
-        // draw a test pattern
-        _mapping->chessBoard();
+        if(dirIdx != -1)
+            client.draw(0, 0);
+        else
+            _mapping->chessBoard();
     
     _mapping->unbind();
     
@@ -49,8 +66,51 @@ void testApp::draw(){
      */
 }
 
+//these are our directory's callbacks
+void testApp::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
+{
+    for( auto& dir : arg.servers ){
+        ofLogNotice("ofxSyphonServerDirectory Server Announced")<<" Server Name: "<<dir.serverName <<" | App Name: "<<dir.appName;
+    }
+    dirIdx = 0;
+}
+
+void testApp::serverUpdated(ofxSyphonServerDirectoryEventArgs &arg)
+{
+    for( auto& dir : arg.servers ){
+        ofLogNotice("ofxSyphonServerDirectory Server Updated")<<" Server Name: "<<dir.serverName <<" | App Name: "<<dir.appName;
+    }
+    dirIdx = 0;
+}
+
+void testApp::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
+{
+    for( auto& dir : arg.servers ){
+        ofLogNotice("ofxSyphonServerDirectory Server Retired")<<" Server Name: "<<dir.serverName <<" | App Name: "<<dir.appName;
+    }
+    dirIdx = 0;
+}
+
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+    if(key != 'm'){
+        //press any key to move through all available Syphon servers
+        dirIdx++;
+        if(dirIdx >=dir.size())
+            dirIdx = 0;
+        
+        client.set(dir.getDescription(dirIdx));
+        string serverName = client.getServerName();
+        string appName = client.getApplicationName();
+        
+        if(serverName == ""){
+            serverName = "null";
+        }
+        if(appName == ""){
+            appName = "null";
+        }
+        ofSetWindowTitle(serverName + ":" + appName);
+    }
 }
 
 //--------------------------------------------------------------
