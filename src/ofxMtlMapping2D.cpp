@@ -41,7 +41,8 @@ void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, str
     ofxMtlMapping2DControls::mapping2DControls(uiXmlFilePath)->disable();
     
     // ----
-    _fbo.allocate(width, height, GL_RGBA, numSample);
+    _numSample = numSample;
+    _fbo.allocate(width, height, GL_RGBA, _numSample);
 
     // ----
     ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
@@ -362,6 +363,9 @@ void keyPressed(ofKeyEventArgs &e);
 //--------------------------------------------------------------
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
+    // resize / re-allocate the source FBO
+    _fbo.allocate(e.width , e.height, GL_RGBA, _numSample);
+
     ofxMtlMapping2DControls::mapping2DControls()->windowResized();
 }
 
