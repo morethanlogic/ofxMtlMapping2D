@@ -132,15 +132,89 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(int width, const string& file)
 //    _toolsCanvas->addWidgetDown(new ofxUILabel("SHAPE DATA", OFX_UI_FONT_MEDIUM));
 //    _toolsCanvas->addWidgetDown(new ofxUIToggle(kToggleSize, kToggleSize, _editShapes, kSettingMappingShowShapesId));
 
-    
-    // ----
     ofAddListener(_toolsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::toolsUiEvent);
+    _uiSuperCanvases.push_back(_toolsCanvas);
     
+    
+    
+    // ---
+    // Output Settings UI
+    _settingsUI = new ofxUISuperCanvas("OUTPUT SETTINGS", OFX_UI_FONT_SMALL);
+    _settingsUI->setPosition(ofGetWindowWidth() - _settingsUI->getRect()->width, 0);
+    _settingsUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
+    _settingsUI->setColorBack(uiColor);
+    
+    
+    _settingsUI->addSpacer();
+    _settingsUI->addButton("SAVE", false);
+    _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    _settingsUI->addButton("LOAD", false);
+    _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    
+    _settingsUI->addIntSlider("OUTPUT WIDTH", 1, maxDisplayWidth, &ofxMtlMapping2DSettings::outputWidth)->setIncrement(1.0f);
+    _settingsUI->addIntSlider("OUTPUT HEIGHT", 1, maxDisplayHeight, &ofxMtlMapping2DSettings::outputHeight)->setIncrement(1.0f);
+    
+    ofxUITextInput* textInput = _settingsUI->addTextInput("OUTPUT W", "1920");
+    textInput->setOnlyNumericInput(true);
+    textInput->setAutoClear(false);
+    textInput = _settingsUI->addTextInput("OUTPUT H", "1080");
+    textInput->setOnlyNumericInput(true);
+    textInput->setAutoClear(false);
+    
+    vector<string> displayNames;
+    for (int i=0; i<_detectDisplays.getDisplays().size(); i++) {
+        displayNames.push_back(ofToString(_detectDisplays.getDisplays()[i]->width) + "x" + ofToString(_detectDisplays.getDisplays()[i]->height));
+    }
+    _settingsUI->addRadio("DISPLAYS", displayNames);
+    
+    _settingsUI->autoSizeToFitWidgets();
+    ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
+    _settingsUI->disable();
+    _uiSuperCanvases.push_back(_settingsUI);
+    
+    
+    // ---
+    // Shapes List UI
+    _selectedShapeId = -1;
+    _selectedShapeChanged = false;
+    shapeCounter = 0;
+    
+    _shapesListCanvas = new ofxUIScrollableCanvas(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
+    _shapesListCanvas->setScrollArea(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
+    _shapesListCanvas->setScrollableDirections(false, true);
+    _shapesListCanvas->setColorBack(uiColorB);
+    _shapesListCanvas->autoSizeToFitWidgets();
+    
+    ofAddListener(_shapesListCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::shapesListUiEvent);
+    _uiSuperCanvases.push_back(_shapesListCanvas);
+    
+    
+    // ---
+    // Grid Settings UI
+    int gridSettingCanvasWidth = 200.0f;
+    _gridSettingsCanvas = new ofxUICanvas();
+    _gridSettingsCanvas->setPosition(kControlsMappingToolsPanelWidth, ofGetHeight() - 90);
+    _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
+    _gridSettingsCanvas->setColorBack(uiColorB);
+    
+    _gridSettingsCanvas->addLabel("GRID SETTINGS");
+    _gridSettingsCanvas->addIntSlider("NB COLS", 1, 20, &ofxMtlMapping2DSettings::gridDefaultNbCols);
+    _gridSettingsCanvas->addIntSlider("NB ROWS", 1, 20, &ofxMtlMapping2DSettings::gridDefaultNbRows);
+    
+    _gridSettingsCanvas->autoSizeToFitWidgets();
+    ofAddListener(_gridSettingsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::gridSettingsListUiEvent);
+    _gridSettingsCanvas->disable();
+    _uiSuperCanvases.push_back(_gridSettingsCanvas);
+    
+
+    
+    // ---
+    // Load UI XML files and initialize
     load();
     
-    if (getToggleValue(kSettingMappingModeOutput)) {
+    if (getToggleValue(_toolsCanvas, kSettingMappingModeOutput)) {
         _mappingMode = MAPPING_MODE_OUTPUT;
-    } else if (getToggleValue(kSettingMappingModeInput)) {
+    } else if (getToggleValue(_toolsCanvas, kSettingMappingModeInput)) {
         _mappingMode = MAPPING_MODE_INPUT;
     }
     
@@ -249,6 +323,37 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         
         refreshShapesListForMappingMode(_mappingMode);
 
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+
+    if(name == "OUTPUT W") {
+        ofxUITextInput *ti = (ofxUITextInput *) event.widget;
+        if(ti->getInputTriggerType() == OFX_UI_TEXTINPUT_ON_ENTER)
+        {
+            cout << "ON ENTER: " << ti->getIntValue() << " :: " << ti->getFloatValue() << endl;
+            
+        }
+        else if(ti->getInputTriggerType() == OFX_UI_TEXTINPUT_ON_FOCUS)
+        {
+            cout << "ON FOCUS: ";
+        }
+        else if(ti->getInputTriggerType() == OFX_UI_TEXTINPUT_ON_UNFOCUS)
+        {
+            cout << "ON BLUR: ";
+        }
+        string output = ti->getTextString();
+        //cout << output << endl;
+    }
+    
+    else if(name == "DISPLAYS") {
+        ofxUIRadio *radio = (ofxUIRadio *) event.widget;
+        cout << radio->getName() << " value: " << radio->getValue() << " active name: " << radio->getActiveName() << endl;
+        _detectDisplays.fullscreenWindowOnDisplay(radio->getValue());
     }
 }
 
@@ -407,6 +512,8 @@ void ofxMtlMapping2DControls::windowResized()
     
     _toolsCanvas->setHeight(ofGetHeight());
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
+    _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
+
 }
 
 

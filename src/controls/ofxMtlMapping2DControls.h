@@ -6,11 +6,14 @@
 #include "ofxUI.h"
 #include "ofxMtlMapping2DShapeType.h"
 
-#define kControlsMappingToolsPanelWidth 39
+#include "ofxDetectDisplays.h"
+
+#define kControlsMappingToolsPanelWidth 33
 #define kControlsMappingShapesListPanelWidth 150
 
 #define kSettingMappingSave                 "MAPPING:SAVE"
 #define kSettingMappingLoad                 "MAPPING:LOAD"
+#define kSettingMappingSettings             "MAPPING:SETTINGS"
 
 #define kSettingMappingFullscreen           "MAPPING:FULLSCREEN"
 #define kSettingMappingEditShapes           "MAPPING:EDIT_SHAPES"
@@ -36,6 +39,7 @@ class ofxMtlMapping2DControls
 
     
         void toolsUiEvent(ofxUIEventArgs &event);
+        void settingsUiEvent(ofxUIEventArgs &event);
         void shapesListUiEvent(ofxUIEventArgs &event);
         void gridSettingsListUiEvent(ofxUIEventArgs &event);
 
@@ -118,7 +122,10 @@ class ofxMtlMapping2DControls
     
         bool _mappingModeChanged;
         ofxMtlMapping2DMode _mappingMode;
-        
+    
+        ofxUISuperCanvas* _settingsUI;
+
+    
         ofxUIScrollableCanvas *_shapesListCanvas;
         void resizeShapeList();
         void refreshShapesListForMappingMode(ofxMtlMapping2DMode mappingMode);
@@ -127,5 +134,7 @@ class ofxMtlMapping2DControls
     
         ofImage _fullscreenExpandIcon;
         ofImage _fullscreenContractIcon;
+    
+        ofxDetectDisplays _detectDisplays;
 
 };
