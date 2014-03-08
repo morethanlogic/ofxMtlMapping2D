@@ -539,6 +539,10 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::loadShapesList()
 {
+    ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+    cout << "LOAD: " << fileDialogResult.getPath() << " _ " << fileDialogResult.getName() << endl;
+    string mappingXmlFilePath = fileDialogResult.getPath();
+    
     // UI
     ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
     
@@ -552,16 +556,16 @@ void ofxMtlMapping2D::loadShapesList()
     // ----
 	//the string is printed at the top of the app
 	//to give the user some feedback
-	string feedBackMessage = "loading " + _mappingXmlFilePath;
+	string feedBackMessage = "loading " + mappingXmlFilePath;
 	ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     
 	//we load our settings file
 	//if it doesn't exist we can still make one
 	//by hitting the 's' key
-	if( _shapesListXML.loadFile(_mappingXmlFilePath) ){
-		feedBackMessage = _mappingXmlFilePath + " loaded!";
+	if( _shapesListXML.loadFile(mappingXmlFilePath) ){
+		feedBackMessage = mappingXmlFilePath + " loaded!";
 	}else{
-		feedBackMessage = "unable to load " + _mappingXmlFilePath + " check data/ folder";
+		feedBackMessage = "unable to load " + mappingXmlFilePath + " check data/ folder";
 	}
     ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     
@@ -695,6 +699,10 @@ void ofxMtlMapping2D::loadShapesList()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::saveShapesList()
 {
+    ofFileDialogResult fileDialogResult = ofSystemSaveDialog("Mname", "Mmessage");
+    cout << "SAVE: " << fileDialogResult.getPath() << " _ " << fileDialogResult.getName() << endl;
+    string mappingXmlFilePath = fileDialogResult.getPath();
+
     
     list<ofxMtlMapping2DShape*> pmShapesCopy;
     pmShapesCopy.resize (ofxMtlMapping2DShapes::pmShapes.size());
