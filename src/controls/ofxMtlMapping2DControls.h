@@ -74,7 +74,9 @@ class ofxMtlMapping2DControls
     
         void enable();
         void disable();
-        void toggle();
+        //void toggle();
+        void toggleVisible();
+        bool isVisible();
         bool isEnabled();
         bool isHit(int x, int y);
     
@@ -87,22 +89,36 @@ class ofxMtlMapping2DControls
     
         void unselectShapesToggles();
         void windowResized();
-
+    
     protected:
-        ofxUIScrollableCanvas *_toolsCanvas;
-        string _file;
-        
+
         static const int kSliderHeight = 16;
         static const int kSpacerHeight = 20;
         static const int kToggleSize = 24;
         static const int kBottomSpacerHeight = 100; // padding to be able to scroll until the end/bottom of the UI canvas
+    
+        ofxUICanvas *_toolsCanvas;
+        string _file;
         
-        bool getToggleValue(const string& name);
-        float getSliderValue(const string& name);
-        ofPoint get2DPadValue(const string& name);
+        vector<ofxUICanvas*> _uiSuperCanvases;
         
+        bool getButtonValue(ofxUICanvas* ui, const string& name);
+        
+        bool getToggleValue(ofxUICanvas* ui, const string& name);
+        void setToggleValue(ofxUICanvas* ui, const string& name, float value);
+        
+        float getSliderValue(ofxUICanvas* ui, const string& name);
+        void setSliderValue(ofxUICanvas* ui, const string& name, float value);
+    
+//        bool getToggleValue(const string& name);
+//        float getSliderValue(const string& name);
+//        ofPoint get2DPadValue(const string& name);
+    
     private:
-        ofxMtlMapping2DControls(int width, const string& file);
+        ofxMtlMapping2DControls(const string& file);
+        ~ofxMtlMapping2DControls();
+
+        string _rootPath;
 
         static ofxMtlMapping2DControls *_mapping2DControls;
         map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;

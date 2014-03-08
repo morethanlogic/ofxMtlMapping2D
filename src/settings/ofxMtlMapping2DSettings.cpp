@@ -1,5 +1,9 @@
 #include "ofxMtlMapping2DSettings.h"
 
+// ---
+int ofxMtlMapping2DSettings::outputWidth = 100;
+int ofxMtlMapping2DSettings::outputHeight = 100;
+
 // --- available / activated options
 const bool  ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled              = true;
 const bool  ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled       = true;
@@ -8,7 +12,7 @@ const bool  ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled     
 ofTrueTypeFont ofxMtlMapping2DSettings::infoFont;
 
 // ---
-float ofxMtlMapping2DSettings::gridDefaultNbCols = 2.0f;
-float ofxMtlMapping2DSettings::gridDefaultNbRows = 2.0f;
+int ofxMtlMapping2DSettings::gridDefaultNbCols = 2;
+int ofxMtlMapping2DSettings::gridDefaultNbRows = 2;
 
 

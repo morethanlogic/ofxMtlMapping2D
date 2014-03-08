@@ -35,7 +35,7 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, string uiXmlFilePath, int numSample)
+void ofxMtlMapping2D::init(int width, int height, string uiXmlFilePath, int numSample)
 {
     // The first we call ofxMtlMapping2DControls::mapping2DControls() we pass the xml file to use as param.
     ofxMtlMapping2DControls::mapping2DControls(uiXmlFilePath)->disable();
@@ -48,8 +48,7 @@ void ofxMtlMapping2D::init(int width, int height, string mappingXmlFilePath, str
     ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
     
     // ----
-    _mappingXmlFilePath = mappingXmlFilePath;
-    loadShapesList();
+    //loadShapesList();
     
     // ---
     addListeners();
@@ -456,7 +455,7 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 'm':
-            ofxMtlMapping2DControls::mapping2DControls()->toggle();
+            ofxMtlMapping2DControls::mapping2DControls()->toggleVisible();
             break;
             
         case 's':
@@ -758,7 +757,7 @@ void ofxMtlMapping2D::saveShapesList()
 	}
 	
 	//Save to file
-	newShapesListXML.saveFile(_mappingXmlFilePath);
+	newShapesListXML.saveFile(mappingXmlFilePath);
     ofLog(OF_LOG_NOTICE, "Status > settings saved to xml!");
 
 }
