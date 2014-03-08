@@ -39,6 +39,7 @@ Dependencies
 ------------
 * [ofxMSAInteractiveObject](https://github.com/memo/ofxMSAInteractiveObject)
 * [ofxUI](https://github.com/rezaali/ofxUI)
+* [ofxDetectDisplays](https://github.com/morethanlogic/ofxDetectDisplays)
 * ofxXmlSettings
 * homography.h by Arturo Castro (included in this repo)
 
