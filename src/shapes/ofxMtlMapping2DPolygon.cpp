@@ -4,6 +4,7 @@ ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::activePolygon         = NULL;
 ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
 int ofxMtlMapping2DPolygon::activeVertexId = -1;
 
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::resetActivePolygonVars(){
@@ -19,8 +20,9 @@ void ofxMtlMapping2DPolygon::resetActivePolygonVars(){
 //--------------------------------------------------------------
 ofxMtlMapping2DPolygon::ofxMtlMapping2DPolygon()
 {    
-    disableAllEvents();
-	enableMouseEvents();
+    _bMouseEventEnabled = false;
+    _bMouseGrabbed = false;
+    enable();
     
     // ----
     polyline = new ofPolyline();
@@ -227,9 +229,9 @@ void ofxMtlMapping2DPolygon::updatePolyline()
 }
 
 //--------------------------------------------------------------
-bool ofxMtlMapping2DPolygon::hitTest(int tx, int ty)
+bool ofxMtlMapping2DPolygon::hitTest(int tx, int ty) const
 {
-	if (polyline->inside(tx, ty)) {
+    if (polyline->inside(tx, ty)) {
         return true;
     } else {
         return false;
@@ -250,7 +252,7 @@ void ofxMtlMapping2DPolygon::select(int x, int y)
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::setAsActive()
 {
-	if (activePolygon != this) {
+    if (activePolygon != this) {
         previousActivePolygon = activePolygon;
         activePolygon = this;
         activeVertexId = -1;
@@ -366,52 +368,47 @@ void ofxMtlMapping2DPolygon::addPoint(int x, int y)
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::disable()
 {
+    if (!_bMouseEventEnabled) {
+        return;
+    }
+    
+    _bMouseEventEnabled = false;
     disableAllEvents();
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::enable()
 {
+    if (_bMouseEventEnabled) {
+        return;
+    }
+    
+    _bMouseEventEnabled = true;
+    
     disableAllEvents();
 	enableMouseEvents();
+    
+    _bMouseGrabbed = true;
 }
 
 #pragma mark -
 #pragma mark Interactive Obj Callback methods
 //--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onRollOver(int x, int y)
+void ofxMtlMapping2DPolygon::onPress(int x, int y, int button)
 {
+    _bMouseGrabbed = true;
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onRollOut()
-{
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onMouseMove(int x, int y)
-{
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onDragOver(int x, int y, int button)
-{    
-    if(ofxMtlMapping2DVertex::activeVertex)
-        return;
-
-    if(activePolygon == this) {
-        updatePosition(x - _grabAnchor.x, y - _grabAnchor.y);
-        _grabAnchor.set(x, y);
-	}
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DPolygon::onDragOutside(int x, int y, int button)
+void ofxMtlMapping2DPolygon::mouseDragged(int x, int y, int button)
 {
     if(ofxMtlMapping2DVertex::activeVertex)
         return;
     
-    if(activePolygon == this) {
+    if (!ofGetWindowRect().inside(x, y))
+        return;
+    
+    if(activePolygon == this && _bMouseGrabbed) {
         updatePosition(x - _grabAnchor.x, y - _grabAnchor.y);
         _grabAnchor.set(x, y);
 	}
@@ -420,10 +417,11 @@ void ofxMtlMapping2DPolygon::onDragOutside(int x, int y, int button)
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::onRelease(int x, int y, int button)
 {
-
+    _bMouseGrabbed = false;
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::onReleaseOutside(int x, int y, int button)
 {
+    _bMouseGrabbed = false;
 }

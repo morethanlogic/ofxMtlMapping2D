@@ -9,6 +9,7 @@ ofxMtlMapping2DVertex::ofxMtlMapping2DVertex()
 	disableAllEvents();
 	enableMouseEvents();
 	enabled = false;
+    _bMouseGrabbed = false;
     bIsOnAnEdge = true;
     edgeIndex = -1;
 	
@@ -135,34 +136,9 @@ void ofxMtlMapping2DVertex::down()
 #pragma mark -
 #pragma mark Interactive Obj Callback methods
 //--------------------------------------------------------------
-void ofxMtlMapping2DVertex::onRollOver(int x, int y) 
+void ofxMtlMapping2DVertex::mouseDragged(int x, int y, int button)
 {
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DVertex::onRollOut() 
-{
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DVertex::onMouseMove(int x, int y)
-{
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DVertex::onDragOver(int x, int y, int button) 
-{
-	if(activeVertex == this) {
-		this->x = x - width/2;
-		this->y = y - height/2;
-		updateCenter();
-	}
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DVertex::onDragOutside(int x, int y, int button) 
-{
-	if(activeVertex == this) {
+    if(activeVertex == this) {
 		this->x = x - width/2;
 		this->y = y - height/2;
 		updateCenter();
@@ -173,6 +149,7 @@ void ofxMtlMapping2DVertex::onDragOutside(int x, int y, int button)
 void ofxMtlMapping2DVertex::onPress(int x, int y, int button) 
 {
 	if (button == 0) {
+        _bMouseGrabbed = true;
 		activeVertex = this;
 	} else if (button == 2 && !isDefiningTectureCoord && ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled) {
 		toBeRemoved = true;
@@ -197,6 +174,7 @@ void ofxMtlMapping2DVertex::setAsActive()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::onRelease(int x, int y, int button) 
 {
+    _bMouseGrabbed = false;
 }
 
 //--------------------------------------------------------------
@@ -205,4 +183,6 @@ void ofxMtlMapping2DVertex::onReleaseOutside(int x, int y, int button)
 	if(activeVertex == this) {
 		activeVertex = NULL;
 	}
+    
+    _bMouseGrabbed = false;
 }
