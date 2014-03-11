@@ -16,8 +16,16 @@
 
 #include "mtlUtils.h"
 
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+enum MappingModeState
+{
+    MAPPING_LOCKED,
+    MAPPING_EDIT
+};
 
-//========================================================================
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 class ofxMtlMapping2D {
     
     public:    
@@ -32,16 +40,34 @@ class ofxMtlMapping2D {
         void unbind();
         void drawFbo();
         void draw();
-
+    
+        void setModeState(MappingModeState mappingModeState);
+        MappingModeState getModeState();
+    
         void mousePressed(ofMouseEventArgs &e);
         void keyPressed(ofKeyEventArgs &e);
         void windowResized(ofResizeEventArgs &e);
 
         vector<ofPolyline*> getMaskShapes();
         void chessBoard(int nbOfCol = 10);
+    
+        bool bSaveShapes;
+        bool bLoadShapes;
+        bool bCreateQuad;
+        bool bCreateGrid;
+        bool bCreateTriangle;
+        bool bCreateMask;
+    
+        bool bDeleteShape;
+    
+        bool bSelectedShapeChanged;
+        int selectedShapeId;
+
 
     private:
         //string _mappingXmlFilePath;
+        MappingModeState _mappingModeState;
+    
         ofFbo _fbo;
         int _numSample;
     
@@ -50,10 +76,10 @@ class ofxMtlMapping2D {
 
         void render();
     
-        void createQuad(float _x, float _y);
-        void createGrid(float _x, float _y);
-        void createTriangle(float _x, float _y);
-        void createMask(float _x, float _y);
+        void createQuad();
+        void createGrid();
+        void createTriangle();
+        void createMask();
         void deleteShape();
     
         void loadShapesList();

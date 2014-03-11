@@ -1,4 +1,5 @@
 #include "ofxMtlMapping2DShape.h"
+#include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DGrid.h"
 
@@ -61,7 +62,7 @@ void ofxMtlMapping2DShape::update()
     }
     
     if (activeShape == this) {
-        if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
             if (shapeType == MAPPING_2D_SHAPE_QUAD || shapeType == MAPPING_2D_SHAPE_GRID) {
                 inputPolygon->update(true);
             } else {
@@ -79,19 +80,17 @@ void ofxMtlMapping2DShape::draw()
     ofEnableAlphaBlending();
         
     // ---- OUTPUT MODE
-    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+    if(ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
         _super::draw();
 
     // ---- INPUT MODE
-    } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
+    } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
         if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
             inputPolygon->draw();
         }
     }
     
-    if(ofxMtlMapping2DControls::mapping2DControls()->showShapesId())  {
-        drawID();
-    }
+    drawID();
     
 	ofDisableAlphaBlending();
 }
@@ -101,11 +100,11 @@ void ofxMtlMapping2DShape::draw()
 void ofxMtlMapping2DShape::drawID() 
 {
     // ---- OUTPUT MODE
-    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {        
+    if(ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
         _super::drawID();
     
     // ---- INPUT MODE
-    } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
+    } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
         if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
             inputPolygon->drawID();
         }
@@ -116,7 +115,7 @@ void ofxMtlMapping2DShape::drawID()
 void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
 {
     // ---- OUTPUT MODE
-    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+    if(ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
         if (activeShape != this) {
             // ----
             if (shapeType == MAPPING_2D_SHAPE_MASK) {
@@ -145,7 +144,7 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
         }
     
     // ---- INPUT MODE
-    } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
+    } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
         if (activeShape != this) {
             previousActiveShape = activeShape;
             activeShape = this;

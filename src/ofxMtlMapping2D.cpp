@@ -1,4 +1,5 @@
 #include "ofxMtlMapping2D.h"
+#include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
@@ -37,8 +38,22 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::init(int width, int height, string uiXmlFilePath, int numSample)
 {
+    _mappingModeState = MAPPING_LOCKED;
+
+    bSaveShapes = false;
+    bLoadShapes = false;
+    bCreateQuad = false;
+    bCreateGrid = false;
+    bCreateTriangle = false;
+    bCreateMask = false;
+    
+    bDeleteShape = false;
+    
+    bSelectedShapeChanged = false;
+    selectedShapeId = -1;
+    
     // The first we call ofxMtlMapping2DControls::mapping2DControls() we pass the xml file to use as param.
-    ofxMtlMapping2DControls::mapping2DControls(uiXmlFilePath)->disable();
+    ofxMtlMapping2DControls::mapping2DControls(this, uiXmlFilePath)->disable();
     
     // ----
     _numSample = numSample;
@@ -47,88 +62,92 @@ void ofxMtlMapping2D::init(int width, int height, string uiXmlFilePath, int numS
     // ----
     ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
     
-    // ----
-    //loadShapesList();
-    
     // ---
     addListeners();
     
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2D::setModeState(MappingModeState mappingModeState)
+{
+    _mappingModeState = mappingModeState;
+}
+
+//--------------------------------------------------------------
+MappingModeState ofxMtlMapping2D::getModeState()
+{
+    return _mappingModeState;
+}
+
+//--------------------------------------------------------------
 void ofxMtlMapping2D::update()
 {    
-    // ---- save mapping to xml
-    if(ofxMtlMapping2DControls::mapping2DControls()->saveMapping()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetSaveMapping();
-        saveShapesList();
-    }
     
-    
-    // ---- load mapping from xml
-    if(ofxMtlMapping2DControls::mapping2DControls()->loadMapping()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetLoadMapping();
-        loadShapesList();
-    }
-    
-    
-    
-    // ----
-    // Editing or not !?
-    if(!ofxMtlMapping2DControls::mapping2DControls()->editShapes())
-        return;
-    
-    
-    // ----
-    // Create a new shape
-    if(ofxMtlMapping2DControls::mapping2DControls()->createNewQuad()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
-        createQuad(ofGetWidth()/2, ofGetHeight()/2);
+    if (_mappingModeState == MAPPING_LOCKED) {
         return;
     }
-    
-    if(ofxMtlMapping2DControls::mapping2DControls()->createNewGrid()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
-        createGrid(ofGetWidth()/2, ofGetHeight()/2);
-        return;
-    }
-    
-    if(ofxMtlMapping2DControls::mapping2DControls()->createNewTriangle()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
-        createTriangle(ofGetWidth()/2, ofGetHeight()/2);
-        return;
-    }
-    
-    if(ofxMtlMapping2DControls::mapping2DControls()->createNewMask()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetCreateNewShape();
-        createMask(ofGetWidth()/2, ofGetHeight()/2);
-        return;
-    }
-    
-    // ----
-    // Selected shape with UI
-    if(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeChanged()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetSelectedShapeChangedFlag();
-
-        list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(ofxMtlMapping2DControls::mapping2DControls()->selectedShapeId());
-        if(it != ofxMtlMapping2DShapes::pmShapes.end()) {
-            ofxMtlMapping2DShape* shape = *it;
-            shape->setAsActiveShape(true);
-            
-            // Put active shape at the top of the list
-            ofxMtlMapping2DShapes::pmShapes.push_front(shape);
-            ofxMtlMapping2DShapes::pmShapes.erase(it);
-        }
-    }
-
-    
-    // ----
-    // We changed of mode - Output / Input
-    if(ofxMtlMapping2DControls::mapping2DControls()->mappingModeChanged()) {
-        ofxMtlMapping2DControls::mapping2DControls()->resetMappingChangedFlag();        
         
-        // ---- OUTPUT MODE
-        if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+    // ---
+    // Edit Mode Actions
+    
+    // Load and Save mapping
+    if (bSaveShapes) {
+        saveShapesList();
+        return;
+    }
+    else if (bLoadShapes) {
+        loadShapesList();
+        return;
+    }
+    
+    // Create new shapes
+    else if (bCreateQuad) {
+        bCreateQuad = false;
+        createQuad();
+        return;
+    }
+    else if (bCreateGrid) {
+        bCreateGrid = false;
+        createGrid();
+        return;
+    }
+    else if (bCreateTriangle) {
+        bCreateTriangle = false;
+        createTriangle();
+        return;
+    }
+    else if (bCreateMask) {
+        bCreateMask = false;
+        createMask();
+        return;
+    }
+    
+    else if (bDeleteShape) {
+        bDeleteShape = false;
+        deleteShape();
+        return;
+    }
+    
+    // ---
+    // Output Mode
+    switch (ofxMtlMapping2DGlobal::getEditView()) {
+        case MAPPING_CHANGE_TO_INPUT_VIEW:
+        {
+            ofxMtlMapping2DGlobal::setEditView(MAPPING_INPUT_VIEW);
+            
+            list<ofxMtlMapping2DShape*>::iterator it;
+            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+                ofxMtlMapping2DShape* shape = *it;
+                shape->setAsIdle();
+                shape->inputPolygon->enable();
+            }
+            break;
+        }
+            
+        case MAPPING_CHANGE_TO_OUTPUT_VIEW:
+        {
+            ofxMtlMapping2DGlobal::setEditView(MAPPING_OUTPUT_VIEW);
+            
             list<ofxMtlMapping2DShape*>::iterator it;
             for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
                 ofxMtlMapping2DShape* shape = *it;
@@ -139,19 +158,27 @@ void ofxMtlMapping2D::update()
                     shape->inputPolygon->setAsIdle();
                 }
             }
-        // ---- INPUT MODE
-        } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            list<ofxMtlMapping2DShape*>::iterator it;
-            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
-                ofxMtlMapping2DShape* shape = *it;
-                shape->setAsIdle();
-                shape->inputPolygon->enable();
-            }
+            break;
         }
-    
     }
     
-    // ----
+    // ---
+    // Selected shape with UI
+    if (bSelectedShapeChanged) {
+        bSelectedShapeChanged = false;
+
+        list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(selectedShapeId);
+        if(it != ofxMtlMapping2DShapes::pmShapes.end()) {
+            ofxMtlMapping2DShape* shape = *it;
+            shape->setAsActiveShape(true);
+            
+            // Put active shape at the top of the list
+            ofxMtlMapping2DShapes::pmShapes.push_front(shape);
+            ofxMtlMapping2DShapes::pmShapes.erase(it);
+        }
+    }
+    
+    // ---
     // Update the Shapes
     list<ofxMtlMapping2DShape*>::iterator it;
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
@@ -166,20 +193,18 @@ void ofxMtlMapping2D::update()
 void ofxMtlMapping2D::draw()
 {
     
-    if(ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
-        // ---- OUTPUT MODE
-        if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
-            render();
-
-          
-        // ---- INPUT MODE
-        } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            // ----
-            drawFbo(); 
+    if (_mappingModeState == MAPPING_EDIT) {
+        switch (ofxMtlMapping2DGlobal::getEditView()) {
+            case MAPPING_INPUT_VIEW:
+                drawFbo();
+                break;
+                
+            case MAPPING_OUTPUT_VIEW:
+                render();
+                break;
         }
         
-        
-        // ----
+        // --- Draw all shapes
         list<ofxMtlMapping2DShape*>::iterator it;
         for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
             ofxMtlMapping2DShape* shape = *it;
@@ -256,7 +281,7 @@ void ofxMtlMapping2D::render()
 #pragma mark -
 #pragma mark Shapes Related
 //--------------------------------------------------------------
-void ofxMtlMapping2D::createQuad(float _x, float _y)
+void ofxMtlMapping2D::createQuad()
 {
     ofxMtlMapping2DShape::nextShapeId++;
 
@@ -269,7 +294,7 @@ void ofxMtlMapping2D::createQuad(float _x, float _y)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::createGrid(float _x, float _y)
+void ofxMtlMapping2D::createGrid()
 {
     ofxMtlMapping2DShape::nextShapeId++;
     
@@ -282,7 +307,7 @@ void ofxMtlMapping2D::createGrid(float _x, float _y)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::createTriangle(float _x, float _y)
+void ofxMtlMapping2D::createTriangle()
 {
     ofxMtlMapping2DShape::nextShapeId++;
 
@@ -295,7 +320,7 @@ void ofxMtlMapping2D::createTriangle(float _x, float _y)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::createMask(float _x, float _y)
+void ofxMtlMapping2D::createMask()
 {
     ofxMtlMapping2DShape::nextShapeId++;
     
@@ -326,18 +351,8 @@ void ofxMtlMapping2D::deleteShape()
     }
 }
 
-//--------------------------------------------------------------
-//void ofxMtlMapping2D::disableAllShapes()
-//{
-//    // Disable all the shapes.
-//    list<ofxMtlMapping2DShape*>::iterator it;
-//    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
-//        ofxMtlMapping2DShape* shape = *it;
-//        shape->disable();
-//    }
-//}
-
 #pragma mark -
+#pragma mark Add / Remove Listeners
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::addListeners() {
@@ -357,8 +372,6 @@ void ofxMtlMapping2D::removeListeners() {
 #pragma mark -
 #pragma mark Events
 
-void mousePressed(ofMouseEventArgs &e);
-void keyPressed(ofKeyEventArgs &e);
 //--------------------------------------------------------------
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
@@ -379,7 +392,7 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     if (ofxMtlMapping2DControls::mapping2DControls()->isHit(eX, eY))
         return;
     
-    if(!ofxMtlMapping2DControls::mapping2DControls()->editShapes())
+    if(_mappingModeState == MAPPING_LOCKED)
         return;
     
     
@@ -395,20 +408,25 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         bool grabbedOne = false;
-        if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
-            if(shape->hitTest(eX, eY)) {
-                grabbedOne = true;
-                shape->select(eX, eY);
-                shape->enable();
-            }
-        } else if (ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_INPUT) {
-            if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
-                if(shape->inputPolygon->hitTest(eX, eY)) {
-                    grabbedOne = true;
-                    shape->inputPolygon->select(eX, eY);
-                    shape->inputPolygon->enable();
+        
+        switch (ofxMtlMapping2DGlobal::getEditView()) {
+            case MAPPING_INPUT_VIEW:
+                if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+                    if(shape->inputPolygon->hitTest(eX, eY)) {
+                        grabbedOne = true;
+                        shape->inputPolygon->select(eX, eY);
+                        shape->inputPolygon->enable();
+                    }
                 }
-            }
+                break;
+                
+            case MAPPING_OUTPUT_VIEW:
+                if(shape->hitTest(eX, eY)) {
+                    grabbedOne = true;
+                    shape->select(eX, eY);
+                    shape->enable();
+                }
+                break;
         }
         
         if(grabbedOne) {
@@ -421,7 +439,7 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     }
     
     // ----
-    if(ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled && ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+    if(ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled && ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
         // Add vertex to the selected shape
         if(ofxMtlMapping2DShape::activeShape) {
             // Only if the shape is a Mask
@@ -439,8 +457,6 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     
 }
 
-#pragma mark -
-#pragma mark Keyboard event
 //--------------------------------------------------------------
 void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 {
@@ -465,7 +481,7 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             
         case 356:
             //left
-            if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
+            if (_mappingModeState == MAPPING_EDIT) {
                 if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->left();
                 }
@@ -473,7 +489,7 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
                 
         case 357: //up
-            if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
+            if (_mappingModeState == MAPPING_EDIT) {
                 if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->up();
                 }
@@ -481,7 +497,7 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
         
         case 358: //right
-            if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
+            if (_mappingModeState == MAPPING_EDIT) {
                 if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->right();
                 }
@@ -489,7 +505,7 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
                 
         case 359: //down
-            if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
+            if (_mappingModeState == MAPPING_EDIT) {
                 if(ofxMtlMapping2DShape::activeShape && ofxMtlMapping2DShape::activeVertexId >=0) {
                     ofxMtlMapping2DVertex::activeVertex->down();
                 }
@@ -497,24 +513,15 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 127:
-            deleteShape();
+            bDeleteShape = true;
             break;
             
         case 8:
-            deleteShape();
+            bDeleteShape = true;
             break;
             
-//        case 'b':
-//            if ((ofxMtlMapping2DShape::activeShapeId + 1) >= ofxMtlMapping2DShapes::pmShapes.size()) {
-//                ofxMtlMapping2DShapes::pmShapes[0]->setAsActiveShape();
-//            } else {
-//                ofxMtlMapping2DShapes::pmShapes[(ofxMtlMapping2DShape::activeShapeId + 1)]->setAsActiveShape();
-//            }
-//        break;
-
-            
         case 'n':
-            if (ofxMtlMapping2DControls::mapping2DControls()->editShapes()) {
+            if (_mappingModeState == MAPPING_EDIT) {
                 if(ofxMtlMapping2DShape::activeShape) {
                     ofxMtlMapping2DShape::activeVertexId++;
                     ofxMtlMapping2DShape::activeVertexId %= ofxMtlMapping2DShape::activeShape->vertices.size();

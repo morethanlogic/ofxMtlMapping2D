@@ -1,4 +1,5 @@
 #include "ofxMtlMapping2DGrid.h"
+#include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DControls.h"
 
 
@@ -118,7 +119,7 @@ void ofxMtlMapping2DGrid::updateVertices(){
 void ofxMtlMapping2DGrid::draw()
 {
     // ---- OUTPUT MODE
-    if(ofxMtlMapping2DControls::mapping2DControls()->mappingMode() == MAPPING_MODE_OUTPUT) {
+    if(ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
         ofSetColor(ofColor::white);
         controlMesh.drawWireframe();
     }
