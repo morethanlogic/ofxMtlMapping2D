@@ -547,7 +547,6 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 void ofxMtlMapping2D::loadShapesList()
 {
     ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
-    cout << "LOAD: " << fileDialogResult.getPath() << " _ " << fileDialogResult.getName() << endl;
     string mappingXmlFilePath = fileDialogResult.getPath();
     
     // UI
@@ -706,8 +705,7 @@ void ofxMtlMapping2D::loadShapesList()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::saveShapesList()
 {
-    ofFileDialogResult fileDialogResult = ofSystemSaveDialog("Mname", "Mmessage");
-    cout << "SAVE: " << fileDialogResult.getPath() << " _ " << fileDialogResult.getName() << endl;
+    ofFileDialogResult fileDialogResult = ofSystemSaveDialog("", "Save Shapes List");
     string mappingXmlFilePath = fileDialogResult.getPath();
 
     
@@ -717,7 +715,6 @@ void ofxMtlMapping2D::saveShapesList()
     pmShapesCopy.sort(Comparator());
 
     ofxXmlSettings newShapesListXML;
-	int shapeCounter = 0;
 	
 	newShapesListXML.addTag("root");
 	newShapesListXML.pushTag("root", 0);
@@ -767,9 +764,7 @@ void ofxMtlMapping2D::saveShapesList()
             newShapesListXML.popTag();
 		}
 		newShapesListXML.popTag();
-		
-		shapeCounter++;
-	}
+    }
 	
 	//Save to file
 	newShapesListXML.saveFile(mappingXmlFilePath);
