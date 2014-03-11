@@ -4,10 +4,10 @@
 void testApp::setup(){
     ofSetFrameRate(30);
     ofBackground(50);
-    
+
     // ----
     _mapping = new ofxMtlMapping2D();
-    _mapping->init(ofGetWidth(), ofGetHeight(), "mapping/xml/shapes.xml", "mapping/controls/mapping.xml");
+    _mapping->init(ofGetWidth(), ofGetHeight(), "mapping/controls/mapping.xml");
 }
 
 //--------------------------------------------------------------
