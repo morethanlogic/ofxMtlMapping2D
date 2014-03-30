@@ -41,6 +41,8 @@ class ofxMtlMapping2DControls
     
         void toolsUiEvent(ofxUIEventArgs &event);
         void settingsUiEvent(ofxUIEventArgs &event);
+        void displaysUiEvent(ofxUIEventArgs &event);
+
         void shapesListUiEvent(ofxUIEventArgs &event);
         void gridSettingsListUiEvent(ofxUIEventArgs &event);
     
@@ -69,6 +71,8 @@ class ofxMtlMapping2DControls
         void unselectShapesToggles();
         void windowResized();
     
+        void displayConfigurationChanged();
+    
     
     private:
     
@@ -86,6 +90,7 @@ class ofxMtlMapping2DControls
     
         ofxUICanvas *_toolsCanvas;
         ofxUISuperCanvas* _settingsUI;
+        ofxUISuperCanvas* _displaysUI;
         ofxUIScrollableCanvas *_shapesListCanvas;
         ofxUICanvas *_gridSettingsCanvas;
 
@@ -105,6 +110,4 @@ class ofxMtlMapping2DControls
         ofImage _fullscreenExpandIcon;
         ofImage _fullscreenContractIcon;
     
-        ofxDetectDisplays _detectDisplays;
-
 };

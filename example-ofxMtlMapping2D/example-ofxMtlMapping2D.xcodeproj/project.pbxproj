@@ -339,7 +339,6 @@
 		49f13bb1610cd169054b0f236816089a /* src */ = {
 			isa = PBXGroup;
 			children = (
-				1f1ebf8600aecade4c2ed8dc0fa69716 /* controls */,
 				37a990a3683224be7d55a36e4698ac65 /* ofxMtlMapping2D.cpp */,
 				513de36722504290550c47ecf743a988 /* ofxMtlMapping2D.h */,
 				5a51289d334d8a44e1d2c71bd6051a03 /* ofxMtlMapping2DGlobal.cpp */,
@@ -347,6 +346,7 @@
 				958fdb71f0a82edc91b68535096fa21c /* ofxMtlMapping2DShapes.cpp */,
 				5e3724794154b2902d9499c57de0aa41 /* ofxMtlMapping2DShapes.h */,
 				46a0531d7388bbcb22aa616b2cac6595 /* ofxMtlMapping2DShapeType.h */,
+				1f1ebf8600aecade4c2ed8dc0fa69716 /* controls */,
 				e6d9edd5c9e95accb18ebc8b02569c0c /* settings */,
 				f1b1af98b46aa9c30e35e807a64bc0df /* shapes */,
 				7a0753c9b53f58bd02042f8ad3b52d87 /* utils */,

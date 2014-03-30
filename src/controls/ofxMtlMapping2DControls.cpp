@@ -50,16 +50,24 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D,
     uiColor.set(0, 210, 255, 130);
     ofColor uiColorB;
     uiColorB.set(0, 210, 255, 90);
+    
+    
+#if defined(TARGET_OSX)
+    // You should only use the shared instance of ofxDetectDisplays,
+    // otherwise event registration will be messed up.
+	// Events only works on Mac for now.
+    ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
+#endif
 
-    _detectDisplays.detectDisplays();
+
     
-    int maxDisplayWidth = 0;
-    int maxDisplayHeight = 0;
-    
-    for (int i=0; i<_detectDisplays.getDisplays().size(); i++) {
-        maxDisplayWidth = MAX(_detectDisplays.getDisplays()[i]->width, maxDisplayWidth);
-        maxDisplayHeight = MAX(_detectDisplays.getDisplays()[i]->height, maxDisplayHeight);
-	}
+//    int maxDisplayWidth = 0;
+//    int maxDisplayHeight = 0;
+//    
+//    for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
+//        maxDisplayWidth = MAX(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width, maxDisplayWidth);
+//        maxDisplayHeight = MAX(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height, maxDisplayHeight);
+//	}
     
     // --- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
@@ -112,23 +120,33 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D,
     _settingsUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
     _settingsUI->setColorBack(uiColor);
     
-    
     _settingsUI->addSpacer();
     _settingsUI->addButton("SAVE", false);
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     _settingsUI->addButton("LOAD", false);
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     
-    vector<string> displayNames;
-    for (int i=0; i<_detectDisplays.getDisplays().size(); i++) {
-        displayNames.push_back(ofToString(_detectDisplays.getDisplays()[i]->width) + "x" + ofToString(_detectDisplays.getDisplays()[i]->height));
-    }
-    _settingsUI->addRadio("DISPLAYS", displayNames);
-    
+    _settingsUI->addSpacer();
+    _settingsUI->addButton("DETECT DISPLAYS", false);
+    _settingsUI->addSpacer();
+
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
     _settingsUI->disable();
     _uiSuperCanvases.push_back(_settingsUI);
+    
+    // ---
+    // Displays Settings UI
+    _displaysUI = new ofxUISuperCanvas("DISPLAYS SETTINGS", OFX_UI_FONT_SMALL);
+    _displaysUI->setPosition(ofGetWindowWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
+    _displaysUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
+    _displaysUI->setColorBack(uiColor);
+    
+    displayConfigurationChanged();
+    
+    ofAddListener(_displaysUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
+    _displaysUI->disable();
+    _uiSuperCanvases.push_back(_displaysUI);
     
     
     // ---
@@ -201,8 +219,10 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     else if (name == kSettingMappingSettings) {
         if(getToggleValue(_toolsCanvas, name)) {
             _settingsUI->enable();
+            _displaysUI->enable();
         } else {
             _settingsUI->disable();
+            _displaysUI->disable();
         }
     }
     
@@ -259,11 +279,28 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
+    
+    if(name == "DETECT DISPLAYS") {
+        if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
+            cout << "DETECT DISPLAYS" << endl;
+
+            ofxDetectDisplaysSharedInstance().detectDisplays();
+            
+        } else {
+            cout << "BUILD UI DISPLAYS" << endl;
+            displayConfigurationChanged();
+        }
+    }
+}
+    
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
 
     if(name == "DISPLAYS") {
         ofxUIRadio *radio = (ofxUIRadio *) event.widget;
-        cout << radio->getName() << " value: " << radio->getValue() << " active name: " << radio->getActiveName() << endl;
-        _detectDisplays.fullscreenWindowOnDisplay(radio->getValue());
+        ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(radio->getValue());
     }
 }
 
@@ -425,7 +462,25 @@ void ofxMtlMapping2DControls::windowResized()
     _toolsCanvas->setHeight(ofGetHeight());
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
+    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
 
+}
+
+#pragma mark -
+#pragma mark Settings UI
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::displayConfigurationChanged()
+{
+    _displaysUI->removeWidgets();
+    
+    vector<string> displayNames;
+    for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
+        displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height));
+    }
+    _displaysUI->addRadio("DISPLAYS", displayNames);
+    
+    _displaysUI->autoSizeToFitWidgets();
 }
 
 
