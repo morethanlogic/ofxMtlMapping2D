@@ -51,12 +51,13 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D,
     ofColor uiColorB;
     uiColorB.set(0, 210, 255, 90);
     
-    
+#if defined(USE_OFX_DETECT_DISPLAYS)
 #if defined(TARGET_OSX)
     // You should only use the shared instance of ofxDetectDisplays,
     // otherwise event registration will be messed up.
 	// Events only works on Mac for now.
     ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
+#endif
 #endif
 
 
@@ -125,16 +126,19 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D,
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     _settingsUI->addButton("LOAD", false);
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
+ 
+#if defined(USE_OFX_DETECT_DISPLAYS)
     _settingsUI->addSpacer();
     _settingsUI->addButton("DETECT DISPLAYS", false);
     _settingsUI->addSpacer();
+#endif
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
     _settingsUI->disable();
     _uiSuperCanvases.push_back(_settingsUI);
-    
+
+#if defined(USE_OFX_DETECT_DISPLAYS)
     // ---
     // Displays Settings UI
     _displaysUI = new ofxUISuperCanvas("DISPLAYS SETTINGS", OFX_UI_FONT_SMALL);
@@ -147,7 +151,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D,
     ofAddListener(_displaysUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
     _displaysUI->disable();
     _uiSuperCanvases.push_back(_displaysUI);
-    
+#endif
     
     // ---
     // Shapes List UI    
@@ -219,10 +223,14 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     else if (name == kSettingMappingSettings) {
         if(getToggleValue(_toolsCanvas, name)) {
             _settingsUI->enable();
+#if defined(USE_OFX_DETECT_DISPLAYS)
             _displaysUI->enable();
+#endif
         } else {
             _settingsUI->disable();
+#if defined(USE_OFX_DETECT_DISPLAYS)
             _displaysUI->disable();
+#endif
         }
     }
     
@@ -275,11 +283,13 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
+#if defined(USE_OFX_DETECT_DISPLAYS)
     if(name == "DETECT DISPLAYS") {
         if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
             cout << "DETECT DISPLAYS" << endl;
@@ -291,8 +301,11 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
             displayConfigurationChanged();
         }
     }
+#endif
+
 }
-    
+
+#if defined(USE_OFX_DETECT_DISPLAYS)
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
 {
@@ -303,6 +316,7 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
         ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(radio->getValue());
     }
 }
+#endif
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
@@ -462,12 +476,15 @@ void ofxMtlMapping2DControls::windowResized()
     _toolsCanvas->setHeight(ofGetHeight());
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
+#if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
-
+#endif
 }
 
 #pragma mark -
 #pragma mark Settings UI
+
+#if defined(USE_OFX_DETECT_DISPLAYS)
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displayConfigurationChanged()
@@ -483,6 +500,7 @@ void ofxMtlMapping2DControls::displayConfigurationChanged()
     _displaysUI->autoSizeToFitWidgets();
 }
 
+#endif
 
 #pragma mark -
 #pragma mark Grid settings

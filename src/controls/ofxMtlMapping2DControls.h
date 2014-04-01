@@ -8,7 +8,9 @@
 #include "ofxUI.h"
 #include "ofxMtlMapping2DShapeType.h"
 
+#if defined(USE_OFX_DETECT_DISPLAYS)
 #include "ofxDetectDisplays.h"
+#endif
 
 #define kControlsMappingToolsPanelWidth 33
 #define kControlsMappingShapesListPanelWidth 150
@@ -35,79 +37,83 @@
 class ofxMtlMapping2DControls
 {
     
-    public:
-        static ofxMtlMapping2DControls * mapping2DControls(ofxMtlMapping2D * mtlMapping2D, string xmlFilePath);
-        static ofxMtlMapping2DControls * mapping2DControls();
-    
-        void toolsUiEvent(ofxUIEventArgs &event);
-        void settingsUiEvent(ofxUIEventArgs &event);
-        void displaysUiEvent(ofxUIEventArgs &event);
+public:
+    static ofxMtlMapping2DControls * mapping2DControls(ofxMtlMapping2D * mtlMapping2D, string xmlFilePath);
+    static ofxMtlMapping2DControls * mapping2DControls();
 
-        void shapesListUiEvent(ofxUIEventArgs &event);
-        void gridSettingsListUiEvent(ofxUIEventArgs &event);
-    
-        void showGridSettingsCanvas();
-        void hideGridSettingsCanvas();
-    
-        void save();
-        void load();
-    
-        void showInputModeToggle();
-        void hideInputModeToggle();
-    
-        void enable();
-        void disable();
+    void toolsUiEvent(ofxUIEventArgs &event);
+    void settingsUiEvent(ofxUIEventArgs &event);
 
-        void toggleVisible();
-        bool isVisible();
-        bool isEnabled();
-        bool isHit(int x, int y);
-    
-        void addShapeToList(int shapeID, int shapeType);
-        void clearShapesList();
-    
-        void setAsActiveShapeWithId(int shapeID, int shapeType);
-    
-        void unselectShapesToggles();
-        void windowResized();
-    
-        void displayConfigurationChanged();
-    
-    
-    private:
-    
-        ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D, const string& file);
-        ~ofxMtlMapping2DControls();
-    
-        static ofxMtlMapping2DControls *_mapping2DControls;
+    void shapesListUiEvent(ofxUIEventArgs &event);
+    void gridSettingsListUiEvent(ofxUIEventArgs &event);
 
-        ofxMtlMapping2D * _mtlMapping2D;
-    
-        string _rootPath;
-        string _file;
-    
-        vector<ofxUICanvas*> _uiSuperCanvases;
-    
-        ofxUICanvas *_toolsCanvas;
-        ofxUISuperCanvas* _settingsUI;
-        ofxUISuperCanvas* _displaysUI;
-        ofxUIScrollableCanvas *_shapesListCanvas;
-        ofxUICanvas *_gridSettingsCanvas;
+    void showGridSettingsCanvas();
+    void hideGridSettingsCanvas();
 
-        void setUIShapeEditingState(bool isOn);
-        void resizeShapeList();
-        void refreshShapesListForMappingView(MappingEditView currView);
+    void save();
+    void load();
+
+    void showInputModeToggle();
+    void hideInputModeToggle();
+
+    void enable();
+    void disable();
+
+    void toggleVisible();
+    bool isVisible();
+    bool isEnabled();
+    bool isHit(int x, int y);
+
+    void addShapeToList(int shapeID, int shapeType);
+    void clearShapesList();
+
+    void setAsActiveShapeWithId(int shapeID, int shapeType);
+
+    void unselectShapesToggles();
+    void windowResized();
+
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    void displayConfigurationChanged();
+    void displaysUiEvent(ofxUIEventArgs &event);
+#endif
+
+private:
+
+    ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D, const string& file);
+    ~ofxMtlMapping2DControls();
+
+    static ofxMtlMapping2DControls *_mapping2DControls;
+
+    ofxMtlMapping2D * _mtlMapping2D;
+
+    string _rootPath;
+    string _file;
+
+    vector<ofxUICanvas*> _uiSuperCanvases;
+
+    ofxUICanvas *_toolsCanvas;
+    ofxUISuperCanvas* _settingsUI;
+    ofxUIScrollableCanvas *_shapesListCanvas;
+    ofxUICanvas *_gridSettingsCanvas;
     
-        bool getButtonValue(ofxUICanvas* ui, const string& name);
-        
-        bool getToggleValue(ofxUICanvas* ui, const string& name);
-        void setToggleValue(ofxUICanvas* ui, const string& name, float value);
-        
-        float getSliderValue(ofxUICanvas* ui, const string& name);
-        void setSliderValue(ofxUICanvas* ui, const string& name, float value);
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    ofxUISuperCanvas* _displaysUI;
+#endif
+
+    void setUIShapeEditingState(bool isOn);
+    void resizeShapeList();
+    void refreshShapesListForMappingView(MappingEditView currView);
+
+    bool getButtonValue(ofxUICanvas* ui, const string& name);
     
-        map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
-        ofImage _fullscreenExpandIcon;
-        ofImage _fullscreenContractIcon;
+    bool getToggleValue(ofxUICanvas* ui, const string& name);
+    void setToggleValue(ofxUICanvas* ui, const string& name, float value);
+    
+    float getSliderValue(ofxUICanvas* ui, const string& name);
+    void setSliderValue(ofxUICanvas* ui, const string& name, float value);
+
+    map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
+    ofImage _fullscreenExpandIcon;
+    ofImage _fullscreenContractIcon;
     
 };
