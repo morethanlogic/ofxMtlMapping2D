@@ -28,63 +28,63 @@ enum MappingModeState
 //--------------------------------------------------------------
 class ofxMtlMapping2D {
     
-    public:    
-        ofxMtlMapping2D();
-        virtual ~ofxMtlMapping2D();
-        
-//        void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
-        void init(int width, int height, string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
-        void update();
-        
-        void bind();
-        void unbind();
-        void drawFbo();
-        void draw();
+public:
+    ofxMtlMapping2D();
+    virtual ~ofxMtlMapping2D();
     
-        void setModeState(MappingModeState mappingModeState);
-        MappingModeState getModeState();
+//  void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
+    void init(int width, int height, string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
+    void update();
     
-        void mousePressed(ofMouseEventArgs &e);
-        void keyPressed(ofKeyEventArgs &e);
-        void windowResized(ofResizeEventArgs &e);
+    void bind();
+    void unbind();
+    void drawFbo();
+    void draw();
 
-        vector<ofPolyline*> getMaskShapes();
-        void chessBoard(int nbOfCol = 10);
-    
-        bool bSaveShapes;
-        bool bLoadShapes;
-        bool bCreateQuad;
-        bool bCreateGrid;
-        bool bCreateTriangle;
-        bool bCreateMask;
-    
-        bool bDeleteShape;
-    
-        bool bSelectedShapeChanged;
-        int selectedShapeId;
+    void setModeState(MappingModeState mappingModeState);
+    MappingModeState getModeState();
+
+    void mousePressed(ofMouseEventArgs &e);
+    void keyPressed(ofKeyEventArgs &e);
+    void windowResized(ofResizeEventArgs &e);
+
+    vector<ofPolyline*> getMaskShapes();
+    void chessBoard(int nbOfCol = 10);
+
+    bool bSaveShapes;
+    bool bLoadShapes;
+    bool bCreateQuad;
+    bool bCreateGrid;
+    bool bCreateTriangle;
+    bool bCreateMask;
+
+    bool bDeleteShape;
+
+    bool bSelectedShapeChanged;
+    int selectedShapeId;
 
 
-    private:
-        //string _mappingXmlFilePath;
-        MappingModeState _mappingModeState;
-    
-        ofFbo _fbo;
-        int _numSample;
-    
-        ofxXmlSettings _shapesListXML;
-        list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
+private:
+    //string _mappingXmlFilePath;
+    MappingModeState _mappingModeState;
 
-        void render();
-    
-        void createQuad();
-        void createGrid();
-        void createTriangle();
-        void createMask();
-        void deleteShape();
-    
-        void loadShapesList();
-        void saveShapesList();
-    
-        void addListeners();
-        void removeListeners();
+    ofFbo _fbo;
+    int _numSample;
+
+    ofxXmlSettings _shapesListXML;
+    list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
+
+    void render();
+
+    void createQuad();
+    void createGrid();
+    void createTriangle();
+    void createMask();
+    void deleteShape();
+
+    void loadShapesList();
+    void saveShapesList();
+
+    void addListeners();
+    void removeListeners();
 };

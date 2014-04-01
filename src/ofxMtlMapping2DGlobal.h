@@ -13,12 +13,13 @@ enum MappingEditView
 };
 
 //--------------------------------------------------------------
-class ofxMtlMapping2DGlobal {
-    public:
-        static void setEditView(MappingEditView mappingEditView);
-        static MappingEditView getEditView();
-    
-    private:
-    
-        static MappingEditView _mappingEditView;
+class ofxMtlMapping2DGlobal
+{
+public:
+    static void setEditView(MappingEditView mappingEditView);
+    static MappingEditView getEditView();
+
+private:
+
+    static MappingEditView _mappingEditView;
 };

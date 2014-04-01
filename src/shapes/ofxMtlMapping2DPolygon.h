@@ -15,61 +15,61 @@
 //--------------------------------------------------------------
 class ofxMtlMapping2DPolygon : public ofxMSAInteractiveObject {
 	
-    public:
+public:
 
-        // ---
-        static ofxMtlMapping2DPolygon* activePolygon;
-        static ofxMtlMapping2DPolygon* previousActivePolygon;
-        static int activeVertexId;
-        static void resetActivePolygonVars();
+    // ---
+    static ofxMtlMapping2DPolygon* activePolygon;
+    static ofxMtlMapping2DPolygon* previousActivePolygon;
+    static int activeVertexId;
+    static void resetActivePolygonVars();
 
-        // ---
-        ofxMtlMapping2DPolygon();
-        ~ofxMtlMapping2DPolygon();
+    // ---
+    ofxMtlMapping2DPolygon();
+    ~ofxMtlMapping2DPolygon();
 
-        int shapeId;
-        int shapeType;
-        list<ofxMtlMapping2DVertex*> vertices;
-        ofPolyline *polyline;
-        ofRectangle boundingBox;
+    int shapeId;
+    int shapeType;
+    list<ofxMtlMapping2DVertex*> vertices;
+    ofPolyline *polyline;
+    ofRectangle boundingBox;
 
-        void init(int sId, bool defaultShape = false);
+    void init(int sId, bool defaultShape = false);
 
-        void update();
-        void draw();
-        void addPoint(int x, int y);
-        void drawID();
-        virtual void render() {};
-        void setAsActive();
-        void setAsIdle();
+    void update();
+    void draw();
+    void addPoint(int x, int y);
+    void drawID();
+    virtual void render() {};
+    void setAsActive();
+    void setAsIdle();
 
-        void select(int x, int y);
+    void select(int x, int y);
 
-        ofxMtlMapping2DVertex* getVertex(int index);
+    ofxMtlMapping2DVertex* getVertex(int index);
 
-        // ---- ofxMSAInteractiveObject related
-        void enable();
-        void disable();
+    // ---- ofxMSAInteractiveObject related
+    void enable();
+    void disable();
 
-        bool hitTest(int tx, int ty) const;
+    bool hitTest(int tx, int ty) const;
 
-        void onPress(int x, int y, int button);
-        void onRelease(int x, int y, int button);
-        void onReleaseOutside(int x, int y, int button);
-    
-        void mouseDragged(int x, int y, int button);
+    void onPress(int x, int y, int button);
+    void onRelease(int x, int y, int button);
+    void onReleaseOutside(int x, int y, int button);
 
-    protected:
-        ofPoint _centroid2D;
-        ofPoint _grabAnchor;
-        bool _bMouseEventEnabled;
-        bool _bMouseGrabbed;
+    void mouseDragged(int x, int y, int button);
 
-        void disableVertices();
-        void enableVertices();
+protected:
+    ofPoint _centroid2D;
+    ofPoint _grabAnchor;
+    bool _bMouseEventEnabled;
+    bool _bMouseGrabbed;
 
-        void updatePosition(int xInc, int yInc);
-        void updatePolyline();
+    void disableVertices();
+    void enableVertices();
 
-        virtual void createDefaultShape() {};
+    void updatePosition(int xInc, int yInc);
+    void updatePolyline();
+
+    virtual void createDefaultShape() {};
 };

@@ -34,8 +34,7 @@
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-class ofxMtlMapping2DControls
-{
+class ofxMtlMapping2DControls {
     
 public:
     static ofxMtlMapping2DControls * mapping2DControls(ofxMtlMapping2D * mtlMapping2D, string xmlFilePath);

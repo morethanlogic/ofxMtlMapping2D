@@ -6,13 +6,13 @@
 //--------------------------------------------------------------
 class ofxMtlMapping2DTriangle : public ofxMtlMapping2DShape {
 	
-    public:
-        
-        ofxMtlMapping2DTriangle();
-        ~ofxMtlMapping2DTriangle();
-        
-    protected:
-        virtual void createDefaultShape();
-        virtual void render();
+public:
+    
+    ofxMtlMapping2DTriangle();
+    ~ofxMtlMapping2DTriangle();
+    
+protected:
+    virtual void createDefaultShape();
+    virtual void render();
 
 };
