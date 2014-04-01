@@ -215,7 +215,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
-    if (name == kSettingMappingFullscreen) {        
+    if (name == kSettingMappingFullscreen) {
         ofSetFullscreen(getToggleValue(_toolsCanvas, name));
     }
     
@@ -469,8 +469,10 @@ void ofxMtlMapping2DControls::windowResized()
 {
     if (ofGetWindowMode() == OF_FULLSCREEN) {
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenContractIcon);
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setValue(true);
     } else {
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenExpandIcon);
+        ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setValue(false);
     }
     
     _toolsCanvas->setHeight(ofGetHeight());
