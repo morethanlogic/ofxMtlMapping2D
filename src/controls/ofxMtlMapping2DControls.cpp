@@ -216,7 +216,20 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     string name = event.widget->getName();
     
     if (name == kSettingMappingFullscreen) {
-        ofSetFullscreen(getToggleValue(_toolsCanvas, name));
+        bool bGoFullscreen = getToggleValue(_toolsCanvas, name);
+        ofSetFullscreen(bGoFullscreen);
+        
+#if defined(USE_OFX_DETECT_DISPLAYS)
+        if (!bGoFullscreen) {
+            ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysUI->getWidget("DISPLAYS");
+            ofxUIToggle* uiToggle = uiRadio->getActive();
+            
+            if (uiToggle) {
+                uiToggle->setValue(false);
+            }
+        }
+#endif
+        
     }
     
     // --- Settings
