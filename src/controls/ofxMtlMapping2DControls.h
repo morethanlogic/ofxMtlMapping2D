@@ -51,6 +51,9 @@ public:
 
     void save();
     void load();
+    
+    void saveOutputSettings();
+    void loadOutputSettings();
 
     void showInputModeToggle();
     void hideInputModeToggle();
@@ -97,6 +100,7 @@ private:
     
 #if defined(USE_OFX_DETECT_DISPLAYS)
     ofxUISuperCanvas* _displaysUI;
+    vector<string> _displayNames;
 #endif
 
     void setUIShapeEditingState(bool isOn);

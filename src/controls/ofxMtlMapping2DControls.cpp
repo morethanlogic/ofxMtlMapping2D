@@ -302,6 +302,13 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
+    if (name == "SAVE" && getButtonValue(_settingsUI, name)) {
+        saveOutputSettings();
+    }
+    else if (name == "LOAD"  && getButtonValue(_settingsUI, name)) {
+        loadOutputSettings();
+    }
+    
 #if defined(USE_OFX_DETECT_DISPLAYS)
     if(name == "DETECT DISPLAYS") {
         if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
@@ -323,10 +330,11 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
-
-    if(name == "DISPLAYS") {
-        ofxUIRadio *radio = (ofxUIRadio *) event.widget;
-        ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(radio->getValue());
+    
+    for (int i=0; i<_displayNames.size(); i++) {
+        if (name == _displayNames[i]) {
+            ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+        }
     }
 }
 #endif
@@ -505,12 +513,13 @@ void ofxMtlMapping2DControls::windowResized()
 void ofxMtlMapping2DControls::displayConfigurationChanged()
 {
     _displaysUI->removeWidgets();
+    _displayNames.clear();
     
-    vector<string> displayNames;
     for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
-        displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height));
+        _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height));
     }
-    _displaysUI->addRadio("DISPLAYS", displayNames);
+    
+    _displaysUI->addRadio("DISPLAYS", _displayNames);
     
     _displaysUI->autoSizeToFitWidgets();
 }
@@ -627,6 +636,26 @@ void ofxMtlMapping2DControls::load()
     
 //    _toolsCanvas->loadSettings(_file);
 
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::saveOutputSettings()
+{
+    _settingsUI->saveSettings(_settingsUI->getCanvasTitle()->getLabel() + ".xml");
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    _displaysUI->saveSettings(_displaysUI->getCanvasTitle()->getLabel() + ".xml");
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::loadOutputSettings()
+{
+    _settingsUI->loadSettings(_settingsUI->getCanvasTitle()->getLabel() + ".xml");
+    _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    _displaysUI->loadSettings(_displaysUI->getCanvasTitle()->getLabel() + ".xml");
+    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
+#endif
 }
 
 //--------------------------------------------------------------
