@@ -488,6 +488,7 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::windowResized()
 {
+    ofLog() << "windowResized()";
     if (ofGetWindowMode() == OF_FULLSCREEN) {
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenContractIcon);
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setValue(true);
@@ -512,6 +513,8 @@ void ofxMtlMapping2DControls::windowResized()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displayConfigurationChanged()
 {
+    ofLog() << "displayConfigurationChanged()";
+
     _displaysUI->removeWidgets();
     _displayNames.clear();
     
@@ -635,6 +638,8 @@ void ofxMtlMapping2DControls::load()
 //    }
     
 //    _toolsCanvas->loadSettings(_file);
+    
+    loadOutputSettings();
 
 }
 
@@ -651,11 +656,11 @@ void ofxMtlMapping2DControls::saveOutputSettings()
 void ofxMtlMapping2DControls::loadOutputSettings()
 {
     _settingsUI->loadSettings(_settingsUI->getCanvasTitle()->getLabel() + ".xml");
-    _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->loadSettings(_displaysUI->getCanvasTitle()->getLabel() + ".xml");
-    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
 #endif
+    
+    windowResized();
 }
 
 //--------------------------------------------------------------
