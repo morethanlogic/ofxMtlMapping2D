@@ -548,6 +548,11 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 void ofxMtlMapping2D::loadShapesList()
 {
     ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+    
+    if (!fileDialogResult.bSuccess) {
+        return;
+    }
+    
     string mappingXmlFilePath = fileDialogResult.getPath();
     
     // UI
