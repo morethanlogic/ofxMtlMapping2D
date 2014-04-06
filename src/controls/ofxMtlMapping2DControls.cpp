@@ -222,10 +222,9 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 #if defined(USE_OFX_DETECT_DISPLAYS)
         if (!bGoFullscreen) {
             ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysUI->getWidget("DISPLAYS");
-            ofxUIToggle* uiToggle = uiRadio->getActive();
             
-            if (uiToggle) {
-                uiToggle->setValue(false);
+            for (int i=0; i<uiRadio->getToggles().size(); i++) {
+                uiRadio->getToggles()[i]->setValue(false);
             }
         }
 #endif
@@ -331,8 +330,11 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
+    ofLog() << "displaysUiEvent() - " << name;
     for (int i=0; i<_displayNames.size(); i++) {
-        if (name == _displayNames[i]) {
+        if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
+            ofLog() << "displaysUiEvent() - go FS - " << name << " - " << getToggleValue(_displaysUI, name);
+
             ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
         }
     }
