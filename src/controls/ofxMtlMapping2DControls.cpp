@@ -17,34 +17,40 @@ const int kBottomSpacerHeight = 100; // padding to be able to scroll until the e
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-ofxMtlMapping2DControls * ofxMtlMapping2DControls::_mapping2DControls = NULL;
+static ofxMtlMapping2D * _mtlMapping2D = NULL;
 
 //--------------------------------------------------------------
-ofxMtlMapping2DControls * ofxMtlMapping2DControls::mapping2DControls(ofxMtlMapping2D * mtlMapping2D, string xmlFilePath)
+ofxMtlMapping2DControls* ofxMtlMapping2DControls::sharedInstance()
 {
-    if (_mapping2DControls == NULL) {
-        _mapping2DControls = new ofxMtlMapping2DControls(mtlMapping2D, xmlFilePath);
+    static ofxMtlMapping2DControls* instance = NULL;
+    if (instance == NULL) {
+        instance = new ofxMtlMapping2DControls();
     }
-    return _mapping2DControls;
+    return instance;
 }
 
 //--------------------------------------------------------------
-ofxMtlMapping2DControls * ofxMtlMapping2DControls::mapping2DControls()
+ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D * mtlMapping2D)
 {
-    if (_mapping2DControls == NULL) {
-        ofLog(OF_LOG_WARNING, "ofxMtlMapping2DControls uses a default path to an xml file for saving and loading settings!");
-        //_mapping2DControls = new ofxMtlMapping2DControls("mapping/controls/mapping.xml");
+    if (mtlMapping2D == NULL && _mtlMapping2D == NULL) {
+        ofLogError() << "You need to initialize the Controls before going further.";
+        return;
     }
-    return _mapping2DControls;
+    else if (mtlMapping2D != NULL && _mtlMapping2D == NULL) {
+        _mtlMapping2D = mtlMapping2D;
+    }
+    
+    return *ofxMtlMapping2DControls::sharedInstance();
 }
 
 //--------------------------------------------------------------
-ofxMtlMapping2DControls::ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D, const string& file)
+ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMapping2D)
 {
-    _mtlMapping2D = mtlMapping2D;
+    ofLog() << "ofxMtlMapping2DControls";
 
-    _rootPath = "../../../data/mapping/controls/";
-    _file = file;
+    //_mtlMapping2D = mtlMapping2D;
+
+    _rootPath = "../../../data/mapping/";
     
     ofColor uiColor;
     uiColor.set(0, 210, 255, 130);
@@ -444,7 +450,7 @@ void ofxMtlMapping2DControls::refreshShapesListForMappingView(MappingEditView cu
         ofxMtlMapping2DShape* shape = *it;
         
         if (currView == MAPPING_CHANGE_TO_OUTPUT_VIEW || (currView == MAPPING_CHANGE_TO_INPUT_VIEW && shape->shapeType != MAPPING_2D_SHAPE_MASK)) {
-            ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
+            addShapeToList(shape->shapeId, shape->shapeType);
         }
     }
 }
@@ -676,6 +682,7 @@ void ofxMtlMapping2DControls::enable()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::disable()
 {
+    ofLog() << "disable() " << _mtlMapping2D;
     for (int i=0; i<_uiSuperCanvases.size(); i++) {
         _uiSuperCanvases[i]->disable();
     }

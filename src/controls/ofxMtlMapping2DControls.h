@@ -37,8 +37,7 @@
 class ofxMtlMapping2DControls {
     
 public:
-    static ofxMtlMapping2DControls * mapping2DControls(ofxMtlMapping2D * mtlMapping2D, string xmlFilePath);
-    static ofxMtlMapping2DControls * mapping2DControls();
+    static ofxMtlMapping2DControls* sharedInstance();
 
     void toolsUiEvent(ofxUIEventArgs &event);
     void settingsUiEvent(ofxUIEventArgs &event);
@@ -81,15 +80,10 @@ public:
 
 private:
 
-    ofxMtlMapping2DControls(ofxMtlMapping2D * mtlMapping2D, const string& file);
+    ofxMtlMapping2DControls();
     ~ofxMtlMapping2DControls();
 
-    static ofxMtlMapping2DControls *_mapping2DControls;
-
-    ofxMtlMapping2D * _mtlMapping2D;
-
     string _rootPath;
-    string _file;
 
     vector<ofxUICanvas*> _uiSuperCanvases;
 
@@ -120,3 +114,7 @@ private:
     ofImage _fullscreenContractIcon;
     
 };
+
+
+//--------------------------------------------------------------
+ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D * mtlMapping2D = NULL);

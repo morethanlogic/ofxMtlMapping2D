@@ -33,7 +33,7 @@ public:
     virtual ~ofxMtlMapping2D();
     
 //  void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
-    void init(int width, int height, string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
+    void init(int width, int height, int numSample = 0);
     void update();
     
     void bind();

@@ -36,7 +36,7 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::init(int width, int height, string uiXmlFilePath, int numSample)
+void ofxMtlMapping2D::init(int width, int height, int numSample)
 {
     _mappingModeState = MAPPING_LOCKED;
 
@@ -52,15 +52,16 @@ void ofxMtlMapping2D::init(int width, int height, string uiXmlFilePath, int numS
     bSelectedShapeChanged = false;
     selectedShapeId = -1;
     
-    // The first we call ofxMtlMapping2DControls::mapping2DControls() we pass the xml file to use as param.
-    ofxMtlMapping2DControls::mapping2DControls(this, uiXmlFilePath)->disable();
+    // The first time we call ofxMtlMapping2DControls we need to call the init() method
+    //ofxMtlMapping2DControlsSharedInstance().init();
+    ofxMtlMapping2DControlsSharedInstance(this).disable();
     
     // ----
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
 
     // ----
-    ofxMtlMapping2DSettings::infoFont.loadFont("mapping/controls/ReplicaBold.ttf", 10);
+    ofxMtlMapping2DSettings::infoFont.loadFont("GUI/ReplicaBold.ttf", 10);
     
     // ---
     addListeners();
@@ -290,7 +291,7 @@ void ofxMtlMapping2D::createQuad()
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_QUAD);
+    ofxMtlMapping2DControlsSharedInstance().addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_QUAD);
 }
 
 //--------------------------------------------------------------
@@ -303,7 +304,7 @@ void ofxMtlMapping2D::createGrid()
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_GRID);
+    ofxMtlMapping2DControlsSharedInstance().addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_GRID);
 }
 
 //--------------------------------------------------------------
@@ -316,7 +317,7 @@ void ofxMtlMapping2D::createTriangle()
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_TRIANGLE);
+    ofxMtlMapping2DControlsSharedInstance().addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_TRIANGLE);
 }
 
 //--------------------------------------------------------------
@@ -329,14 +330,14 @@ void ofxMtlMapping2D::createMask()
     newShape->init(ofxMtlMapping2DShape::nextShapeId, true);
     ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
     
-    ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_MASK);
+    ofxMtlMapping2DControlsSharedInstance().addShapeToList(ofxMtlMapping2DShape::nextShapeId, MAPPING_2D_SHAPE_MASK);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::deleteShape()
 {
     if (ofxMtlMapping2DShape::activeShape) {
-        ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
+        ofxMtlMapping2DControlsSharedInstance().clearShapesList();
         ofxMtlMapping2DShapes::pmShapes.remove(ofxMtlMapping2DShape::activeShape);
         delete ofxMtlMapping2DShape::activeShape;
         ofxMtlMapping2DShape::resetActiveShapeVars();
@@ -345,7 +346,7 @@ void ofxMtlMapping2D::deleteShape()
         list<ofxMtlMapping2DShape*>::reverse_iterator it;
         for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
             ofxMtlMapping2DShape* shape = *it;
-            ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shape->shapeId, shape->shapeType);
+            ofxMtlMapping2DControlsSharedInstance().addShapeToList(shape->shapeId, shape->shapeType);
 
         }
     }
@@ -378,7 +379,7 @@ void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
     // resize / re-allocate the source FBO
     _fbo.allocate(e.width , e.height, GL_RGBA, _numSample);
 
-    ofxMtlMapping2DControls::mapping2DControls()->windowResized();
+    ofxMtlMapping2DControlsSharedInstance().windowResized();
 }
 
 
@@ -389,7 +390,7 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     int eY = e.y;
     int eButton = e.button;
     
-    if (ofxMtlMapping2DControls::mapping2DControls()->isHit(eX, eY))
+    if (ofxMtlMapping2DControlsSharedInstance().isHit(eX, eY))
         return;
     
     if(_mappingModeState == MAPPING_LOCKED)
@@ -471,11 +472,11 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 'm':
-            ofxMtlMapping2DControls::mapping2DControls()->toggleVisible();
+            ofxMtlMapping2DControlsSharedInstance().toggleVisible();
             break;
             
         case 's':
-            ofxMtlMapping2DControls::mapping2DControls()->save();
+            ofxMtlMapping2DControlsSharedInstance().save();
             saveShapesList();
             break;
             
@@ -550,7 +551,7 @@ void ofxMtlMapping2D::loadShapesList()
     string mappingXmlFilePath = fileDialogResult.getPath();
     
     // UI
-    ofxMtlMapping2DControls::mapping2DControls()->clearShapesList();
+    ofxMtlMapping2DControlsSharedInstance().clearShapesList();
     
     // Delete everything
     while(!ofxMtlMapping2DShapes::pmShapes.empty()) delete ofxMtlMapping2DShapes::pmShapes.back(), ofxMtlMapping2DShapes::pmShapes.pop_back();
@@ -687,7 +688,7 @@ void ofxMtlMapping2D::loadShapesList()
                 newShape->disable();
                 ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
                 
-                ofxMtlMapping2DControls::mapping2DControls()->addShapeToList(shapeId, newShape->shapeType);
+                ofxMtlMapping2DControlsSharedInstance().addShapeToList(shapeId, newShape->shapeType);
 				
 				_shapesListXML.popTag();
 				

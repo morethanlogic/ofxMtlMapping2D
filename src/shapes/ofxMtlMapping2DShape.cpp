@@ -119,9 +119,9 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
         if (activeShape != this) {
             // ----
             if (shapeType == MAPPING_2D_SHAPE_MASK) {
-                ofxMtlMapping2DControls::mapping2DControls()->hideInputModeToggle();
+                ofxMtlMapping2DControlsSharedInstance().hideInputModeToggle();
             } else {
-                ofxMtlMapping2DControls::mapping2DControls()->showInputModeToggle();
+                ofxMtlMapping2DControlsSharedInstance().showInputModeToggle();
             }
             
             // ----
@@ -132,14 +132,14 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             if (fromUI) {
                 setAsActive();
             } else {
-                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
+                ofxMtlMapping2DControlsSharedInstance().setAsActiveShapeWithId(shapeId, shapeType);
             }
             
             // Is a grid
             if (activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {                
-                ofxMtlMapping2DControls::mapping2DControls()->showGridSettingsCanvas();
+                ofxMtlMapping2DControlsSharedInstance().showGridSettingsCanvas();
             } else {
-               ofxMtlMapping2DControls::mapping2DControls()->hideGridSettingsCanvas();
+               ofxMtlMapping2DControlsSharedInstance().hideGridSettingsCanvas();
             }
         }
     
@@ -153,7 +153,7 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             if (fromUI) {
                 inputPolygon->setAsActive();
             } else {
-                ofxMtlMapping2DControls::mapping2DControls()->setAsActiveShapeWithId(shapeId, shapeType);
+                ofxMtlMapping2DControlsSharedInstance().setAsActiveShapeWithId(shapeId, shapeType);
             }
         }
     }
