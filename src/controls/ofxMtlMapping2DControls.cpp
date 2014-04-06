@@ -14,6 +14,7 @@ const int kSliderHeight = 16;
 const int kSpacerHeight = 20;
 const int kToggleSize = 24;
 const int kBottomSpacerHeight = 100; // padding to be able to scroll until the end/bottom of the UI canvas
+const string uiDataPath = "ui/";
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -50,7 +51,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
 
     //_mtlMapping2D = mtlMapping2D;
 
-    _rootPath = "../../../data/mapping/";
+    _rootPath = "../../../data/settings/";
     
     ofColor uiColor;
     uiColor.set(0, 210, 255, 130);
@@ -89,32 +90,32 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _toolsCanvas->setColorBack(uiColor);
     
     // --- Fullscreen
-    _fullscreenExpandIcon.loadImage("GUI/expand.png");
-    _fullscreenContractIcon.loadImage("GUI/contract.png");
+    _fullscreenExpandIcon.loadImage(uiDataPath + "expand.png");
+    _fullscreenContractIcon.loadImage(uiDataPath + "contract.png");
     
-    _toolsCanvas->addImageToggle(kSettingMappingFullscreen, "GUI/expand.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingFullscreen, uiDataPath + "expand.png", false, kToggleSize, kToggleSize);
     
     // Edit
-    _toolsCanvas->addImageToggle(kSettingMappingSettings, "GUI/settings-3.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageToggle(kSettingMappingEditShapes, "GUI/edit.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton(kSettingMappingSave, "GUI/file-down.png", &_mtlMapping2D->bSaveShapes, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton(kSettingMappingLoad, "GUI/file-up.png", &_mtlMapping2D->bLoadShapes, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingSettings, uiDataPath + "settings-3.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingEditShapes, uiDataPath + "edit.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageButton(kSettingMappingSave, uiDataPath + "file-down.png", &_mtlMapping2D->bSaveShapes, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageButton(kSettingMappingLoad, uiDataPath + "file-up.png", &_mtlMapping2D->bLoadShapes, kToggleSize, kToggleSize);
     
     // Mapping controls Output / Input
     ofxUISpacer *spacer = new ofxUISpacer(kWidgetWidth, kSpacerHeight);
     spacer->setDrawFill(false);
     
     _toolsCanvas->addWidgetDown(spacer);
-    _toolsCanvas->addImageToggle(kSettingMappingModeOutput, "GUI/projo.png", true, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageToggle(kSettingMappingModeInput, "GUI/texture.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingModeOutput, uiDataPath + "projo.png", true, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingModeInput, uiDataPath + "texture.png", false, kToggleSize, kToggleSize);
     
     // Mapping shape controls
     if (ofxMtlMapping2DSettings::kIsManuallyCreatingShapeEnabled) {
         _toolsCanvas->addWidgetDown(spacer);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewQuad, "GUI/quad.png", &_mtlMapping2D->bCreateQuad, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewGrid, "GUI/grid.png", &_mtlMapping2D->bCreateGrid, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewTriangle, "GUI/triangle.png", &_mtlMapping2D->bCreateTriangle, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewMask, "GUI/mask.png", &_mtlMapping2D->bCreateMask, kToggleSize, kToggleSize);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewQuad, uiDataPath + "quad.png", &_mtlMapping2D->bCreateQuad, kToggleSize, kToggleSize);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewGrid, uiDataPath + "grid.png", &_mtlMapping2D->bCreateGrid, kToggleSize, kToggleSize);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewTriangle, uiDataPath + "triangle.png", &_mtlMapping2D->bCreateTriangle, kToggleSize, kToggleSize);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewMask, uiDataPath + "mask.png", &_mtlMapping2D->bCreateMask, kToggleSize, kToggleSize);
     }
     
     ofAddListener(_toolsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::toolsUiEvent);
@@ -654,18 +655,18 @@ void ofxMtlMapping2DControls::load()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::saveOutputSettings()
 {
-    _settingsUI->saveSettings(_settingsUI->getCanvasTitle()->getLabel() + ".xml");
+    _settingsUI->saveSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->saveSettings(_displaysUI->getCanvasTitle()->getLabel() + ".xml");
+    _displaysUI->saveSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::loadOutputSettings()
 {
-    _settingsUI->loadSettings(_settingsUI->getCanvasTitle()->getLabel() + ".xml");
+    _settingsUI->loadSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->loadSettings(_displaysUI->getCanvasTitle()->getLabel() + ".xml");
+    _displaysUI->loadSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
     windowResized();

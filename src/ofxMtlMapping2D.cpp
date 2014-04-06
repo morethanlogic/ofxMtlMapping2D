@@ -61,7 +61,7 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     _fbo.allocate(width, height, GL_RGBA, _numSample);
 
     // ----
-    ofxMtlMapping2DSettings::infoFont.loadFont("GUI/ReplicaBold.ttf", 10);
+    ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
     
     // ---
     addListeners();
