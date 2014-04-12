@@ -53,8 +53,7 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     selectedShapeId = -1;
     
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
-    //ofxMtlMapping2DControlsSharedInstance().init();
-    ofxMtlMapping2DControlsSharedInstance(this).disable();
+    ofxMtlMapping2DControlsSharedInstance(this).init();
     
     // ----
     _numSample = numSample;
@@ -476,7 +475,6 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 's':
-            ofxMtlMapping2DControlsSharedInstance().save();
             saveShapesList();
             break;
             
@@ -553,7 +551,12 @@ void ofxMtlMapping2D::loadShapesList()
         return;
     }
     
-    string mappingXmlFilePath = fileDialogResult.getPath();
+    loadXml(fileDialogResult.getPath());
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::loadXml(string xmlFile)
+{
     
     // UI
     ofxMtlMapping2DControlsSharedInstance().clearShapesList();
@@ -568,16 +571,16 @@ void ofxMtlMapping2D::loadShapesList()
     // ----
 	//the string is printed at the top of the app
 	//to give the user some feedback
-	string feedBackMessage = "loading " + mappingXmlFilePath;
+	string feedBackMessage = "loading " + xmlFile;
 	ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     
 	//we load our settings file
 	//if it doesn't exist we can still make one
 	//by hitting the 's' key
-	if( _shapesListXML.loadFile(mappingXmlFilePath) ){
-		feedBackMessage = mappingXmlFilePath + " loaded!";
+	if( _shapesListXML.loadFile(xmlFile) ){
+		feedBackMessage = xmlFile + " loaded!";
 	}else{
-		feedBackMessage = "unable to load " + mappingXmlFilePath + " check data/ folder";
+		feedBackMessage = "unable to load " + xmlFile + " check data/ folder";
 	}
     ofLog(OF_LOG_NOTICE, "Status > " + feedBackMessage);
     

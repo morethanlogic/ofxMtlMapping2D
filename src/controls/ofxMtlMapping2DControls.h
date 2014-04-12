@@ -39,6 +39,8 @@ class ofxMtlMapping2DControls {
 public:
     static ofxMtlMapping2DControls* sharedInstance();
 
+    void init();
+    
     void toolsUiEvent(ofxUIEventArgs &event);
     void settingsUiEvent(ofxUIEventArgs &event);
 
@@ -47,12 +49,6 @@ public:
 
     void showGridSettingsCanvas();
     void hideGridSettingsCanvas();
-
-    void save();
-    void load();
-    
-    void saveOutputSettings();
-    void loadOutputSettings();
 
     void showInputModeToggle();
     void hideInputModeToggle();
@@ -112,6 +108,15 @@ private:
     map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
     ofImage _fullscreenExpandIcon;
     ofImage _fullscreenContractIcon;
+    
+    void saveSettings();
+    void loadSettings();
+    
+    void saveExtraSettings();
+    void loadExtraSettings();
+
+    map<string,string> extraOutputSettings;
+
     
 };
 

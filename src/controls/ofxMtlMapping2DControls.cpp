@@ -15,6 +15,7 @@ const int kSpacerHeight = 20;
 const int kToggleSize = 24;
 const int kBottomSpacerHeight = 100; // padding to be able to scroll until the end/bottom of the UI canvas
 const string uiDataPath = "ui/";
+bool _bInitialized = false;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -34,7 +35,7 @@ ofxMtlMapping2DControls* ofxMtlMapping2DControls::sharedInstance()
 ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D * mtlMapping2D)
 {
     if (mtlMapping2D == NULL && _mtlMapping2D == NULL) {
-        ofLogError() << "You need to initialize the Controls before going further.";
+        ofLogError() << "You need to pass a reference to the ofxMtlMapping2D the Controls before going further.";
         return;
     }
     else if (mtlMapping2D != NULL && _mtlMapping2D == NULL) {
@@ -47,10 +48,6 @@ ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D *
 //--------------------------------------------------------------
 ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMapping2D)
 {
-    ofLog() << "ofxMtlMapping2DControls";
-
-    //_mtlMapping2D = mtlMapping2D;
-
     _rootPath = "../../../data/settings/";
     
     ofColor uiColor;
@@ -66,16 +63,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
 #endif
 #endif
-
-
-    
-//    int maxDisplayWidth = 0;
-//    int maxDisplayHeight = 0;
-//    
-//    for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
-//        maxDisplayWidth = MAX(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width, maxDisplayWidth);
-//        maxDisplayHeight = MAX(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height, maxDisplayHeight);
-//	}
     
     // --- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
@@ -123,22 +110,25 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     
     // ---
     // Output Settings UI
-    _settingsUI = new ofxUISuperCanvas("OUTPUT SETTINGS", OFX_UI_FONT_SMALL);
+    _settingsUI = new ofxUISuperCanvas("SETTINGS");
+    //_settingsUI->setFont("ui/ReplicaBold.ttf");
+    //_settingsUI->setFontSize(OFX_UI_FONT_SMALL, 5, 150);
     _settingsUI->setPosition(ofGetWindowWidth() - _settingsUI->getRect()->width, 0);
-    _settingsUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
+    //_settingsUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
     _settingsUI->setColorBack(uiColor);
     
-    _settingsUI->addSpacer();
+    _settingsUI->addSpacer(_settingsUI->getRect()->width - 10, 2);
     _settingsUI->addButton("SAVE", false);
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     _settingsUI->addButton("LOAD", false);
     _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
- 
-#if defined(USE_OFX_DETECT_DISPLAYS)
-    _settingsUI->addSpacer();
-    _settingsUI->addButton("DETECT DISPLAYS", false);
-    _settingsUI->addSpacer();
-#endif
+    
+    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
+    _settingsUI->addToggle("LOAD FILE ON START", false);
+    _settingsUI->addButton("SELECT FILE", false);
+    _settingsUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
+    //_settingsUI->addTextArea("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
+    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
@@ -148,9 +138,10 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
 #if defined(USE_OFX_DETECT_DISPLAYS)
     // ---
     // Displays Settings UI
-    _displaysUI = new ofxUISuperCanvas("DISPLAYS SETTINGS", OFX_UI_FONT_SMALL);
-    _displaysUI->setPosition(ofGetWindowWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
-    _displaysUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
+    _displaysUI = new ofxUISuperCanvas("DISPLAYS SETTINGS");
+    //_displaysUI->setFont("ui/ReplicaBold.ttf");
+    //_displaysUI->setFontSize(OFX_UI_FONT_SMALL, 5, 150);
+    _displaysUI->setPosition(ofGetWindowWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height + 5);
     _displaysUI->setColorBack(uiColor);
     
     displayConfigurationChanged();
@@ -163,6 +154,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Shapes List UI    
     _shapesListCanvas = new ofxUIScrollableCanvas(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
+    //_shapesListCanvas->setFont("ui/ReplicaBold.ttf");
     _shapesListCanvas->setScrollArea(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
     _shapesListCanvas->setScrollableDirections(false, true);
     _shapesListCanvas->setColorBack(uiColorB);
@@ -176,6 +168,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // Grid Settings UI
     int gridSettingCanvasWidth = 200.0f;
     _gridSettingsCanvas = new ofxUICanvas();
+    //_gridSettingsCanvas->setFont("ui/ReplicaBold.ttf");
     _gridSettingsCanvas->setPosition(kControlsMappingToolsPanelWidth, ofGetHeight() - 90);
     _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
     _gridSettingsCanvas->setColorBack(uiColorB);
@@ -189,10 +182,14 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _gridSettingsCanvas->disable();
     _uiSuperCanvases.push_back(_gridSettingsCanvas);
     
+}
 
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::init()
+{
     // ---
     // Load UI XML files and initialize
-    load();
+    loadSettings();
     
     if (getToggleValue(_toolsCanvas, kSettingMappingModeOutput)) {
         ofxMtlMapping2DGlobal::setEditView(MAPPING_OUTPUT_VIEW);
@@ -204,6 +201,10 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     ((ofxUIToggle *)_toolsCanvas->getWidget(kSettingMappingEditShapes))->setValue(false);
     setUIShapeEditingState(false);
+    
+    disable();
+    
+    _bInitialized = true;
 }
 
 //--------------------------------------------------------------
@@ -309,26 +310,31 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
     string name = event.widget->getName();
     
     if (name == "SAVE" && getButtonValue(_settingsUI, name)) {
-        saveOutputSettings();
+        saveSettings();
     }
     else if (name == "LOAD"  && getButtonValue(_settingsUI, name)) {
-        loadOutputSettings();
+        loadSettings();
     }
-    
-#if defined(USE_OFX_DETECT_DISPLAYS)
-    if(name == "DETECT DISPLAYS") {
-        if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
-            cout << "DETECT DISPLAYS" << endl;
-
-            ofxDetectDisplaysSharedInstance().detectDisplays();
-            
-        } else {
-            cout << "BUILD UI DISPLAYS" << endl;
-            displayConfigurationChanged();
+    else if (name == "LOAD FILE ON START"  && getButtonValue(_settingsUI, name)) {
+        if (!_bInitialized && extraOutputSettings["path"] != "") {
+            _mtlMapping2D->loadXml(extraOutputSettings["path"]);
         }
     }
-#endif
-
+    
+    
+    else if (name == "SELECT FILE" && getButtonValue(_settingsUI, name)) {
+        ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+        
+        if (!fileDialogResult.bSuccess) {
+            return;
+        }
+        
+        ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget("FILE PATH");
+        string path = fileDialogResult.getPath();
+        extraOutputSettings["path"] = path;
+        textInput->setTextString(fileDialogResult.getName());
+        _mtlMapping2D->loadXml(path);
+    }
 }
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
@@ -337,12 +343,21 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
-    ofLog() << "displaysUiEvent() - " << name;
-    for (int i=0; i<_displayNames.size(); i++) {
-        if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
-            ofLog() << "displaysUiEvent() - go FS - " << name << " - " << getToggleValue(_displaysUI, name);
+    if(name == "DETECT DISPLAYS") {
+        if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
+            ofxDetectDisplaysSharedInstance().detectDisplays();
+            
+        } else {
+            displayConfigurationChanged();
+        }
+    }
+    else {
+        for (int i=0; i<_displayNames.size(); i++) {
+            if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
+                ofLogNotice() << "Going fullscreen on display " << name << " - " << getToggleValue(_displaysUI, name);
 
-            ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+                ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+            }
         }
     }
 }
@@ -497,7 +512,6 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::windowResized()
 {
-    ofLog() << "windowResized()";
     if (ofGetWindowMode() == OF_FULLSCREEN) {
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenContractIcon);
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setValue(true);
@@ -510,7 +524,7 @@ void ofxMtlMapping2DControls::windowResized()
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height);
+    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height + 5);
 #endif
 }
 
@@ -522,10 +536,14 @@ void ofxMtlMapping2DControls::windowResized()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displayConfigurationChanged()
 {
-    ofLog() << "displayConfigurationChanged()";
-
     _displaysUI->removeWidgets();
     _displayNames.clear();
+    
+    _displaysUI->addSpacer(_displaysUI->getRect()->width - 10, 2);
+
+    ofxUIButton* uiButton = _displaysUI->addButton("DETECT DISPLAYS", false);
+    _displaysUI->addSpacer((_displaysUI->getRect()->width - 10) / 2, 1);
+
     
     for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
         _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height));
@@ -629,41 +647,21 @@ void ofxMtlMapping2DControls::setSliderValue(ofxUICanvas* ui, const string& name
 
 #pragma mark -
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::save()
-{
-//    for (int i=0; i<_uiSuperCanvases.size(); i++) {
-//        _uiSuperCanvases[i]->saveSettings(_rootPath + _uiSuperCanvases[i]->getCanvasTitle()->getLabel() + ".xml");
-//    }
-    
-//    _toolsCanvas->saveSettings(_file);
-
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DControls::load()
-{
-//    for (int i=0; i<_uiSuperCanvases.size(); i++) {
-//        _uiSuperCanvases[i]->loadSettings(_rootPath + _uiSuperCanvases[i]->getCanvasTitle()->getLabel() + ".xml");
-//    }
-    
-//    _toolsCanvas->loadSettings(_file);
-    
-    loadOutputSettings();
-
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2DControls::saveOutputSettings()
+void ofxMtlMapping2DControls::saveSettings()
 {
     _settingsUI->saveSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->saveSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
+    
+    saveExtraSettings();
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::loadOutputSettings()
+void ofxMtlMapping2DControls::loadSettings()
 {
+    loadExtraSettings();
+    
     _settingsUI->loadSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->loadSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
@@ -683,7 +681,6 @@ void ofxMtlMapping2DControls::enable()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::disable()
 {
-    ofLog() << "disable() " << _mtlMapping2D;
     for (int i=0; i<_uiSuperCanvases.size(); i++) {
         _uiSuperCanvases[i]->disable();
     }
@@ -725,4 +722,65 @@ bool ofxMtlMapping2DControls::isHit(int x, int y) {
     }
     
     return false;
+}
+
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::saveExtraSettings()
+{
+    ofxXmlSettings xmlSettings;
+    
+	xmlSettings.addTag("root");
+	xmlSettings.pushTag("root", 0);
+    
+    map<string,string>::iterator itSettings;
+    for ( itSettings=extraOutputSettings.begin() ; itSettings != extraOutputSettings.end(); itSettings++ ) {
+        int tagNum = xmlSettings.addTag("setting");
+        xmlSettings.addAttribute("setting", "key", (*itSettings).first, tagNum);
+        xmlSettings.setValue("setting", (*itSettings).second, tagNum);
+    }
+		
+	//Save to file
+	xmlSettings.saveFile(_rootPath + "extraSettings.xml");
+    ofLogNotice() << "Status > settings saved to xml!";
+    
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::loadExtraSettings()
+{
+    
+    ofxXmlSettings xmlSettings;
+    string xmlFile = _rootPath + "extraSettings.xml";
+    string feedBackMessage = "";
+    
+	//we load our settings file
+	if( xmlSettings.loadFile(xmlFile) ){
+		feedBackMessage = xmlFile + " loaded!";
+	}else{
+		feedBackMessage = "unable to load " + xmlFile + " check data/ folder";
+	}
+    ofLogNotice() << "Status > " << feedBackMessage;
+    
+    // ---
+	int numRootTags = xmlSettings.getNumTags("root");
+	
+	if(numRootTags > 0){
+		// ---
+        xmlSettings.pushTag("root", 0);
+		
+        //Settings
+        int numSettingTags = xmlSettings.getNumTags("setting");
+        
+        if(numSettingTags > 0) {
+            for(int j = 0; j < numSettingTags; j++){
+                string key = xmlSettings.getAttribute("setting", "key", "nc", j);
+                string value = xmlSettings.getValue("setting", "", j);
+                extraOutputSettings[key] = value;
+            }
+        }
+				
+		// ---
+		xmlSettings.popTag();
+	}
 }

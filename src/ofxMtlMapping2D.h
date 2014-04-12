@@ -51,6 +51,8 @@ public:
     vector<ofPolyline*> getMaskShapes();
     void chessBoard(int nbOfCol = 10);
 
+    void loadXml(string xmlFile);
+    
     bool bSaveShapes;
     bool bLoadShapes;
     bool bCreateQuad;

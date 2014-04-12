@@ -3,10 +3,15 @@
     <Name>OFX_UI_WIDGET_CANVAS</Name>
     <IsMinified>0</IsMinified>
     <XPosition>1229.000000000</XPosition>
-    <YPosition>136.000000000</YPosition>
+    <YPosition>0.000000000</YPosition>
 </Canvas>
 <Widget>
     <Kind>2</Kind>
-    <Name>1440x900</Name>
+    <Name>LOAD FILE ON START</Name>
     <Value>1</Value>
+</Widget>
+<Widget>
+    <Kind>12</Kind>
+    <Name>FILE PATH</Name>
+    <Value>shapes.xml</Value>
 </Widget>
