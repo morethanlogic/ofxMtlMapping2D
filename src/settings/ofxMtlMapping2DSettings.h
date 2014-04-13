@@ -1,8 +1,7 @@
 #pragma once
 
-#define USE_OFX_DETECT_DISPLAYS
-
 #include "ofMain.h"
+#include "ofxMtlMapping2DDefines.h"
 
 //--------------------------------------------------------------
 class ofxMtlMapping2DSettings {
