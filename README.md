@@ -24,7 +24,7 @@ Some projects using this addon...
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_SamRobertBand_.jpg" alt="Sam Robert's Band"></a></td>
 </tr>
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2013/11/tedxmontreal/"><img src="ofxMtlMapping2D_TEDxMTL.jpg" alt="TEDxMTL"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2013/11/tedxmontreal/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_TEDxMTL.jpg" alt="TEDxMTL"></a></td>
 </tr>
 </table>
 
