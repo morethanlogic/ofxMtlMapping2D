@@ -20,7 +20,7 @@ Some projects using this addon...
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Barcode.jpg" alt="Barcode"></a></td>
 </tr>
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_DesignOpenHouse.jpg" alt="Open house"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_DesignOpenHouse.jpg" alt="Open House"></a></td>
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_SamRobertBand.jpg" alt="Sam Robert's Band"></a></td>
 </tr>
 <tr>
