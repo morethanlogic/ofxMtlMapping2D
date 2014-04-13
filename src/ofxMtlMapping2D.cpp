@@ -52,18 +52,19 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     bSelectedShapeChanged = false;
     selectedShapeId = -1;
     
-    // The first time we call ofxMtlMapping2DControls we need to call the init() method
-    ofxMtlMapping2DControlsSharedInstance(this).init();
+    // ---
+    addListeners();
     
-    // ----
+    // ---
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
 
-    // ----
-    ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
+    // ---
+    // The first time we call ofxMtlMapping2DControls we need to call the init() method
+    ofxMtlMapping2DControlsSharedInstance(this).init();
     
     // ---
-    addListeners();
+    ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
     
 }
 
