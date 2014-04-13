@@ -23,26 +23,31 @@ Some projects using this addon...
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_DesignOpenHouse_.jpg" alt="Open house"></a></td>
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_SamRobertBand_.jpg" alt="Sam Robert's Band"></a></td>
 </tr>
+<tr>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2013/11/tedxmontreal/"><img src="ofxMtlMapping2D_TEDxMTL.jpg" alt="TEDxMTL"></a></td>
+</tr>
 </table>
 
 Licence
 -------
 The code in this repository is available under the [MIT License](https://en.wikipedia.org/wiki/MIT_License)  
-Copyright (c) 2013 Hugues Bruyère, Elie Zananiri, [www.morethanlogic.com](http://www.morethanlogic.com) | [www.departement.ca](http://www.departement.ca)    
-More Than Logic
+Copyright (c) 2014 Hugues Bruyère, Elie Zananiri, [More Than Logic](http://www.morethanlogic.com) | [Dpt.](http://dpt.co)
 
 Installation
 ------------
-Copy to your openFrameworks/addons folder.
+Copy to your openFrameworks/addons folder. Some examples are included.
 
 Dependencies
 ------------
 * [ofxMSAInteractiveObject](https://github.com/memo/ofxMSAInteractiveObject)
 * [ofxUI](https://github.com/rezaali/ofxUI)
-* [ofxDetectDisplays](https://github.com/morethanlogic/ofxDetectDisplays)
 * ofxXmlSettings
 * homography.h by Arturo Castro (included in this repo)
 
+Optional add-on(s). See the 'ofxMtlMapping2DDefines.h' header file.
+* [ofxDetectDisplays](https://github.com/morethanlogic/ofxDetectDisplays)
+
+
 Compatibility
 ------------
-OF080
+OF 0.8.0
