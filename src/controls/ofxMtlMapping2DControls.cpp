@@ -355,7 +355,6 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
         for (int i=0; i<_displayNames.size(); i++) {
             if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
                 ofLogNotice() << "Going fullscreen on display " << name << " - " << getToggleValue(_displaysUI, name);
-
                 ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
             }
         }
@@ -543,14 +542,12 @@ void ofxMtlMapping2DControls::displayConfigurationChanged()
 
     ofxUIButton* uiButton = _displaysUI->addButton("DETECT DISPLAYS", false);
     _displaysUI->addSpacer((_displaysUI->getRect()->width - 10) / 2, 1);
-
     
     for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
-        _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height));
+        _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height) + " - UID:" + ofxDetectDisplaysSharedInstance().getDisplays()[i]->UID);
     }
     
     _displaysUI->addRadio("DISPLAYS", _displayNames);
-    
     _displaysUI->autoSizeToFitWidgets();
 }
 
