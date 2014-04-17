@@ -48,8 +48,13 @@ ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D *
 //--------------------------------------------------------------
 ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMapping2D)
 {
-    _rootPath = "../../../data/settings/";
-    
+
+#if defined(TARGET_OSX)
+	_rootPath = "../../../data/settings/";
+#elif defined(TARGET_WIN32)
+	_rootPath = "settings/";
+#endif
+
     ofColor uiColor;
     uiColor.set(0, 210, 255, 130);
     ofColor uiColorB;
