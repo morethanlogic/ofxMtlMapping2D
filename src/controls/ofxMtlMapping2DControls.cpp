@@ -34,11 +34,11 @@ ofxMtlMapping2DControls* ofxMtlMapping2DControls::sharedInstance()
 //--------------------------------------------------------------
 ofxMtlMapping2DControls& ofxMtlMapping2DControlsSharedInstance(ofxMtlMapping2D * mtlMapping2D)
 {
-    if (mtlMapping2D == NULL && _mtlMapping2D == NULL) {
-        ofLogError() << "You need to pass a reference to the ofxMtlMapping2D the Controls before going further.";
-        return;
-    }
-    else if (mtlMapping2D != NULL && _mtlMapping2D == NULL) {
+    //if (mtlMapping2D == NULL && _mtlMapping2D == NULL) {
+    //    ofLogError() << "You need to pass a reference to the ofxMtlMapping2D the Controls before going further.";
+    //    return;
+   // } else 
+	if (mtlMapping2D != NULL && _mtlMapping2D == NULL) {
         _mtlMapping2D = mtlMapping2D;
     }
     
