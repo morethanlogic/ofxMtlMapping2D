@@ -16,7 +16,7 @@ Some projects using this addon...
 ... or variations of it.
 <table style="border-style: hidden; background:#FFFFFF">
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Echos.jpg" alt="Echos"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Echos__.jpg" alt="Echos"></a></td>
 <td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.morethanlogic.com/ofxMtl/ofxMtlMapping2D/ofxMtlMapping2D_Barcode.jpg" alt="Barcode"></a></td>
 </tr>
 <tr>
