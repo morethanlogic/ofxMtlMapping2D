@@ -2,10 +2,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetFrameRate(30);
+    ofSetFrameRate(60);
     ofBackground(50);
 
-    // ----
+    // ---
     _mapping = new ofxMtlMapping2D();
     _mapping->init(ofGetWidth(), ofGetHeight());
 }
@@ -19,7 +19,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){    
-    // ----
+    // ---
     _mapping->bind();
     
         // draw a test pattern
@@ -28,7 +28,7 @@ void ofApp::draw(){
     _mapping->unbind();
     
     
-    //-------- mapping of the towers/shapes
+    // ---
     _mapping->draw();
     //_mapping->drawFbo();
     
