@@ -18,8 +18,6 @@ void ofApp::setup()
     
     //register for our directory's callbacks
     ofAddListener(_syphonServerDir.events.serverAnnounced, this, &ofApp::serverAnnounced);
-    // not yet implemented
-    //ofAddListener(dir.events.serverUpdated, this, &testApp::serverUpdated);
     ofAddListener(_syphonServerDir.events.serverRetired, this, &ofApp::serverRetired);
     
     _syphonDirIdx = -1;
@@ -58,15 +56,6 @@ void ofApp::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
 {
     for( auto& _syphonServerDir : arg.servers ){
         ofLogNotice("ofxSyphonServerDirectory Server Announced") << " Server Name: " << _syphonServerDir.serverName << " | App Name: " << _syphonServerDir.appName;
-    }
-    _syphonDirIdx = 0;
-}
-
-//--------------------------------------------------------------
-void ofApp::serverUpdated(ofxSyphonServerDirectoryEventArgs &arg)
-{
-    for( auto& _syphonServerDir : arg.servers ){
-        ofLogNotice("ofxSyphonServerDirectory Server Updated") << " Server Name: "<< _syphonServerDir.serverName << " | App Name: " <<_syphonServerDir.appName;
     }
     _syphonDirIdx = 0;
 }

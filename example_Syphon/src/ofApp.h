@@ -22,7 +22,6 @@ public:
     void gotMessage(ofMessage msg);
 
     void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
-    void serverUpdated(ofxSyphonServerDirectoryEventArgs &args);
     void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);
 
 private:
