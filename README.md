@@ -46,7 +46,7 @@ Dependencies
 
 Optional add-on(s). See the 'ofxMtlMapping2DDefines.h' header file.
 * [ofxDetectDisplays](https://github.com/morethanlogic/ofxDetectDisplays)
-
+* [ofxSyphon](https://github.com/astellato/ofxSyphon)
 
 Compatibility
 ------------
