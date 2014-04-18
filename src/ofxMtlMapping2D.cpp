@@ -869,9 +869,9 @@ void ofxMtlMapping2D::drawSyphon()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::selectSyphonServer()
+void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
 {
-    _syphonDirIdx++;
+    _syphonDirIdx = syphonDirIdx;
     if(_syphonDirIdx > _syphonServerDir.size() - 1)
         _syphonDirIdx = 0;
     
@@ -892,18 +892,14 @@ void ofxMtlMapping2D::selectSyphonServer()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
 {
-    for( auto& _syphonServerDir : arg.servers ){
-        ofLogNotice("ofxSyphonServerDirectory Server Announced") << " Server Name: " << _syphonServerDir.serverName << " | App Name: " << _syphonServerDir.appName;
-    }
+    ofxMtlMapping2DControlsSharedInstance().addSyphonServer(arg.servers);
     _syphonDirIdx = 0;
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
 {
-    for( auto& _syphonServerDir : arg.servers ){
-        ofLogNotice("ofxSyphonServerDirectory Server Retired") << " Server Name: " <<_syphonServerDir.serverName << " | App Name: " << _syphonServerDir.appName;
-    }
+    ofxMtlMapping2DControlsSharedInstance().removeSyphonServer(arg.servers);
     _syphonDirIdx = 0;
 }
 

@@ -80,6 +80,8 @@ public:
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     void syphonUiEvent(ofxUIEventArgs &event);
+    void addSyphonServer(vector<ofxSyphonServerDescription> servers);
+    void removeSyphonServer(vector<ofxSyphonServerDescription> servers);
 #endif
 
 private:
@@ -103,7 +105,9 @@ private:
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     ofxUISuperCanvas* _syphonUI;
+    list<string> _syphonServersList;
     vector<string> _syphonServersNames;
+    void updateSyphonServersList();
 #endif
 
     void setUIShapeEditingState(bool isOn);

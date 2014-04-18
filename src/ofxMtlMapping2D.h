@@ -71,7 +71,7 @@ public:
     int selectedShapeId;
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    void selectSyphonServer();
+    void selectSyphonServer(int syphonDirIdx);
 
     void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
     void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);

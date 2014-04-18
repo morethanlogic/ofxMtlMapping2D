@@ -133,7 +133,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI->addButton("SELECT FILE", false);
     _settingsUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
     //_settingsUI->addTextArea("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
-    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
@@ -152,6 +151,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     displayConfigurationChanged();
     
     ofAddListener(_displaysUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
+    _displaysUI->autoSizeToFitWidgets();
     _displaysUI->disable();
     _uiSuperCanvases.push_back(_displaysUI);
 #endif
@@ -160,13 +160,11 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Syphon UI
     _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
-    _syphonUI->setPosition(ofGetWindowWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->height + 5);
+    _syphonUI->setPosition(ofGetWindowWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->y + _displaysUI->getRect()->height + 5);
     _syphonUI->setColorBack(uiColor);
-
-    _syphonUI->addButton("SELECT SERVER", false);
-
     
     ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
+    _syphonUI->autoSizeToFitWidgets();
     _syphonUI->disable();
     _uiSuperCanvases.push_back(_syphonUI);
 #endif
@@ -382,8 +380,8 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
     else {
         for (int i=0; i<_displayNames.size(); i++) {
             if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
-                ofLogNotice() << "Going fullscreen on display " << name << " - " << getToggleValue(_displaysUI, name);
                 ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+                return;
             }
         }
     }
@@ -396,9 +394,11 @@ void ofxMtlMapping2DControls::syphonUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
 
-    if(name == "SELECT SERVER") {
-        if (getButtonValue(_syphonUI, "SELECT SERVER")) {
-            _mtlMapping2D->selectSyphonServer();
+    for (int i=0; i<_syphonServersNames.size(); i++) {
+        if (name == _syphonServersNames[i] && getToggleValue(_syphonUI, name)) {
+            ofLogNotice() << "Syphon Server " << name << " - " << getToggleValue(_syphonUI, name);
+            _mtlMapping2D->selectSyphonServer(i);
+            return;
         }
     }
     
@@ -571,7 +571,7 @@ void ofxMtlMapping2DControls::windowResized()
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->height + 5);
+    _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->y + _displaysUI->getRect()->height + 5);
 #endif
 }
 
@@ -834,7 +834,59 @@ void ofxMtlMapping2DControls::loadExtraSettings()
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
 #pragma mark -
 #pragma mark Syphon
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription> servers)
+{
+    for( auto& syphonServerDir : servers ){
+        string serverID = syphonServerDir.serverName + " - " + syphonServerDir.appName;
+        
+        list<string>::iterator it;
+        for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
+            if (*it == serverID) {
+                return;
+            }
+        }
+        _syphonServersList.push_back(serverID);
+    }
+    
+    updateSyphonServersList();
+}
 
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::removeSyphonServer(vector<ofxSyphonServerDescription> servers)
+{
+    for( auto& syphonServerDir : servers ){
+        string serverID = syphonServerDir.serverName + " - " + syphonServerDir.appName;
+        
+        list<string>::iterator it;
+        for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
+            if (*it == serverID) {
+                _syphonServersList.remove(serverID);
+            } else {
+                // do nothing for now
+            }
+        }
+    }
+    
+    updateSyphonServersList();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::updateSyphonServersList()
+{
+    _syphonUI->removeWidgets();
+    _syphonServersNames.clear();
+    
+    _syphonUI->addSpacer(_displaysUI->getRect()->width - 10, 2);
+    
+    list<string>::iterator it;
+    for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
+        _syphonServersNames.push_back(*it);
+    }
+    
+    _syphonUI->addRadio("SERVERS", _syphonServersNames);
+    _syphonUI->autoSizeToFitWidgets();
+}
 
 #endif
 
