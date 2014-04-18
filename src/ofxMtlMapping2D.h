@@ -3,10 +3,8 @@
 // OF
 #include "ofMain.h"
 
-// Addons
-#include "ofxXmlSettings.h"
-
 //Mapping
+#include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DVertex.h"
 #include "ofxMtlMapping2DQuad.h"
 #include "ofxMtlMapping2DGrid.h"
@@ -15,6 +13,13 @@
 #include "ofxMtlMapping2DShape.h"
 
 #include "mtlUtils.h"
+
+// Addons
+#include "ofxXmlSettings.h"
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#include "ofxSyphon.h"
+#endif
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -64,6 +69,13 @@ public:
 
     bool bSelectedShapeChanged;
     int selectedShapeId;
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    void selectSyphonServer();
+
+    void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
+    void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);
+#endif
 
 
 private:
@@ -75,6 +87,15 @@ private:
 
     ofxXmlSettings _shapesListXML;
     list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    ofxSyphonServerDirectory _syphonServerDir;
+    ofxSyphonClient _syphonClient;
+    int _syphonDirIdx;
+    
+    void setupSyphon();
+    void drawSyphon();
+#endif
 
     void render();
 

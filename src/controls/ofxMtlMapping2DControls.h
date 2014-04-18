@@ -12,6 +12,10 @@
 #include "ofxDetectDisplays.h"
 #endif
 
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#include "ofxSyphon.h"
+#endif
+
 #define kControlsMappingToolsPanelWidth 33
 #define kControlsMappingShapesListPanelWidth 150
 
@@ -73,6 +77,10 @@ public:
     void displayConfigurationChanged();
     void displaysUiEvent(ofxUIEventArgs &event);
 #endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    void syphonUiEvent(ofxUIEventArgs &event);
+#endif
 
 private:
 
@@ -91,6 +99,11 @@ private:
 #if defined(USE_OFX_DETECT_DISPLAYS)
     ofxUISuperCanvas* _displaysUI;
     vector<string> _displayNames;
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    ofxUISuperCanvas* _syphonUI;
+    vector<string> _syphonServersNames;
 #endif
 
     void setUIShapeEditingState(bool isOn);

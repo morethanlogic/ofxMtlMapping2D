@@ -156,6 +156,21 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _uiSuperCanvases.push_back(_displaysUI);
 #endif
     
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    // ---
+    // Syphon UI
+    _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
+    _syphonUI->setPosition(ofGetWindowWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->height + 5);
+    _syphonUI->setColorBack(uiColor);
+
+    _syphonUI->addButton("SELECT SERVER", false);
+
+    
+    ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
+    _syphonUI->disable();
+    _uiSuperCanvases.push_back(_syphonUI);
+#endif
+    
     // ---
     // Shapes List UI    
     _shapesListCanvas = new ofxUIScrollableCanvas(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
@@ -251,10 +266,18 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 #if defined(USE_OFX_DETECT_DISPLAYS)
             _displaysUI->enable();
 #endif
+            
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+            _syphonUI->enable();
+#endif
+            
         } else {
             _settingsUI->disable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
             _displaysUI->disable();
+#endif
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+            _syphonUI->disable();
 #endif
         }
     }
@@ -366,6 +389,22 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
     }
 }
 #endif
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::syphonUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+
+    if(name == "SELECT SERVER") {
+        if (getButtonValue(_syphonUI, "SELECT SERVER")) {
+            _mtlMapping2D->selectSyphonServer();
+        }
+    }
+    
+}
+#endif
+
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
@@ -529,6 +568,10 @@ void ofxMtlMapping2DControls::windowResized()
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height + 5);
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->height + 5);
 #endif
 }
 
@@ -786,3 +829,13 @@ void ofxMtlMapping2DControls::loadExtraSettings()
 		xmlSettings.popTag();
 	}
 }
+
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#pragma mark -
+#pragma mark Syphon
+
+
+#endif
+
+

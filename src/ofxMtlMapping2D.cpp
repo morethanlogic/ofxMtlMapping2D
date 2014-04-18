@@ -1,6 +1,5 @@
 #include "ofxMtlMapping2D.h"
 #include "ofxMtlMapping2DGlobal.h"
-#include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
 #include "ofxMtlMapping2DShapeType.h"
@@ -65,6 +64,10 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     
     // ---
     ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    setupSyphon();
+#endif
     
 }
 
@@ -233,6 +236,11 @@ void ofxMtlMapping2D::bind()
     _fbo.begin();
     ofClear(.0f, .0f, .0f, .0f);
     ofClearAlpha();
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    drawSyphon();
+#endif
+    
 }
 
 //--------------------------------------------------------------
@@ -831,5 +839,75 @@ void ofxMtlMapping2D::chessBoard(int nbOfCol)
     
     ofSetColor(ofColor::white);
 }
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#pragma mark -
+#pragma mark Syphon
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::setupSyphon()
+{    
+    //setup our directory
+	_syphonServerDir.setup();
+    //setup our client
+    _syphonClient.setup();
+    
+    //register for our directory's callbacks
+    ofAddListener(_syphonServerDir.events.serverAnnounced, this, &ofxMtlMapping2D::serverAnnounced);
+    ofAddListener(_syphonServerDir.events.serverRetired, this, &ofxMtlMapping2D::serverRetired);
+    
+    _syphonDirIdx = -1;
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::drawSyphon()
+{
+    if(_syphonServerDir.isValidIndex(_syphonDirIdx)) {
+        ofSetColor(255, 255, 255, 255);
+        _syphonClient.draw(0, 0);
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::selectSyphonServer()
+{
+    _syphonDirIdx++;
+    if(_syphonDirIdx > _syphonServerDir.size() - 1)
+        _syphonDirIdx = 0;
+    
+    _syphonClient.set(_syphonServerDir.getDescription(_syphonDirIdx));
+    string serverName = _syphonClient.getServerName();
+    string appName = _syphonClient.getApplicationName();
+    
+    if(serverName == ""){
+        serverName = "null";
+    }
+    if(appName == ""){
+        appName = "null";
+    }
+    ofLog() << "Syphon" + serverName + ":" + appName;
+    
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
+{
+    for( auto& _syphonServerDir : arg.servers ){
+        ofLogNotice("ofxSyphonServerDirectory Server Announced") << " Server Name: " << _syphonServerDir.serverName << " | App Name: " << _syphonServerDir.appName;
+    }
+    _syphonDirIdx = 0;
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
+{
+    for( auto& _syphonServerDir : arg.servers ){
+        ofLogNotice("ofxSyphonServerDirectory Server Retired") << " Server Name: " <<_syphonServerDir.serverName << " | App Name: " << _syphonServerDir.appName;
+    }
+    _syphonDirIdx = 0;
+}
+
+
+#endif
 
 
