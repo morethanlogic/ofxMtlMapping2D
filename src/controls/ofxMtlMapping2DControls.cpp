@@ -340,6 +340,7 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
     }
     else if (name == "LOAD"  && getButtonValue(_settingsUI, name)) {
         loadSettings();
+        loadSyphonSettings();
     }
     else if (name == "LOAD FILE ON START"  && getButtonValue(_settingsUI, name)) {
         if (!_bInitialized && extraOutputSettings["path"] != "") {
@@ -370,7 +371,7 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
     string name = event.widget->getName();
     
     if(name == "DETECT DISPLAYS") {
-        if (getButtonValue(_settingsUI, "DETECT DISPLAYS")) {
+        if (getButtonValue(_settingsUI, name)) {
             ofxDetectDisplaysSharedInstance().detectDisplays();
             
         } else {
@@ -394,13 +395,24 @@ void ofxMtlMapping2DControls::syphonUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
 
-    for (int i=0; i<_syphonServersNames.size(); i++) {
-        if (name == _syphonServersNames[i] && getToggleValue(_syphonUI, name)) {
-            ofLogNotice() << "Syphon Server " << name << " - " << getToggleValue(_syphonUI, name);
-            _mtlMapping2D->selectSyphonServer(i);
-            return;
+    if(name == "NONE") {
+        if (getButtonValue(_syphonUI, name)) {
+            _mtlMapping2D->selectSyphonServer(-1);
+            
+            for (int i=0; i<_syphonServersNames.size(); i++) {
+                setToggleValue(_syphonUI, _syphonServersNames[i], false);
+            }
         }
     }
+    else {
+        for (int i=0; i<_syphonServersNames.size(); i++) {
+            if (name == _syphonServersNames[i] && getToggleValue(_syphonUI, name)) {
+                _mtlMapping2D->selectSyphonServer(i);
+                return;
+            }
+        }
+    }
+    
     
 }
 #endif
@@ -699,6 +711,10 @@ void ofxMtlMapping2DControls::saveSettings()
     _displaysUI->saveSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    _syphonUI->saveSettings(_rootPath + _syphonUI->getCanvasTitle()->getLabel() + ".xml");
+#endif
+    
     saveExtraSettings();
 }
 
@@ -711,7 +727,7 @@ void ofxMtlMapping2DControls::loadSettings()
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _displaysUI->loadSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
-    
+
     windowResized();
 }
 
@@ -838,8 +854,19 @@ void ofxMtlMapping2DControls::loadExtraSettings()
 void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription> servers)
 {
     for( auto& syphonServerDir : servers ){
-        string serverID = syphonServerDir.serverName + " - " + syphonServerDir.appName;
+        string serverName = syphonServerDir.serverName;
+        string appName = syphonServerDir.appName;
         
+        if (serverName.empty()) {
+            serverName = "N.C.";
+        }
+        
+        if (appName.empty()) {
+            appName = "N.C.";
+        }
+        
+        string serverID = serverName + " - " + appName;
+
         list<string>::iterator it;
         for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
             if (*it == serverID) {
@@ -856,8 +883,19 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
 void ofxMtlMapping2DControls::removeSyphonServer(vector<ofxSyphonServerDescription> servers)
 {
     for( auto& syphonServerDir : servers ){
-        string serverID = syphonServerDir.serverName + " - " + syphonServerDir.appName;
+        string serverName = syphonServerDir.serverName;
+        string appName = syphonServerDir.appName;
         
+        if (serverName.empty()) {
+            serverName = "N.C.";
+        }
+        
+        if (appName.empty()) {
+            appName = "N.C.";
+        }
+        
+        string serverID = serverName + " - " + appName;
+
         list<string>::iterator it;
         for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
             if (*it == serverID) {
@@ -877,7 +915,10 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
     _syphonUI->removeWidgets();
     _syphonServersNames.clear();
     
-    _syphonUI->addSpacer(_displaysUI->getRect()->width - 10, 2);
+    _syphonUI->addSpacer(_syphonUI->getRect()->width - 10, 2);
+    
+    ofxUIButton* uiButton = _syphonUI->addButton("NONE", false);
+    _syphonUI->addSpacer((_syphonUI->getRect()->width - 10) / 2, 1);
     
     list<string>::iterator it;
     for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
@@ -886,6 +927,14 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
     
     _syphonUI->addRadio("SERVERS", _syphonServersNames);
     _syphonUI->autoSizeToFitWidgets();
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::loadSyphonSettings()
+{
+    ofLog() << "loadSyphonSettings() ";
+
+    _syphonUI->loadSettings(_rootPath + _syphonUI->getCanvasTitle()->getLabel() + ".xml");
 }
 
 #endif

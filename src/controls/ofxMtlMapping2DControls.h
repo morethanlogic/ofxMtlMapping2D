@@ -82,6 +82,7 @@ public:
     void syphonUiEvent(ofxUIEventArgs &event);
     void addSyphonServer(vector<ofxSyphonServerDescription> servers);
     void removeSyphonServer(vector<ofxSyphonServerDescription> servers);
+    void loadSyphonSettings();
 #endif
 
 private:

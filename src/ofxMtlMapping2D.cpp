@@ -7,6 +7,11 @@
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+bool _syphonLoadSettingsAtLaunch = true;
+int _syphonNumFrameWhenLastServerAnnounced = -1;
+
+//--------------------------------------------------------------
+//--------------------------------------------------------------
 list<ofxMtlMapping2DShape*>::iterator ofxMtlMapping2D::iteratorForShapeWithId(int shapeId)
 {
     list<ofxMtlMapping2DShape*>::iterator it;
@@ -57,18 +62,18 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     // ---
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
-
+    
     // ---
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
     ofxMtlMapping2DControlsSharedInstance(this).init();
     
     // ---
     ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
-    
+
+    // ---
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     setupSyphon();
 #endif
-    
 }
 
 //--------------------------------------------------------------
@@ -86,7 +91,13 @@ MappingModeState ofxMtlMapping2D::getModeState()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::update()
 {    
-    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    if (_syphonLoadSettingsAtLaunch && (ofGetFrameNum() - _syphonNumFrameWhenLastServerAnnounced) > 0) {
+        _syphonLoadSettingsAtLaunch = false;
+        ofxMtlMapping2DControlsSharedInstance().loadSyphonSettings();
+    }
+#endif
+
     if (_mappingModeState == MAPPING_LOCKED) {
         return;
     }
@@ -236,16 +247,16 @@ void ofxMtlMapping2D::bind()
     _fbo.begin();
     ofClear(.0f, .0f, .0f, .0f);
     ofClearAlpha();
-
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    drawSyphon();
-#endif
-    
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::unbind()
 {
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    drawSyphon();
+#endif
+    
     _fbo.end();
 }
 
@@ -847,6 +858,8 @@ void ofxMtlMapping2D::chessBoard(int nbOfCol)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::setupSyphon()
 {    
+    _syphonNumFrameWhenLastServerAnnounced = ofGetFrameNum();
+
     //setup our directory
 	_syphonServerDir.setup();
     //setup our client
@@ -875,32 +888,22 @@ void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
     if(_syphonDirIdx > _syphonServerDir.size() - 1)
         _syphonDirIdx = 0;
     
-    _syphonClient.set(_syphonServerDir.getDescription(_syphonDirIdx));
-    string serverName = _syphonClient.getServerName();
-    string appName = _syphonClient.getApplicationName();
-    
-    if(serverName == ""){
-        serverName = "null";
+    if(_syphonServerDir.isValidIndex(_syphonDirIdx)) {
+        _syphonClient.set(_syphonServerDir.getDescription(_syphonDirIdx));
     }
-    if(appName == ""){
-        appName = "null";
-    }
-    ofLog() << "Syphon" + serverName + ":" + appName;
-    
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
 {
+    _syphonNumFrameWhenLastServerAnnounced = ofGetFrameNum();
     ofxMtlMapping2DControlsSharedInstance().addSyphonServer(arg.servers);
-    _syphonDirIdx = 0;
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
 {
     ofxMtlMapping2DControlsSharedInstance().removeSyphonServer(arg.servers);
-    _syphonDirIdx = 0;
 }
 
 
