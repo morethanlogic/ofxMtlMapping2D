@@ -340,7 +340,9 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
     }
     else if (name == "LOAD"  && getButtonValue(_settingsUI, name)) {
         loadSettings();
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
         loadSyphonSettings();
+#endif
     }
     else if (name == "LOAD FILE ON START"  && getButtonValue(_settingsUI, name)) {
         if (!_bInitialized && extraOutputSettings["path"] != "") {
