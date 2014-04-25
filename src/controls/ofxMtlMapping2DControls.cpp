@@ -445,8 +445,6 @@ void ofxMtlMapping2DControls::syphonUiEvent(ofxUIEventArgs &event)
             }
         }
     }
-    
-    
 }
 #endif
 
@@ -903,7 +901,7 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
             appName = "N.C.";
         }
         
-        string serverID = serverName + " - " + appName;
+        string serverID = serverName;// + " - " + appName;
 
         list<string>::iterator it;
         for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
@@ -911,7 +909,10 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
                 return;
             }
         }
-        _syphonServersList.push_back(serverID);
+        
+        if (serverName != ofToString(kSyphonOutputServerName)) {
+            _syphonServersList.push_back(serverID);
+        }
     }
     
     updateSyphonServersList();
@@ -932,7 +933,7 @@ void ofxMtlMapping2DControls::removeSyphonServer(vector<ofxSyphonServerDescripti
             appName = "N.C.";
         }
         
-        string serverID = serverName + " - " + appName;
+        string serverID = serverName;// + " - " + appName;
 
         list<string>::iterator it;
         for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {

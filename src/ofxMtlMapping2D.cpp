@@ -943,10 +943,23 @@ void ofxMtlMapping2D::openOuputWindowApp()
 void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
 {
     _syphonDirIdx = syphonDirIdx;
-    if(_syphonDirIdx > _syphonServerDir.size() - 1)
+    if(_syphonDirIdx > _syphonServerDir.size() - 1) {
         _syphonDirIdx = 0;
+    }
+    
+    int appServerId = -1;
+    for (int i=0; i < _syphonServerDir.getServerList().size(); i++) {
+        if (_syphonServerDir.getDescription(i).serverName == ofToString(kSyphonOutputServerName)) {
+            appServerId = i;
+            break;
+        }
+    }
     
     if(_syphonServerDir.isValidIndex(_syphonDirIdx)) {
+        if (appServerId <= _syphonDirIdx) {
+            _syphonDirIdx++;
+        }
+    
         _syphonClient.set(_syphonServerDir.getDescription(_syphonDirIdx));
     }
 }
