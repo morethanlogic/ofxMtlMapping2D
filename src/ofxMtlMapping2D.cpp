@@ -896,7 +896,7 @@ void ofxMtlMapping2D::setupSyphon()
     // ---
 #if defined(USE_SECOND_WINDOW_OPTION)
     #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        _syphonServerSecondWindow.setName("Second Output");
+        _syphonServerSecondWindow.setName(kSyphonOutputServerName);
     #endif
 #endif
 }

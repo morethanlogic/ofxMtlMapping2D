@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 
+#define kSyphonOutputServerName "MTLMapperOutput"
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 enum MappingEditView
