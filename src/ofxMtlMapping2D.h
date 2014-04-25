@@ -75,6 +75,10 @@ public:
 
     void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
     void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);
+    
+    #if defined(USE_SECOND_WINDOW_OPTION)
+    void openOuputWindowApp();
+    #endif
 #endif
 
 
@@ -95,6 +99,11 @@ private:
     
     void setupSyphon();
     void drawSyphon();
+    
+    #if defined(USE_SECOND_WINDOW_OPTION)
+        ofxSyphonServer _syphonServerSecondWindow;
+        ofFbo _outputFboSecondWindow;
+    #endif
 #endif
 
     void render();

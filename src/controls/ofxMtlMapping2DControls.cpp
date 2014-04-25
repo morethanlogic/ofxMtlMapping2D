@@ -60,15 +60,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     ofColor uiColorB;
     uiColorB.set(0, 210, 255, 90);
     
-#if defined(USE_OFX_DETECT_DISPLAYS)
-#if defined(TARGET_OSX)
-    // You should only use the shared instance of ofxDetectDisplays,
-    // otherwise event registration will be messed up.
-	// Events only works on Mac for now.
-    ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
-#endif
-#endif
-    
     // --- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
     shapeTypesAsString[MAPPING_2D_SHAPE_GRID] = "grid";
@@ -116,10 +107,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Output Settings UI
     _settingsUI = new ofxUISuperCanvas("SETTINGS");
-    //_settingsUI->setFont("ui/ReplicaBold.ttf");
-    //_settingsUI->setFontSize(OFX_UI_FONT_SMALL, 5, 150);
-    _settingsUI->setPosition(ofGetWindowWidth() - _settingsUI->getRect()->width, 0);
-    //_settingsUI->setWidgetFontSize(OFX_UI_FONT_SMALL);
     _settingsUI->setColorBack(uiColor);
     
     _settingsUI->addSpacer(_settingsUI->getRect()->width - 10, 2);
@@ -132,7 +119,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI->addToggle("LOAD FILE ON START", false);
     _settingsUI->addButton("SELECT FILE", false);
     _settingsUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
-    //_settingsUI->addTextArea("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
@@ -141,26 +127,43 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
     // ---
+    // Output Settings UI
+    _outputUI = new ofxUISuperCanvas("OUTPUT SETTINGS");
+    _outputUI->setColorBack(uiColor);
+    
+    _outputUI->addSpacer(_outputUI->getRect()->width - 10, 2);
+    
+    _outputUI->addButton("DETECT DISPLAYS", false);
+    _outputUI->addSpacer((_outputUI->getRect()->width - 10) / 2, 1);
+    
+#if defined(USE_SECOND_WINDOW_OPTION)
+    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _outputUI->addToggle("OUTPUT WINDOW", false);
+    #endif
+#endif
+    
+    ofAddListener(_outputUI->newGUIEvent, this, &ofxMtlMapping2DControls::outputUiEvent);
+    _outputUI->autoSizeToFitWidgets();
+    _outputUI->disable();
+    _uiSuperCanvases.push_back(_outputUI);
+    
+    // ---
     // Displays Settings UI
-    _displaysUI = new ofxUISuperCanvas("DISPLAYS SETTINGS");
-    //_displaysUI->setFont("ui/ReplicaBold.ttf");
-    //_displaysUI->setFontSize(OFX_UI_FONT_SMALL, 5, 150);
-    _displaysUI->setPosition(ofGetWindowWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height + 5);
-    _displaysUI->setColorBack(uiColor);
     
-    displayConfigurationChanged();
+    _displaysListUI = new ofxUISuperCanvas("DISPLAYS");
+    _displaysListUI->setColorBack(uiColor);
+
+    ofAddListener(_displaysListUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
+    _displaysListUI->autoSizeToFitWidgets();
+    _displaysListUI->disable();
+    _uiSuperCanvases.push_back(_displaysListUI);
     
-    ofAddListener(_displaysUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
-    _displaysUI->autoSizeToFitWidgets();
-    _displaysUI->disable();
-    _uiSuperCanvases.push_back(_displaysUI);
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     // ---
     // Syphon UI
     _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
-    _syphonUI->setPosition(ofGetWindowWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->y + _displaysUI->getRect()->height + 5);
     _syphonUI->setColorBack(uiColor);
     
     ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
@@ -186,8 +189,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // Grid Settings UI
     int gridSettingCanvasWidth = 200.0f;
     _gridSettingsCanvas = new ofxUICanvas();
-    //_gridSettingsCanvas->setFont("ui/ReplicaBold.ttf");
-    _gridSettingsCanvas->setPosition(kControlsMappingToolsPanelWidth, ofGetHeight() - 90);
     _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
     _gridSettingsCanvas->setColorBack(uiColorB);
     
@@ -199,6 +200,20 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     ofAddListener(_gridSettingsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::gridSettingsListUiEvent);
     _gridSettingsCanvas->disable();
     _uiSuperCanvases.push_back(_gridSettingsCanvas);
+
+    // ---
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    #if defined(TARGET_OSX)
+        // You should only use the shared instance of ofxDetectDisplays,
+        // otherwise event registration will be messed up.
+        // Events only works on Mac for now.
+        ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
+    #endif
+    displayConfigurationChanged();;
+#endif
+    
+    // ---
+    updateUIsPosition();
     
 }
 
@@ -247,7 +262,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         
 #if defined(USE_OFX_DETECT_DISPLAYS)
         if (!bGoFullscreen) {
-            ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysUI->getWidget("DISPLAYS");
+            ofxUIRadio* uiRadio = (ofxUIRadio*) _outputUI->getWidget("DISPLAYS");
             
             for (int i=0; i<uiRadio->getToggles().size(); i++) {
                 uiRadio->getToggles()[i]->setValue(false);
@@ -262,7 +277,8 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         if(getToggleValue(_toolsCanvas, name)) {
             _settingsUI->enable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
-            _displaysUI->enable();
+            _outputUI->enable();
+            _displaysListUI->enable();
 #endif
             
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -272,7 +288,8 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         } else {
             _settingsUI->disable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
-            _displaysUI->disable();
+            _outputUI->disable();
+            _displaysListUI->disable();
 #endif
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
             _syphonUI->disable();
@@ -368,24 +385,38 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
+void ofxMtlMapping2DControls::outputUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
     if(name == "DETECT DISPLAYS") {
-        if (getButtonValue(_settingsUI, name)) {
+        if (getButtonValue(_outputUI, name)) {
             ofxDetectDisplaysSharedInstance().detectDisplays();
-            
+
         } else {
             displayConfigurationChanged();
         }
     }
-    else {
-        for (int i=0; i<_displayNames.size(); i++) {
-            if (name == _displayNames[i] && getToggleValue(_displaysUI, name)) {
-                ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
-                return;
+#if defined(USE_SECOND_WINDOW_OPTION)
+    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        else if (name == "OUTPUT WINDOW") {
+            if (getToggleValue(_outputUI, name)) {
+                _mtlMapping2D->openOuputWindowApp();
             }
+        }
+    #endif
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+    
+    for (int i=0; i<_displayNames.size(); i++) {
+        if (name == _displayNames[i] && getToggleValue(_displaysListUI, name)) {
+            ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+            return;
         }
     }
 }
@@ -567,7 +598,7 @@ void ofxMtlMapping2DControls::unselectShapesToggles()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::windowResized()
+void ofxMtlMapping2DControls::updateUIsPosition()
 {
     if (ofGetWindowMode() == OF_FULLSCREEN) {
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenContractIcon);
@@ -578,14 +609,20 @@ void ofxMtlMapping2DControls::windowResized()
     }
     
     _toolsCanvas->setHeight(ofGetHeight());
+
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->setPosition(ofGetWidth() - _displaysUI->getRect()->width, _settingsUI->getRect()->height + 5);
+    _outputUI->setPosition(ofGetWidth() - _outputUI->getRect()->width, _settingsUI->getRect()->height + 5);
+    _displaysListUI->setPosition(ofGetWidth() - _displaysListUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height);
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysUI->getRect()->y + _displaysUI->getRect()->height + 5);
+    #if defined(USE_OFX_DETECT_DISPLAYS)
+        _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
+    #elif
+        _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
+    #endif
 #endif
 }
 
@@ -597,20 +634,17 @@ void ofxMtlMapping2DControls::windowResized()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displayConfigurationChanged()
 {
-    _displaysUI->removeWidgets();
+    _displaysListUI->removeWidgets();
     _displayNames.clear();
-    
-    _displaysUI->addSpacer(_displaysUI->getRect()->width - 10, 2);
-
-    ofxUIButton* uiButton = _displaysUI->addButton("DETECT DISPLAYS", false);
-    _displaysUI->addSpacer((_displaysUI->getRect()->width - 10) / 2, 1);
     
     for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
         _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height) + " - UID:" + ofxDetectDisplaysSharedInstance().getDisplays()[i]->UID);
     }
     
-    _displaysUI->addRadio("DISPLAYS", _displayNames);
-    _displaysUI->autoSizeToFitWidgets();
+    _displaysListUI->addRadio("DISPLAYS", _displayNames);
+    _displaysListUI->autoSizeToFitWidgets();
+    
+    updateUIsPosition();
 }
 
 #endif
@@ -710,7 +744,8 @@ void ofxMtlMapping2DControls::saveSettings()
 {
     _settingsUI->saveSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->saveSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
+    _outputUI->saveSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
+    _displaysListUI->saveSettings(_rootPath + _displaysListUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -727,10 +762,11 @@ void ofxMtlMapping2DControls::loadSettings()
     
     _settingsUI->loadSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    _displaysUI->loadSettings(_rootPath + _displaysUI->getCanvasTitle()->getLabel() + ".xml");
+    _outputUI->loadSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
+    _displaysListUI->loadSettings(_rootPath + _displaysListUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
 
-    windowResized();
+    updateUIsPosition();
 }
 
 //--------------------------------------------------------------
@@ -919,7 +955,7 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
     
     _syphonUI->addSpacer(_syphonUI->getRect()->width - 10, 2);
     
-    ofxUIButton* uiButton = _syphonUI->addButton("NONE", false);
+    _syphonUI->addButton("NONE", false);
     _syphonUI->addSpacer((_syphonUI->getRect()->width - 10) / 2, 1);
     
     list<string>::iterator it;
@@ -934,9 +970,9 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::loadSyphonSettings()
 {
-    ofLog() << "loadSyphonSettings() ";
-
     _syphonUI->loadSettings(_rootPath + _syphonUI->getCanvasTitle()->getLabel() + ".xml");
+    
+    updateUIsPosition();
 }
 
 #endif

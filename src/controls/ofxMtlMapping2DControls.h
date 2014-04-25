@@ -71,10 +71,12 @@ public:
     void setAsActiveShapeWithId(int shapeID, int shapeType);
 
     void unselectShapesToggles();
-    void windowResized();
+    void updateUIsPosition();
+
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
     void displayConfigurationChanged();
+    void outputUiEvent(ofxUIEventArgs &event);
     void displaysUiEvent(ofxUIEventArgs &event);
 #endif
     
@@ -86,7 +88,6 @@ public:
 #endif
 
 private:
-
     ofxMtlMapping2DControls();
     ~ofxMtlMapping2DControls();
 
@@ -100,7 +101,8 @@ private:
     ofxUICanvas *_gridSettingsCanvas;
     
 #if defined(USE_OFX_DETECT_DISPLAYS)
-    ofxUISuperCanvas* _displaysUI;
+    ofxUISuperCanvas* _outputUI;
+    ofxUISuperCanvas* _displaysListUI;
     vector<string> _displayNames;
 #endif
     

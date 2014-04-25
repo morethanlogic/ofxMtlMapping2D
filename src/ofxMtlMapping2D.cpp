@@ -62,6 +62,12 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     // ---
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
+
+#if defined(USE_SECOND_WINDOW_OPTION)
+    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _outputFboSecondWindow.allocate(width, height, GL_RGBA, _numSample);
+    #endif
+#endif
     
     // ---
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
@@ -207,7 +213,7 @@ void ofxMtlMapping2D::update()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::draw()
 {
-    
+
     if (_mappingModeState == MAPPING_EDIT) {
         switch (ofxMtlMapping2DGlobal::getEditView()) {
             case MAPPING_INPUT_VIEW:
@@ -237,6 +243,22 @@ void ofxMtlMapping2D::draw()
     else {
         render();
     }
+
+    
+#if defined(USE_SECOND_WINDOW_OPTION)
+    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _outputFboSecondWindow.begin();
+        {
+            ofClear(.0f, .0f, .0f, .0f);
+            ofClearAlpha();
+            render();
+        }
+        _outputFboSecondWindow.end();
+        _syphonServerSecondWindow.publishTexture(&_outputFboSecondWindow.getTextureReference());
+    #endif
+#endif
+
+
 }
 
 #pragma mark -
@@ -398,7 +420,7 @@ void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
     // resize / re-allocate the source FBO
     _fbo.allocate(e.width , e.height, GL_RGBA, _numSample);
 
-    ofxMtlMapping2DControlsSharedInstance().windowResized();
+    ofxMtlMapping2DControlsSharedInstance().updateUIsPosition();
 }
 
 
@@ -870,6 +892,13 @@ void ofxMtlMapping2D::setupSyphon()
     ofAddListener(_syphonServerDir.events.serverRetired, this, &ofxMtlMapping2D::serverRetired);
     
     _syphonDirIdx = -1;
+    
+    // ---
+#if defined(USE_SECOND_WINDOW_OPTION)
+    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _syphonServerSecondWindow.setName("Second Output");
+    #endif
+#endif
 }
 
 //--------------------------------------------------------------
@@ -880,6 +909,35 @@ void ofxMtlMapping2D::drawSyphon()
         _syphonClient.draw(0, 0);
     }
 }
+
+#if defined(USE_SECOND_WINDOW_OPTION)
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+//--------------------------------------------------------------
+void ofxMtlMapping2D::openOuputWindowApp()
+{
+	string shPath;
+	shPath = ofToDataPath( "openOutputWindowApp.sh", true );
+	
+	char *shPathChar;
+	shPathChar = new char[ shPath.length() + 1 ];
+	strcpy( shPathChar, shPath.c_str() );
+	
+	// ---
+	int pid = fork();
+	switch ( pid )
+	{
+		case -1 :
+			ofLogError() << "Opening output window app failes.";
+			
+		case  0 :
+			execl( shPathChar, shPathChar, NULL );
+			
+		default :
+			return;
+	}
+}
+#endif
+#endif
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
