@@ -388,7 +388,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
-    
+        
     if (name == "SAVE" && getButtonValue(_settingsUI, name)) {
         saveSettings();
     }
@@ -405,14 +405,24 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
     }
     
     
-    else if (name == "SELECT FILE" && getButtonValue(_settingsUI, name)) {
+    else if ((name == "SELECT FILE" && getButtonValue(_settingsUI, name)) || (_bInitialized && name == "FILE PATH")) {
+        
+        ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget("FILE PATH");
+        
+        // If the event comes from the TextInput widget, and the TextInput widget does not have the focus
+        // it means that the user just presented 'cancel' in the system dialog window.
+        if (name == "FILE PATH" && !textInput->isFocused()) {
+            return;
+        }
+        
         ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+        
+        textInput->setFocus(false);
         
         if (!fileDialogResult.bSuccess) {
             return;
         }
         
-        ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget("FILE PATH");
         string path = fileDialogResult.getPath();
         extraOutputSettings["path"] = path;
         textInput->setTextString(fileDialogResult.getName());
@@ -492,14 +502,24 @@ void ofxMtlMapping2DControls::videoPlayerUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
-    if (name == "SELECT FILE" && getButtonValue(_videoPlayerUI, name)) {
+    if ((name == "SELECT FILE" && getButtonValue(_videoPlayerUI, name)) || (_bInitialized && name == "FILE PATH")) {
+        
+        ofxUITextInput* textInput = (ofxUITextInput*) _videoPlayerUI->getWidget("FILE PATH");
+        
+        // If the event comes from the TextInput widget, and the TextInput widget does not have the focus
+        // it means that the user just presented 'cancel' in the system dialog window.
+        if (name == "FILE PATH" && !textInput->isFocused()) {
+            return;
+        }
+        
         ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+        
+        textInput->setFocus(false);
         
         if (!fileDialogResult.bSuccess) {
             return;
         }
         
-        ofxUITextInput* textInput = (ofxUITextInput*) _videoPlayerUI->getWidget("FILE PATH");
         string path = fileDialogResult.getPath();
         extraOutputSettings["video_file_path"] = path;
         textInput->setTextString(fileDialogResult.getName());
