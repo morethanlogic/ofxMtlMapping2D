@@ -504,6 +504,10 @@ void ofxMtlMapping2DControls::videoPlayerUiEvent(ofxUIEventArgs &event)
         extraOutputSettings["video_file_path"] = path;
         textInput->setTextString(fileDialogResult.getName());
         _mtlMapping2D->loadVideo(path);
+        
+        // ---
+        ((ofxUIImageToggle *)_videoPlayerUI->getWidget("PLAY"))->setImage(&_videoPlayIcon);
+        setToggleValue(_videoPlayerUI, "PLAY", false);
     }
     else if (name == "LOAD VIDEO ON START"  && getToggleValue(_videoPlayerUI, name)) {
         if (!_bInitialized && extraOutputSettings["video_file_path"] != "") {
