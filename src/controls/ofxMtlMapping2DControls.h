@@ -86,6 +86,11 @@ public:
     void removeSyphonServer(vector<ofxSyphonServerDescription> servers);
     void loadSyphonSettings();
 #endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    void videoPlayerUiEvent(ofxUIEventArgs &event);
+    void loadVideoPlayerSettings();
+#endif
 
 private:
     ofxMtlMapping2DControls();
@@ -100,19 +105,6 @@ private:
     ofxUIScrollableCanvas *_shapesListCanvas;
     ofxUICanvas *_gridSettingsCanvas;
     
-#if defined(USE_OFX_DETECT_DISPLAYS)
-    ofxUISuperCanvas* _outputUI;
-    ofxUISuperCanvas* _displaysListUI;
-    vector<string> _displayNames;
-#endif
-    
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    ofxUISuperCanvas* _syphonUI;
-    list<string> _syphonServersList;
-    vector<string> _syphonServersNames;
-    void updateSyphonServersList();
-#endif
-
     void setUIShapeEditingState(bool isOn);
     void resizeShapeList();
     void refreshShapesListForMappingView(MappingEditView currView);
@@ -136,6 +128,26 @@ private:
     void loadExtraSettings();
 
     map<string,string> extraOutputSettings;
+    
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    ofxUISuperCanvas* _outputUI;
+    ofxUISuperCanvas* _displaysListUI;
+    vector<string> _displayNames;
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    ofxUISuperCanvas* _syphonUI;
+    list<string> _syphonServersList;
+    vector<string> _syphonServersNames;
+    void updateSyphonServersList();
+#endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    ofxUISuperCanvas* _videoPlayerUI;
+    
+    ofImage _videoPlayIcon;
+    ofImage _videoPauseIcon;
+#endif
 
     
 };

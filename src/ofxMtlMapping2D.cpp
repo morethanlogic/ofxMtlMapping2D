@@ -103,6 +103,10 @@ void ofxMtlMapping2D::update()
         ofxMtlMapping2DControlsSharedInstance().loadSyphonSettings();
     }
 #endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    updateVideoPlayer();
+#endif
 
     if (_mappingModeState == MAPPING_LOCKED) {
         return;
@@ -277,6 +281,10 @@ void ofxMtlMapping2D::unbind()
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     drawSyphon();
+#endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    drawVideoPlayer();
 #endif
     
     _fbo.end();
@@ -873,9 +881,11 @@ void ofxMtlMapping2D::chessBoard(int nbOfCol)
     ofSetColor(ofColor::white);
 }
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+
 #pragma mark -
 #pragma mark Syphon
+
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::setupSyphon()
@@ -895,9 +905,7 @@ void ofxMtlMapping2D::setupSyphon()
     
     // ---
 #if defined(USE_SECOND_WINDOW_OPTION)
-    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        _syphonServerSecondWindow.setName(kSyphonOutputServerName);
-    #endif
+    _syphonServerSecondWindow.setName(kSyphonOutputServerName);
 #endif
 }
 
@@ -911,7 +919,6 @@ void ofxMtlMapping2D::drawSyphon()
 }
 
 #if defined(USE_SECOND_WINDOW_OPTION)
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::openOuputWindowApp()
 {
@@ -936,7 +943,6 @@ void ofxMtlMapping2D::openOuputWindowApp()
 			return;
 	}
 }
-#endif
 #endif
 
 //--------------------------------------------------------------
@@ -975,6 +981,115 @@ void ofxMtlMapping2D::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg)
 void ofxMtlMapping2D::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
 {
     ofxMtlMapping2DControlsSharedInstance().removeSyphonServer(arg.servers);
+}
+#endif
+
+
+#pragma mark -
+#pragma mark Video Player
+
+#if defined(USE_VIDEO_PLAYER_OPTION)
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::setupVideoPlayer()
+{
+#if defined(TARGET_OSX)
+    videoPositionInSeconds = .0f;
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::updateVideoPlayer()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.update();
+    videoPositionInSeconds = _videoPlayer.getPosition() * 100;
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::drawVideoPlayer()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.draw(.0f, .0f);
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::exitVideoPlayer()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.close();
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::loadVideo(string filePath)
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.loadMovie(filePath);
+    _videoPlayer.setLoopState(OF_LOOP_NORMAL);
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::playVideo()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.play();
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::pauseVideo()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.setPaused(true);
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::stopVideo()
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.stop();
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+float ofxMtlMapping2D::getVideoDurationInSecond()
+{
+#if defined(TARGET_OSX)
+    return _videoPlayer.getDuration();
+#elif definfed(TARGET_WIN32)
+    
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::setVideoPostion(float position)
+{
+#if defined(TARGET_OSX)
+    _videoPlayer.setPosition(position/100);
+#elif definfed(TARGET_WIN32)
+    
+#endif
 }
 
 

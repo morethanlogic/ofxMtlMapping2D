@@ -71,6 +71,11 @@
 		F3163BF119018F7700940C04 /* ofxSyphonServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = F3163BE719018F7700940C04 /* ofxSyphonServer.mm */; };
 		F3163BF219018F7700940C04 /* ofxSyphonServerDirectory.mm in Sources */ = {isa = PBXBuildFile; fileRef = F3163BE919018F7700940C04 /* ofxSyphonServerDirectory.mm */; };
 		F3163BF91901907D00940C04 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F3163BDD19018F7700940C04 /* Syphon.framework */; };
+		F37CE366190BFC8F008ECCE9 /* ofxAVFVideoPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = F37CE35D190BFC8F008ECCE9 /* ofxAVFVideoPlayer.mm */; };
+		F37CE367190BFC8F008ECCE9 /* ofxAVFVideoRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = F37CE35F190BFC8F008ECCE9 /* ofxAVFVideoRenderer.m */; };
+		F37CE36F190C09EE008ECCE9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F37CE36E190C09EE008ECCE9 /* CoreMedia.framework */; };
+		F37CE371190C0A00008ECCE9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F37CE370190C0A00008ECCE9 /* QuartzCore.framework */; };
+		F37CE373190C0A0D008ECCE9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F37CE372190C0A0D008ECCE9 /* AVFoundation.framework */; };
 		F3C7C78718CFADD2002DD9BE /* ofxMSAInteractiveObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3C7C78318CFADD2002DD9BE /* ofxMSAInteractiveObject.cpp */; };
 		a00d8e59f7ee92552582023e953eedbc /* ofxMtlMapping2DGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = d4a5e79c88fd78cd31f1797ec9684ff4 /* ofxMtlMapping2DGrid.cpp */; };
 		a78c7afe06bfdeab8407ff2b1aad0a5a /* ofxMtlMapping2DGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5a51289d334d8a44e1d2c71bd6051a03 /* ofxMtlMapping2DGlobal.cpp */; };
@@ -251,6 +256,13 @@
 		F3163BE719018F7700940C04 /* ofxSyphonServer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonServer.mm; sourceTree = "<group>"; };
 		F3163BE819018F7700940C04 /* ofxSyphonServerDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSyphonServerDirectory.h; sourceTree = "<group>"; };
 		F3163BE919018F7700940C04 /* ofxSyphonServerDirectory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxSyphonServerDirectory.mm; sourceTree = "<group>"; };
+		F37CE35C190BFC8F008ECCE9 /* ofxAVFVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAVFVideoPlayer.h; sourceTree = "<group>"; };
+		F37CE35D190BFC8F008ECCE9 /* ofxAVFVideoPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxAVFVideoPlayer.mm; sourceTree = "<group>"; };
+		F37CE35E190BFC8F008ECCE9 /* ofxAVFVideoRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAVFVideoRenderer.h; sourceTree = "<group>"; };
+		F37CE35F190BFC8F008ECCE9 /* ofxAVFVideoRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ofxAVFVideoRenderer.m; sourceTree = "<group>"; };
+		F37CE36E190C09EE008ECCE9 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		F37CE370190C0A00008ECCE9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F37CE372190C0A0D008ECCE9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F3AED6E318FB19F100C67B36 /* ofxMtlMapping2DDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMtlMapping2DDefines.h; path = ../src/ofxMtlMapping2DDefines.h; sourceTree = "<group>"; };
 		F3C7C78318CFADD2002DD9BE /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		F3C7C78418CFADD2002DD9BE /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
@@ -306,6 +318,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F37CE373190C0A0D008ECCE9 /* AVFoundation.framework in Frameworks */,
+				F37CE371190C0A00008ECCE9 /* QuartzCore.framework in Frameworks */,
+				F37CE36F190C09EE008ECCE9 /* CoreMedia.framework in Frameworks */,
 				F3163BEE19018F7700940C04 /* Syphon.framework in Frameworks */,
 				E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */,
 				E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */,
@@ -424,6 +439,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				F37CE331190BFC8F008ECCE9 /* ofxAVFVideoPlayer */,
 				F3163BBC19018F7700940C04 /* ofxSyphon */,
 				1f4fb5c423662b96adfdcc0badec1cb0 /* ofxXmlSettings */,
 				06c3dcbdc86bb41061e651ac14d1e198 /* ofxDetectDisplays */,
@@ -437,6 +453,8 @@
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F37CE372190C0A0D008ECCE9 /* AVFoundation.framework */,
+				F37CE370190C0A00008ECCE9 /* QuartzCore.framework */,
 				E7F985F515E0DE99003869B5 /* Accelerate.framework */,
 				E4C2424410CC5A17004149E2 /* AppKit.framework */,
 				E4C2424510CC5A17004149E2 /* Cocoa.framework */,
@@ -447,6 +465,7 @@
 				E45BE9740E8CC7DD009D7055 /* Carbon.framework */,
 				E45BE9750E8CC7DD009D7055 /* CoreAudio.framework */,
 				E45BE9760E8CC7DD009D7055 /* CoreFoundation.framework */,
+				F37CE36E190C09EE008ECCE9 /* CoreMedia.framework */,
 				E45BE9770E8CC7DD009D7055 /* CoreServices.framework */,
 				E45BE9790E8CC7DD009D7055 /* OpenGL.framework */,
 				E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */,
@@ -576,6 +595,26 @@
 				F3163BE719018F7700940C04 /* ofxSyphonServer.mm */,
 				F3163BE819018F7700940C04 /* ofxSyphonServerDirectory.h */,
 				F3163BE919018F7700940C04 /* ofxSyphonServerDirectory.mm */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		F37CE331190BFC8F008ECCE9 /* ofxAVFVideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				F37CE35B190BFC8F008ECCE9 /* src */,
+			);
+			name = ofxAVFVideoPlayer;
+			path = ../../ofxAVFVideoPlayer;
+			sourceTree = "<group>";
+		};
+		F37CE35B190BFC8F008ECCE9 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				F37CE35C190BFC8F008ECCE9 /* ofxAVFVideoPlayer.h */,
+				F37CE35D190BFC8F008ECCE9 /* ofxAVFVideoPlayer.mm */,
+				F37CE35E190BFC8F008ECCE9 /* ofxAVFVideoRenderer.h */,
+				F37CE35F190BFC8F008ECCE9 /* ofxAVFVideoRenderer.m */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -844,7 +883,9 @@
 				5a66da34169be06662283b1783d84fd8 /* ofxDetectDisplays.cpp in Sources */,
 				97a4b157e763fe5e0f238536f45babb0 /* ofxMtlMapping2DControls.cpp in Sources */,
 				aa8d332b7c6c2bedc9d6629a06a55d9f /* ofxMtlMapping2D.cpp in Sources */,
+				F37CE366190BFC8F008ECCE9 /* ofxAVFVideoPlayer.mm in Sources */,
 				a78c7afe06bfdeab8407ff2b1aad0a5a /* ofxMtlMapping2DGlobal.cpp in Sources */,
+				F37CE367190BFC8F008ECCE9 /* ofxAVFVideoRenderer.m in Sources */,
 				31916620a6066b8e28601e602baa2d86 /* ofxMtlMapping2DShapes.cpp in Sources */,
 				4741a6add41744b30cbb5f4a95457aab /* ofxMtlMapping2DSettings.cpp in Sources */,
 				a00d8e59f7ee92552582023e953eedbc /* ofxMtlMapping2DGrid.cpp in Sources */,

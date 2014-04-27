@@ -124,53 +124,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
     _settingsUI->disable();
     _uiSuperCanvases.push_back(_settingsUI);
-
-#if defined(USE_OFX_DETECT_DISPLAYS)
-    // ---
-    // Output Settings UI
-    _outputUI = new ofxUISuperCanvas("OUTPUT SETTINGS");
-    _outputUI->setColorBack(uiColor);
-    
-    _outputUI->addSpacer(_outputUI->getRect()->width - 10, 2);
-    
-    _outputUI->addButton("DETECT DISPLAYS", false);
-    _outputUI->addSpacer((_outputUI->getRect()->width - 10) / 2, 1);
-    
-#if defined(USE_SECOND_WINDOW_OPTION)
-    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        _outputUI->addToggle("OUTPUT WINDOW", false);
-    #endif
-#endif
-    
-    ofAddListener(_outputUI->newGUIEvent, this, &ofxMtlMapping2DControls::outputUiEvent);
-    _outputUI->autoSizeToFitWidgets();
-    _outputUI->disable();
-    _uiSuperCanvases.push_back(_outputUI);
-    
-    // ---
-    // Displays Settings UI
-    
-    _displaysListUI = new ofxUISuperCanvas("DISPLAYS");
-    _displaysListUI->setColorBack(uiColor);
-
-    ofAddListener(_displaysListUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
-    _displaysListUI->autoSizeToFitWidgets();
-    _displaysListUI->disable();
-    _uiSuperCanvases.push_back(_displaysListUI);
-    
-#endif
-    
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    // ---
-    // Syphon UI
-    _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
-    _syphonUI->setColorBack(uiColor);
-    
-    ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
-    _syphonUI->autoSizeToFitWidgets();
-    _syphonUI->disable();
-    _uiSuperCanvases.push_back(_syphonUI);
-#endif
     
     // ---
     // Shapes List UI    
@@ -200,6 +153,81 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     ofAddListener(_gridSettingsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::gridSettingsListUiEvent);
     _gridSettingsCanvas->disable();
     _uiSuperCanvases.push_back(_gridSettingsCanvas);
+    
+    
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    // ---
+    // Output Settings UI
+    _outputUI = new ofxUISuperCanvas("OUTPUT SETTINGS");
+    _outputUI->setColorBack(uiColor);
+    
+    _outputUI->addSpacer(_outputUI->getRect()->width - 10, 2);
+    
+    _outputUI->addButton("DETECT DISPLAYS", false);
+    _outputUI->addSpacer((_outputUI->getRect()->width - 10) / 2, 1);
+    
+#if defined(USE_SECOND_WINDOW_OPTION)
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    _outputUI->addToggle("OUTPUT WINDOW", false);
+#endif
+#endif
+    
+    ofAddListener(_outputUI->newGUIEvent, this, &ofxMtlMapping2DControls::outputUiEvent);
+    _outputUI->autoSizeToFitWidgets();
+    _outputUI->disable();
+    _uiSuperCanvases.push_back(_outputUI);
+    
+    // ---
+    // Displays Settings UI
+    
+    _displaysListUI = new ofxUISuperCanvas("DISPLAYS");
+    _displaysListUI->setColorBack(uiColor);
+    
+    ofAddListener(_displaysListUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
+    _displaysListUI->autoSizeToFitWidgets();
+    _displaysListUI->disable();
+    _uiSuperCanvases.push_back(_displaysListUI);
+    
+#endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    // ---
+    // Video player UI
+    _videoPlayIcon.loadImage(uiDataPath + "play.png");
+    _videoPauseIcon.loadImage(uiDataPath + "pause.png");
+    
+    _videoPlayerUI = new ofxUISuperCanvas("VIDEO PLAYER");
+    _videoPlayerUI->setColorBack(uiColor);
+    
+    _videoPlayerUI->addToggle("LOAD VIDEO ON START", false);
+    _videoPlayerUI->addButton("SELECT FILE", false);
+    _videoPlayerUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
+    
+    _videoPlayerUI->addSpacer(_videoPlayerUI->getRect()->width - 10, 2);
+    _videoPlayerUI->addImageButton("STOP", uiDataPath + "stop.png", false, kToggleSize, kToggleSize);
+    _videoPlayerUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    _videoPlayerUI->addImageToggle("PLAY", uiDataPath + "play.png", false, kToggleSize, kToggleSize);
+    _videoPlayerUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+
+    _videoPlayerUI->addMinimalSlider("TRACK", .0f, 100.0f, &_mtlMapping2D->videoPositionInSeconds);
+    
+    ofAddListener(_videoPlayerUI->newGUIEvent, this, &ofxMtlMapping2DControls::videoPlayerUiEvent);
+    _videoPlayerUI->autoSizeToFitWidgets();
+    _videoPlayerUI->disable();
+    _uiSuperCanvases.push_back(_videoPlayerUI);
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    // ---
+    // Syphon UI
+    _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
+    _syphonUI->setColorBack(uiColor);
+    
+    ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
+    _syphonUI->autoSizeToFitWidgets();
+    _syphonUI->disable();
+    _uiSuperCanvases.push_back(_syphonUI);
+#endif
 
     // ---
 #if defined(USE_OFX_DETECT_DISPLAYS)
@@ -280,17 +308,26 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _outputUI->enable();
             _displaysListUI->enable();
 #endif
+   
+#if defined(USE_VIDEO_PLAYER_OPTION)
+            _videoPlayerUI->enable();
+#endif
             
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
             _syphonUI->enable();
 #endif
-            
+        
         } else {
             _settingsUI->disable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
             _outputUI->disable();
             _displaysListUI->disable();
 #endif
+
+#if defined(USE_VIDEO_PLAYER_OPTION)
+            _videoPlayerUI->disable();
+#endif
+            
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
             _syphonUI->disable();
 #endif
@@ -361,7 +398,7 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
         loadSyphonSettings();
 #endif
     }
-    else if (name == "LOAD FILE ON START"  && getButtonValue(_settingsUI, name)) {
+    else if (name == "LOAD FILE ON START"  && getToggleValue(_settingsUI, name)) {
         if (!_bInitialized && extraOutputSettings["path"] != "") {
             _mtlMapping2D->loadXml(extraOutputSettings["path"]);
         }
@@ -448,6 +485,55 @@ void ofxMtlMapping2DControls::syphonUiEvent(ofxUIEventArgs &event)
 }
 #endif
 
+
+#if defined(USE_VIDEO_PLAYER_OPTION)
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::videoPlayerUiEvent(ofxUIEventArgs &event)
+{
+    string name = event.widget->getName();
+    
+    if (name == "SELECT FILE" && getButtonValue(_videoPlayerUI, name)) {
+        ofFileDialogResult fileDialogResult = ofSystemLoadDialog();
+        
+        if (!fileDialogResult.bSuccess) {
+            return;
+        }
+        
+        ofxUITextInput* textInput = (ofxUITextInput*) _videoPlayerUI->getWidget("FILE PATH");
+        string path = fileDialogResult.getPath();
+        extraOutputSettings["video_file_path"] = path;
+        textInput->setTextString(fileDialogResult.getName());
+        _mtlMapping2D->loadVideo(path);
+    }
+    else if (name == "LOAD VIDEO ON START"  && getToggleValue(_videoPlayerUI, name)) {
+        if (!_bInitialized && extraOutputSettings["video_file_path"] != "") {
+            _mtlMapping2D->loadVideo(extraOutputSettings["video_file_path"]);
+        }
+    }
+    else if (name == "STOP" && getButtonValue(_videoPlayerUI, name)) {
+        _mtlMapping2D->stopVideo();
+        
+        // ---
+        ((ofxUIImageToggle *)_videoPlayerUI->getWidget("PLAY"))->setImage(&_videoPlayIcon);
+        setToggleValue(_videoPlayerUI, "PLAY", false);
+    }
+    else if (name == "PLAY") {
+        bool toggleValue = getToggleValue(_videoPlayerUI, name);
+
+        if (toggleValue) {
+            _mtlMapping2D->playVideo();
+            ((ofxUIImageToggle *)_videoPlayerUI->getWidget("PLAY"))->setImage(&_videoPauseIcon);
+        } else {
+            _mtlMapping2D->pauseVideo();
+            ((ofxUIImageToggle *)_videoPlayerUI->getWidget("PLAY"))->setImage(&_videoPlayIcon);
+        }
+        
+    }
+    else if (name == "TRACK") {
+        _mtlMapping2D->setVideoPostion(getSliderValue(_videoPlayerUI, name));
+    }
+}
+#endif
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
@@ -615,11 +701,23 @@ void ofxMtlMapping2DControls::updateUIsPosition()
     _displaysListUI->setPosition(ofGetWidth() - _displaysListUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height);
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(USE_VIDEO_PLAYER_OPTION)
     #if defined(USE_OFX_DETECT_DISPLAYS)
-        _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
+        _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
     #elif
-        _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
+        _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _settingsUI->getRect()->height + 5);
+    #endif
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    #if defined(USE_VIDEO_PLAYER_OPTION)
+        _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _videoPlayerUI->getRect()->y + _videoPlayerUI->getRect()->height + 5);
+    #else
+        #if defined(USE_OFX_DETECT_DISPLAYS)
+            _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
+        #elif
+            _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
+        #endif
     #endif
 #endif
 }
@@ -750,6 +848,10 @@ void ofxMtlMapping2DControls::saveSettings()
     _syphonUI->saveSettings(_rootPath + _syphonUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    _videoPlayerUI->saveSettings(_rootPath + _videoPlayerUI->getCanvasTitle()->getLabel() + ".xml");
+#endif
+    
     saveExtraSettings();
 }
 
@@ -762,6 +864,10 @@ void ofxMtlMapping2DControls::loadSettings()
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _outputUI->loadSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
     _displaysListUI->loadSettings(_rootPath + _displaysListUI->getCanvasTitle()->getLabel() + ".xml");
+#endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    loadVideoPlayerSettings();
 #endif
 
     updateUIsPosition();
@@ -976,6 +1082,16 @@ void ofxMtlMapping2DControls::loadSyphonSettings()
     updateUIsPosition();
 }
 
+#endif
+
+#if defined(USE_VIDEO_PLAYER_OPTION)
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::loadVideoPlayerSettings()
+{
+    _videoPlayerUI->loadSettings(_rootPath + _videoPlayerUI->getCanvasTitle()->getLabel() + ".xml");
+    
+    updateUIsPosition();
+}
 #endif
 
 

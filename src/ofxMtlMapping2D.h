@@ -21,6 +21,15 @@
 #include "ofxSyphon.h"
 #endif
 
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    #if defined(TARGET_OSX)
+        #include "ofxAVFVideoPlayer.h"
+    #elif definfed(TARGET_WIN32)
+
+    #endif
+#endif
+
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 enum MappingModeState
@@ -80,6 +89,18 @@ public:
     void openOuputWindowApp();
     #endif
 #endif
+    
+    // Video playback related
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    void loadVideo(string filePath);
+    void playVideo();
+    void pauseVideo();
+    void stopVideo();
+    void setVideoPostion(float position);
+    
+    float getVideoDurationInSecond();
+    float videoPositionInSeconds;
+#endif
 
 
 private:
@@ -92,20 +113,6 @@ private:
     ofxXmlSettings _shapesListXML;
     list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    ofxSyphonServerDirectory _syphonServerDir;
-    ofxSyphonClient _syphonClient;
-    int _syphonDirIdx;
-    
-    void setupSyphon();
-    void drawSyphon();
-    
-    #if defined(USE_SECOND_WINDOW_OPTION)
-        ofxSyphonServer _syphonServerSecondWindow;
-        ofFbo _outputFboSecondWindow;
-    #endif
-#endif
-
     void render();
 
     void createQuad();
@@ -119,4 +126,33 @@ private:
 
     void addListeners();
     void removeListeners();
+    
+    // Syphon related
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    ofxSyphonServerDirectory _syphonServerDir;
+    ofxSyphonClient _syphonClient;
+    int _syphonDirIdx;
+    
+    void setupSyphon();
+    void drawSyphon();
+    
+#if defined(USE_SECOND_WINDOW_OPTION)
+    ofxSyphonServer _syphonServerSecondWindow;
+    ofFbo _outputFboSecondWindow;
+#endif
+#endif
+    
+    // Video playback related
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    #if defined(TARGET_OSX)
+        ofxAVFVideoPlayer _videoPlayer;
+    #elif definfed(TARGET_WIN32)
+    
+    #endif
+    
+    void setupVideoPlayer();
+    void updateVideoPlayer();
+    void drawVideoPlayer();
+    void exitVideoPlayer();
+#endif
 };
