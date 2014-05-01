@@ -993,6 +993,8 @@ void ofxMtlMapping2D::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::setupVideoPlayer()
 {
+    _bIsVideoStopped = true;
+    
 #if defined(TARGET_OSX)
     videoPositionInSeconds = .0f;
 #elif definfed(TARGET_WIN32)
@@ -1014,6 +1016,9 @@ void ofxMtlMapping2D::updateVideoPlayer()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::drawVideoPlayer()
 {
+    if (!_bIsVideoStopped) {
+        return;
+    }
 #if defined(TARGET_OSX)
     _videoPlayer.draw(.0f, .0f);
 #elif definfed(TARGET_WIN32)
@@ -1024,6 +1029,7 @@ void ofxMtlMapping2D::drawVideoPlayer()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::exitVideoPlayer()
 {
+    _bIsVideoStopped = true;
 #if defined(TARGET_OSX)
     _videoPlayer.close();
 #elif definfed(TARGET_WIN32)
@@ -1045,6 +1051,8 @@ void ofxMtlMapping2D::loadVideo(string filePath)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::playVideo()
 {
+    _bIsVideoStopped = false;
+
 #if defined(TARGET_OSX)
     _videoPlayer.play();
 #elif definfed(TARGET_WIN32)
@@ -1065,6 +1073,8 @@ void ofxMtlMapping2D::pauseVideo()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::stopVideo()
 {
+    _bIsVideoStopped = true;
+    
 #if defined(TARGET_OSX)
     _videoPlayer.stop();
 #elif definfed(TARGET_WIN32)

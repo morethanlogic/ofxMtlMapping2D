@@ -199,6 +199,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _videoPlayerUI = new ofxUISuperCanvas("VIDEO PLAYER");
     _videoPlayerUI->setColorBack(uiColor);
     
+    _videoPlayerUI->addButton("NONE", false);
     _videoPlayerUI->addToggle("LOAD VIDEO ON START", false);
     _videoPlayerUI->addButton("SELECT FILE", false);
     _videoPlayerUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
