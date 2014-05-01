@@ -1,17 +1,34 @@
 <root>
     <shape id="1">
+        <setting key="isLocked">1</setting>
         <setting key="type">quad</setting>
         <outputVertices>
-            <vertex x="217" y="52"></vertex>
-            <vertex x="760" y="20"></vertex>
-            <vertex x="695" y="468"></vertex>
-            <vertex x="187" y="402"></vertex>
+            <vertex x="202" y="37"></vertex>
+            <vertex x="581" y="105"></vertex>
+            <vertex x="535" y="333"></vertex>
+            <vertex x="172" y="387"></vertex>
         </outputVertices>
         <inputPolygon>
-            <vertex x="152" y="66"></vertex>
-            <vertex x="785" y="66"></vertex>
-            <vertex x="785" y="472"></vertex>
-            <vertex x="152" y="472"></vertex>
+            <vertex x="52" y="77"></vertex>
+            <vertex x="544" y="77"></vertex>
+            <vertex x="544" y="406"></vertex>
+            <vertex x="52" y="406"></vertex>
+        </inputPolygon>
+    </shape>
+    <shape id="2">
+        <setting key="isLocked">1</setting>
+        <setting key="type">quad</setting>
+        <outputVertices>
+            <vertex x="742" y="296"></vertex>
+            <vertex x="842" y="296"></vertex>
+            <vertex x="842" y="396"></vertex>
+            <vertex x="742" y="396"></vertex>
+        </outputVertices>
+        <inputPolygon>
+            <vertex x="512" y="250"></vertex>
+            <vertex x="612" y="250"></vertex>
+            <vertex x="612" y="350"></vertex>
+            <vertex x="512" y="350"></vertex>
         </inputPolygon>
     </shape>
 </root>

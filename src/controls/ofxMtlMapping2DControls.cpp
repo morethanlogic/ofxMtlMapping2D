@@ -75,6 +75,8 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // --- Fullscreen
     _fullscreenExpandIcon.loadImage(uiDataPath + "expand.png");
     _fullscreenContractIcon.loadImage(uiDataPath + "contract.png");
+    _lockedIcon.loadImage(uiDataPath + "locked.png");
+    _unlockedIcon.loadImage(uiDataPath + "unlocked.png");
     
     _toolsCanvas->addImageToggle(kSettingMappingFullscreen, uiDataPath + "expand.png", false, kToggleSize, kToggleSize);
     
@@ -128,9 +130,8 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Shapes List UI    
     _shapesListCanvas = new ofxUIScrollableCanvas(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
-    //_shapesListCanvas->setFont("ui/ReplicaBold.ttf");
     _shapesListCanvas->setScrollArea(kControlsMappingToolsPanelWidth, 0, kControlsMappingShapesListPanelWidth, ofGetHeight());
-    _shapesListCanvas->setScrollableDirections(false, true);
+    _shapesListCanvas->setScrollableDirections(false, false);
     _shapesListCanvas->setColorBack(uiColorB);
     _shapesListCanvas->autoSizeToFitWidgets();
     
@@ -238,7 +239,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
         // Events only works on Mac for now.
         ofAddListener(ofxDetectDisplaysSharedInstance().displayConfigurationChanged, this, &ofxMtlMapping2DControls::displayConfigurationChanged);
     #endif
-    displayConfigurationChanged();;
+    displayConfigurationChanged();
 #endif
     
     // ---
@@ -342,7 +343,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     }
     
     // ---
-    if (getToggleValue(_toolsCanvas, name)) {
+    if ((name == kSettingMappingModeOutput || name == kSettingMappingModeInput) && getToggleValue(_toolsCanvas, name)) {
         unselectShapesToggles();
         ofxMtlMapping2DShape::resetActiveShapeVars();
         ofxMtlMapping2DPolygon::resetActivePolygonVars();
@@ -503,7 +504,10 @@ void ofxMtlMapping2DControls::videoPlayerUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
     
-    if ((name == "SELECT FILE" && getButtonValue(_videoPlayerUI, name)) || (_bInitialized && name == "FILE PATH")) {
+    if (name == "NONE") {
+        // TO DO:: Set this to clear the video settings!
+    }
+    else if ((name == "SELECT FILE" && getButtonValue(_videoPlayerUI, name)) || (_bInitialized && name == "FILE PATH")) {
         
         ofxUITextInput* textInput = (ofxUITextInput*) _videoPlayerUI->getWidget("FILE PATH");
         
@@ -614,31 +618,75 @@ void ofxMtlMapping2DControls::shapesListUiEvent(ofxUIEventArgs &event)
     string name = event.widget->getName();
     
     vector<string> result = ofSplitString(name, " ");
+    string action = result[0];
     int shapeId = ofToInt(result[1]);
     string shapeTypeAsString = result[2];
     int shapeType = -1;
     
-    map<ofxMtlMapping2DShapeType,string>::iterator it;
-    for ( it = shapeTypesAsString.begin() ; it != shapeTypesAsString.end(); it++ ) {
-        if (it->second == shapeTypeAsString)
-        {
-            shapeType = it->first;
-            break;
+    if (action == "Select") {
+        map<ofxMtlMapping2DShapeType,string>::iterator it;
+        for ( it = shapeTypesAsString.begin() ; it != shapeTypesAsString.end(); it++ ) {
+            if (it->second == shapeTypeAsString)
+            {
+                shapeType = it->first;
+                break;
+            }
+        }
+        
+        //setAsActiveShapeWithId(shapeId, shapeType);
+        
+        for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
+            ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
+            
+            string nameB = shapeToggle->getName();
+            
+            vector<string> resultB = ofSplitString(nameB, " ");
+            string actionB = resultB[0];
+            int sId = ofToInt(resultB[1]);
+            
+            if (actionB == "Select") {
+                if ( sId != shapeId ) {
+                    shapeToggle->setValue(false);
+                }
+            }
+        }
+        
+        
+        _mtlMapping2D->selectShapeId(shapeId);
+    }
+    else if (action == "Shape") {
+        ofxUIImageToggle* uiImageToggle = ((ofxUIImageToggle *)_shapesListCanvas->getWidget(name));
+        
+        // Lock / Unlock this shape
+        if (getToggleValue(_shapesListCanvas, name)) {
+            _mtlMapping2D->setLockForShapeId(shapeId, true);
+            uiImageToggle->setImage(&_lockedIcon);
+        } else {
+            _mtlMapping2D->setLockForShapeId(shapeId, false);
+            uiImageToggle->setImage(&_unlockedIcon);
         }
     }
-    
-    setAsActiveShapeWithId(shapeId, shapeType);
-    
-    _mtlMapping2D->selectedShapeId = shapeId;
-    _mtlMapping2D->bSelectedShapeChanged = true;
+
 }
 
 
 //--------------------------------------------------------------
-void ofxMtlMapping2DControls::addShapeToList(int shapeID, int shapeType)
+void ofxMtlMapping2DControls::addShapeToList(int shapeID, int shapeType, bool bLocked)
 {
-    _shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second), false, kToggleSize, kToggleSize));
-
+    //_shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second), false, kToggleSize, kToggleSize));
+    _shapesListCanvas->addToggle("Select " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second, false, 16, 16)->setLabelVisible(false);
+    _shapesListCanvas->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+    ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second, "", bLocked, 16, 16);
+    uiImageToggle->setLabelVisible(true);
+    
+    if (bLocked) {
+        uiImageToggle->setImage(&_lockedIcon);
+    } else {
+        uiImageToggle->setImage(&_unlockedIcon);
+    }
+    
+    _shapesListCanvas->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    
     resizeShapeList();
 }
 
@@ -663,7 +711,8 @@ void ofxMtlMapping2DControls::refreshShapesListForMappingView(MappingEditView cu
         ofxMtlMapping2DShape* shape = *it;
         
         if (currView == MAPPING_CHANGE_TO_OUTPUT_VIEW || (currView == MAPPING_CHANGE_TO_INPUT_VIEW && shape->shapeType != MAPPING_2D_SHAPE_MASK)) {
-            addShapeToList(shape->shapeId, shape->shapeType);
+            cout << "LOCKEC STRING " << shape->shapeSettings["isLocked"] << endl;
+            addShapeToList(shape->shapeId, shape->shapeType, ofToBool(shape->shapeSettings["isLocked"]));
         }
     }
 }
@@ -677,9 +726,12 @@ void ofxMtlMapping2DControls::resizeShapeList()
     
     float listHeight = _shapesListCanvas->getRect()->height;
     if(listHeight < ofGetHeight()) {
-        _shapesListCanvas->getRect()->setHeight(ofGetHeight());
+        //_shapesListCanvas->getRect()->setHeight(ofGetHeight());
+        _shapesListCanvas->setScrollableDirections(false, false);
     } else {
-        _shapesListCanvas->getRect()->setHeight(listHeight + kBottomSpacerHeight);
+        //_shapesListCanvas->getRect()->setHeight(listHeight + kBottomSpacerHeight);
+        _shapesListCanvas->setScrollableDirections(false, true);
+
     }
 }
 
@@ -689,10 +741,19 @@ void ofxMtlMapping2DControls::setAsActiveShapeWithId(int shapeID, int shapeType)
     // ---
     for (int i=0; i < _shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE).size(); i++) {
         ofxUIToggle * shapeToggle = (ofxUIToggle *)_shapesListCanvas->getWidgetsOfType(OFX_UI_WIDGET_TOGGLE)[i];
-        if ( shapeToggle->getName() == ("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second) ) {
-            shapeToggle->setValue(true);
-        } else {
-            shapeToggle->setValue(false);
+        
+        string name = shapeToggle->getName();
+        
+        vector<string> result = ofSplitString(name, " ");
+        string action = result[0];
+        int sId = ofToInt(result[1]);
+        
+        if (action == "Select") {
+            if ( sId == shapeID ) {
+                shapeToggle->setValue(true);
+            } else {
+                shapeToggle->setValue(false);
+            }
         }
     }
 }

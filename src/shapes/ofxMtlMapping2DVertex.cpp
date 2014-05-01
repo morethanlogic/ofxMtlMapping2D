@@ -186,3 +186,9 @@ void ofxMtlMapping2DVertex::onReleaseOutside(int x, int y, int button)
     
     _bMouseGrabbed = false;
 }
+
+//--------------------------------------------------------------
+bool ofxMtlMapping2DVertex::isDragged()
+{
+    return _bMouseGrabbed;
+}

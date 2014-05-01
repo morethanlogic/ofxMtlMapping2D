@@ -7,11 +7,16 @@
 </Canvas>
 <Widget>
     <Kind>2</Kind>
-    <Name>1920x1080 - UID:724066073</Name>
+    <Name>1920x1200 - UID:724057491</Name>
     <Value>0</Value>
 </Widget>
 <Widget>
     <Kind>2</Kind>
     <Name>1440x900 - UID:69731202</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>1024x1280 - UID:722492725</Name>
     <Value>0</Value>
 </Widget>

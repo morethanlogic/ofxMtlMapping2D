@@ -36,6 +36,9 @@ ofxMtlMapping2DShape::~ofxMtlMapping2DShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2DShape::init(int sId, bool defaultShape)
 {
+
+    _bIsLocked = false;
+
     if (!defaultShape) {
         initShape();
     }
@@ -51,8 +54,9 @@ void ofxMtlMapping2DShape::update()
     _super::update();
     
     
-    if(activePolygon != this && activePolygon != inputPolygon)
+    if(activePolygon != this && activePolygon != inputPolygon) {
         return;
+    }
     
     if(activePolygon == this || (activePolygon == inputPolygon && inputPolygon) || (activePolygon == this && !inputPolygon && shapeType == MAPPING_2D_SHAPE_MASK)) {
         setAsActiveShape();
@@ -130,7 +134,9 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             
             // Update UI
             if (fromUI) {
-                setAsActive();
+                if (!activeShape->isLocked()) {
+                    setAsActive();
+                }
             } else {
                 ofxMtlMapping2DControlsSharedInstance().setAsActiveShapeWithId(shapeId, shapeType);
             }
@@ -151,10 +157,34 @@ void ofxMtlMapping2DShape::setAsActiveShape(bool fromUI)
             
             // Update UI
             if (fromUI) {
-                inputPolygon->setAsActive();
+                if (!activeShape->isLocked()) {
+                    inputPolygon->setAsActive();
+                }
             } else {
                 ofxMtlMapping2DControlsSharedInstance().setAsActiveShapeWithId(shapeId, shapeType);
             }
         }
     }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DShape::setLock(bool val)
+{
+    _bIsLocked = val;
+    
+    if (_bIsLocked) {
+        setAsIdle();
+        if (inputPolygon) {
+            inputPolygon->setAsIdle();
+        }
+    }
+//    else if (!_bIsLocked && activePolygon == this) {
+//        setAsActive();
+//    }
+}
+
+//--------------------------------------------------------------
+bool ofxMtlMapping2DShape::isLocked()
+{
+    return _bIsLocked;
 }

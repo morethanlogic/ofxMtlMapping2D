@@ -35,6 +35,9 @@ public:
     virtual void render() {};
 
     void setAsActiveShape(bool fromUI = false);
+    
+    void setLock(bool val);
+    bool isLocked();
 
 protected:
     virtual void calcHomography() {};
@@ -43,5 +46,8 @@ protected:
 
 private:
     typedef ofxMtlMapping2DPolygon _super;
+    
+    bool _bIsLocked;
+
 
 };

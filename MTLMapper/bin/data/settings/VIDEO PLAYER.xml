@@ -3,7 +3,7 @@
     <Name>OFX_UI_WIDGET_CANVAS</Name>
     <IsMinified>0</IsMinified>
     <XPosition>813.000000000</XPosition>
-    <YPosition>275.000000000</YPosition>
+    <YPosition>295.000000000</YPosition>
 </Canvas>
 <Widget>
     <Kind>2</Kind>
@@ -14,4 +14,14 @@
     <Kind>12</Kind>
     <Name>FILE PATH</Name>
     <Value>139208562.mov</Value>
+</Widget>
+<Widget>
+    <Kind>20</Kind>
+    <Name>PLAY</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>25</Kind>
+    <Name>TRACK</Name>
+    <Value>0.000000000</Value>
 </Widget>

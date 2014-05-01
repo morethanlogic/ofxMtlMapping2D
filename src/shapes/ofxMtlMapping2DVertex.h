@@ -50,6 +50,8 @@ public:
     void up();
     void right();
     void down();
+    
+    bool isDragged();
 
 private:
     bool _bMouseGrabbed;

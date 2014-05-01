@@ -65,7 +65,7 @@ public:
     bool isEnabled();
     bool isHit(int x, int y);
 
-    void addShapeToList(int shapeID, int shapeType);
+    void addShapeToList(int shapeID, int shapeType, bool bLocked = false);
     void clearShapesList();
 
     void setAsActiveShapeWithId(int shapeID, int shapeType);
@@ -120,6 +120,8 @@ private:
     map<ofxMtlMapping2DShapeType, string> shapeTypesAsString;
     ofImage _fullscreenExpandIcon;
     ofImage _fullscreenContractIcon;
+    ofImage _lockedIcon;
+    ofImage _unlockedIcon;
     
     void saveSettings();
     void loadSettings();

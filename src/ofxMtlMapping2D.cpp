@@ -51,10 +51,9 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     bCreateTriangle = false;
     bCreateMask = false;
     
-    bDeleteShape = false;
-    
-    bSelectedShapeChanged = false;
-    selectedShapeId = -1;
+    _bDeleteShape = false;
+    _bSelectedShapeChanged = false;
+    _selectedShapeId = -1;
     
     // ---
     addListeners();
@@ -147,8 +146,8 @@ void ofxMtlMapping2D::update()
         return;
     }
     
-    else if (bDeleteShape) {
-        bDeleteShape = false;
+    else if (_bDeleteShape) {
+        _bDeleteShape = false;
         deleteShape();
         return;
     }
@@ -189,10 +188,10 @@ void ofxMtlMapping2D::update()
     
     // ---
     // Selected shape with UI
-    if (bSelectedShapeChanged) {
-        bSelectedShapeChanged = false;
+    if (_bSelectedShapeChanged) {
+        _bSelectedShapeChanged = false;
 
-        list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(selectedShapeId);
+        list<ofxMtlMapping2DShape*>::iterator it = iteratorForShapeWithId(_selectedShapeId);
         if(it != ofxMtlMapping2DShapes::pmShapes.end()) {
             ofxMtlMapping2DShape* shape = *it;
             shape->setAsActiveShape(true);
@@ -383,6 +382,28 @@ void ofxMtlMapping2D::createMask()
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2D::selectShapeId(int shapeId)
+{
+    _selectedShapeId = shapeId;
+    _bSelectedShapeChanged = true;
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::setLockForShapeId(int shapeId, bool bLocked)
+{
+    list<ofxMtlMapping2DShape*>::iterator it;
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        if(shape->shapeId == shapeId) {
+            shape->shapeSettings["isLocked"] = ofToString(bLocked);
+            shape->setLock(bLocked);
+            return;
+        }
+    }
+}
+
+
+//--------------------------------------------------------------
 void ofxMtlMapping2D::deleteShape()
 {
     if (ofxMtlMapping2DShape::activeShape) {
@@ -395,7 +416,7 @@ void ofxMtlMapping2D::deleteShape()
         list<ofxMtlMapping2DShape*>::reverse_iterator it;
         for (it=ofxMtlMapping2DShapes::pmShapes.rbegin(); it!=ofxMtlMapping2DShapes::pmShapes.rend(); it++) {
             ofxMtlMapping2DShape* shape = *it;
-            ofxMtlMapping2DControlsSharedInstance().addShapeToList(shape->shapeId, shape->shapeType);
+            ofxMtlMapping2DControlsSharedInstance().addShapeToList(shape->shapeId, shape->shapeType, ofToBool(shape->shapeSettings["isLocked"]));
 
         }
     }
@@ -448,8 +469,8 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     
     // ----
     // A vertex has been selected
-    if (ofxMtlMapping2DVertex::activeVertex || eButton == 2) {
-      return;
+    if ((ofxMtlMapping2DVertex::activeVertex && ofxMtlMapping2DVertex::activeVertex->isDragged()) || eButton == 2) {
+        return;
     }
     
     // ----
@@ -459,32 +480,36 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
         ofxMtlMapping2DShape* shape = *it;
         bool grabbedOne = false;
         
-        switch (ofxMtlMapping2DGlobal::getEditView()) {
-            case MAPPING_INPUT_VIEW:
-                if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
-                    if(shape->inputPolygon->hitTest(eX, eY)) {
-                        grabbedOne = true;
-                        shape->inputPolygon->select(eX, eY);
-                        shape->inputPolygon->enable();
-                    }
-                }
-                break;
-                
-            case MAPPING_OUTPUT_VIEW:
-                if(shape->hitTest(eX, eY)) {
-                    grabbedOne = true;
-                    shape->select(eX, eY);
-                    shape->enable();
-                }
-                break;
-        }
-        
-        if(grabbedOne) {
-            // Put active shape at the top of the list
-            ofxMtlMapping2DShapes::pmShapes.push_front(shape);
-            ofxMtlMapping2DShapes::pmShapes.erase(it);
+        if (!shape->isLocked()) {
             
-            return;
+            switch (ofxMtlMapping2DGlobal::getEditView()) {
+                case MAPPING_INPUT_VIEW:
+                    if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+                        if(shape->inputPolygon->hitTest(eX, eY)) {
+                            grabbedOne = true;
+                            shape->inputPolygon->select(eX, eY);
+                            shape->inputPolygon->enable();
+                        }
+                    }
+                    break;
+                    
+                case MAPPING_OUTPUT_VIEW:
+                    if(shape->hitTest(eX, eY)) {
+                        grabbedOne = true;
+                        shape->select(eX, eY);
+                        shape->enable();
+                    }
+                    break;
+            }
+            
+            if(grabbedOne) {
+                // Put active shape at the top of the list
+                ofxMtlMapping2DShapes::pmShapes.push_front(shape);
+                ofxMtlMapping2DShapes::pmShapes.erase(it);
+                
+                return;
+            }
+            
         }
     }
     
@@ -562,11 +587,11 @@ void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 127:
-            bDeleteShape = true;
+            _bDeleteShape = true;
             break;
             
         case 8:
-            bDeleteShape = true;
+            _bDeleteShape = true;
             break;
             
         case 'n':
@@ -746,7 +771,8 @@ void ofxMtlMapping2D::loadXml(string xmlFile)
                 newShape->disable();
                 ofxMtlMapping2DShapes::pmShapes.push_front(newShape);
                 
-                ofxMtlMapping2DControlsSharedInstance().addShapeToList(shapeId, newShape->shapeType);
+                newShape->setLock(ofToBool(newShape->shapeSettings["isLocked"]));
+                ofxMtlMapping2DControlsSharedInstance().addShapeToList(shapeId, newShape->shapeType, newShape->isLocked());
 				
 				_shapesListXML.popTag();
 				
@@ -765,6 +791,11 @@ void ofxMtlMapping2D::loadXml(string xmlFile)
 void ofxMtlMapping2D::saveShapesList()
 {
     ofFileDialogResult fileDialogResult = ofSystemSaveDialog("", "Save Shapes List");
+    
+    if (!fileDialogResult.bSuccess) {
+        return;
+    }
+    
     string mappingXmlFilePath = fileDialogResult.getPath();
 
     

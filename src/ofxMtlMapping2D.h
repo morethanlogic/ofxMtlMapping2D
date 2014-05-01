@@ -74,11 +74,9 @@ public:
     bool bCreateTriangle;
     bool bCreateMask;
 
-    bool bDeleteShape;
+    void selectShapeId(int shapeId);
+    void setLockForShapeId(int shapeId, bool bLocked);
 
-    bool bSelectedShapeChanged;
-    int selectedShapeId;
-    
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     void selectSyphonServer(int syphonDirIdx);
 
@@ -127,6 +125,11 @@ private:
     void addListeners();
     void removeListeners();
     
+    bool _bSelectedShapeChanged;
+    int _selectedShapeId;
+    bool _bDeleteShape;
+
+    
     // Syphon related
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     ofxSyphonServerDirectory _syphonServerDir;
@@ -154,5 +157,7 @@ private:
     void updateVideoPlayer();
     void drawVideoPlayer();
     void exitVideoPlayer();
+    
+    bool _bIsVideoStopped;
 #endif
 };
