@@ -454,6 +454,10 @@ void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
     _fbo.allocate(e.width , e.height, GL_RGBA, _numSample);
 
     ofxMtlMapping2DControlsSharedInstance().updateUIsPosition();
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    resizeVideo();
+#endif
 }
 
 
@@ -1054,8 +1058,9 @@ void ofxMtlMapping2D::drawVideoPlayer()
     if (_bIsVideoStopped) {
         return;
     }
+    
 #if defined(TARGET_OSX)
-    _videoPlayer.draw(.0f, .0f);
+    _videoPlayer.draw(_videoXOffset, _videoYOffset, _videoWidth, _videoHeight);
 #elif definfed(TARGET_WIN32)
     
 #endif
@@ -1093,6 +1098,8 @@ void ofxMtlMapping2D::playVideo()
 #elif definfed(TARGET_WIN32)
     
 #endif
+    
+    resizeVideo();
 }
 
 //--------------------------------------------------------------
@@ -1137,6 +1144,26 @@ void ofxMtlMapping2D::setVideoPostion(float position)
 #endif
 }
 
+//--------------------------------------------------------------
+void ofxMtlMapping2D::resizeVideo()
+{
+    
+    _videoRatio = _videoPlayer.getWidth()/_videoPlayer.getHeight();
+    
+    if (ofGetWidth() > ofGetHeight() && (ofGetHeight() * _videoRatio) < ofGetWidth()) {
+        _videoWidth = ofGetHeight() * _videoRatio;
+        _videoHeight = ofGetHeight();
+        _videoXOffset = (ofGetWidth() - _videoWidth)/2;
+        _videoYOffset = 0;
+        
+    } else {
+        _videoWidth = ofGetWidth();
+        _videoHeight = ofGetWidth()/_videoRatio;
+        _videoXOffset = 0;
+        _videoYOffset = (ofGetHeight() - _videoHeight)/2;
+    }
+    
+}
 
 #endif
 

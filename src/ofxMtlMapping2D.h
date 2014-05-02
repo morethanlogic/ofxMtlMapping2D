@@ -147,6 +147,12 @@ private:
     
     // Video playback related
 #if defined(USE_VIDEO_PLAYER_OPTION)
+    int _videoXOffset;
+    int _videoYOffset;
+    int _videoWidth;
+    int _videoHeight;
+    float _videoRatio;
+    
     #if defined(TARGET_OSX)
         ofxAVFVideoPlayer _videoPlayer;
     #elif definfed(TARGET_WIN32)
@@ -157,6 +163,7 @@ private:
     void updateVideoPlayer();
     void drawVideoPlayer();
     void exitVideoPlayer();
+    void resizeVideo();
     
     bool _bIsVideoStopped;
 #endif
