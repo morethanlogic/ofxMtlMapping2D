@@ -79,6 +79,10 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     setupSyphon();
 #endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    setupVideoPlayer();
+#endif
 }
 
 //--------------------------------------------------------------
@@ -1047,7 +1051,7 @@ void ofxMtlMapping2D::updateVideoPlayer()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::drawVideoPlayer()
 {
-    if (!_bIsVideoStopped) {
+    if (_bIsVideoStopped) {
         return;
     }
 #if defined(TARGET_OSX)
