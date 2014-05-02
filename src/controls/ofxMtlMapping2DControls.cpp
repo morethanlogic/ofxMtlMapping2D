@@ -181,7 +181,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Displays Settings UI
     
-    _displaysListUI = new ofxUISuperCanvas("DISPLAYS");
+    _displaysListUI = new ofxUISuperCanvas("DISPLAYS LIST");
     _displaysListUI->setColorBack(uiColor);
     
     ofAddListener(_displaysListUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
@@ -292,7 +292,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         
 #if defined(USE_OFX_DETECT_DISPLAYS)
         if (!bGoFullscreen) {
-            ofxUIRadio* uiRadio = (ofxUIRadio*) _outputUI->getWidget("DISPLAYS");
+            ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysListUI->getWidget("DISPLAYS");
             
             for (int i=0; i<uiRadio->getToggles().size(); i++) {
                 uiRadio->getToggles()[i]->setValue(false);
