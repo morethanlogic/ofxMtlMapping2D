@@ -275,16 +275,11 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
         
         enableVertices();
     } else {
-        cout << "1." << endl;
         for (int y = 0; y <= gridNbRows; y++) {
             int rowControlPointIndex =  y * (gridNbCols + 1);
-            cout << "2." << endl;
-            cout << "rowControlPointIndex :: " << rowControlPointIndex << endl;
             for (int x = 0; x <= gridNbCols; x++) {
                 int controlPointIndex = rowControlPointIndex + x;
-                cout << "3." << endl;
-                cout << "controlPointIndex :: " << controlPointIndex << endl;
-                
+
                 list<ofxMtlMapping2DVertex*>::iterator it = vertices.begin();
                 advance(it, controlPointIndex);
                 ofxMtlMapping2DVertex* controlVertex = *it;

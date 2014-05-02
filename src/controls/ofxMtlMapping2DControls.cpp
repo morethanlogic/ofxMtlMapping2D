@@ -711,7 +711,6 @@ void ofxMtlMapping2DControls::refreshShapesListForMappingView(MappingEditView cu
         ofxMtlMapping2DShape* shape = *it;
         
         if (currView == MAPPING_CHANGE_TO_OUTPUT_VIEW || (currView == MAPPING_CHANGE_TO_INPUT_VIEW && shape->shapeType != MAPPING_2D_SHAPE_MASK)) {
-            cout << "LOCKEC STRING " << shape->shapeSettings["isLocked"] << endl;
             addShapeToList(shape->shapeId, shape->shapeType, ofToBool(shape->shapeSettings["isLocked"]));
         }
     }
