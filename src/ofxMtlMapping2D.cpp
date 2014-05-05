@@ -993,15 +993,17 @@ void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
     }
     
     int appServerId = -1;
+#if defined(USE_SECOND_WINDOW_OPTION)
     for (int i=0; i < _syphonServerDir.getServerList().size(); i++) {
         if (_syphonServerDir.getDescription(i).serverName == ofToString(kSyphonOutputServerName)) {
             appServerId = i;
             break;
         }
     }
+#endif
     
     if(_syphonServerDir.isValidIndex(_syphonDirIdx)) {
-        if (appServerId <= _syphonDirIdx) {
+        if (appServerId != -1 && appServerId <= _syphonDirIdx) {
             _syphonDirIdx++;
         }
     
