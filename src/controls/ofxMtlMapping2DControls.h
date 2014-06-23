@@ -131,6 +131,7 @@ private:
 
     map<string,string> extraOutputSettings;
     
+    bool _bISOutScreenOn;
 #if defined(USE_OFX_DETECT_DISPLAYS)
     ofxUISuperCanvas* _outputUI;
     ofxUISuperCanvas* _displaysListUI;

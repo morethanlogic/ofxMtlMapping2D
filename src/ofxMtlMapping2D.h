@@ -16,6 +16,7 @@
 
 // Addons
 #include "ofxXmlSettings.h"
+#include "ofxExtraWindow.h"
 
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
 #include "ofxSyphon.h"
@@ -66,26 +67,26 @@ public:
     void chessBoard(int nbOfCol = 10);
 
     void loadXml(string xmlFile);
-    
+        
     bool bSaveShapes;
     bool bLoadShapes;
     bool bCreateQuad;
     bool bCreateGrid;
     bool bCreateTriangle;
     bool bCreateMask;
+    bool bIsOutputWindowOn;
 
     void selectShapeId(int shapeId);
     void setLockForShapeId(int shapeId, bool bLocked);
+
+    void openOuputWindow(ofRectangle rect);
+    void closeOutputWindow();
 
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     void selectSyphonServer(int syphonDirIdx);
 
     void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
     void serverRetired(ofxSyphonServerDirectoryEventArgs &arg);
-    
-    #if defined(USE_SECOND_WINDOW_OPTION)
-    void openOuputWindowApp();
-    #endif
 #endif
     
     // Video playback related
@@ -129,7 +130,8 @@ private:
     int _selectedShapeId;
     bool _bDeleteShape;
 
-    
+    ofxExtraWindow _outputWindow;
+
     // Syphon related
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     ofxSyphonServerDirectory _syphonServerDir;
@@ -138,11 +140,6 @@ private:
     
     void setupSyphon();
     void drawSyphon();
-    
-#if defined(USE_SECOND_WINDOW_OPTION)
-    ofxSyphonServer _syphonServerSecondWindow;
-    ofFbo _outputFboSecondWindow;
-#endif
 #endif
     
     // Video playback related

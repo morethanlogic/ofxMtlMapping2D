@@ -62,12 +62,6 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     // ---
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
-
-#if defined(USE_SECOND_WINDOW_OPTION)
-    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        _outputFboSecondWindow.allocate(width, height, GL_RGBA, _numSample);
-    #endif
-#endif
     
     // ---
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
@@ -307,11 +301,6 @@ void ofxMtlMapping2D::bind()
     _fbo.begin();
     ofClear(.0f, .0f, .0f, .0f);
     ofClearAlpha();
-}
-
-//--------------------------------------------------------------
-void ofxMtlMapping2D::unbind()
-{
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     drawSyphon();
@@ -320,7 +309,11 @@ void ofxMtlMapping2D::unbind()
 #if defined(USE_VIDEO_PLAYER_OPTION)
     drawVideoPlayer();
 #endif
-    
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::unbind()
+{
     _fbo.end();
 }
 
@@ -975,11 +968,6 @@ void ofxMtlMapping2D::setupSyphon()
     ofAddListener(_syphonServerDir.events.serverRetired, this, &ofxMtlMapping2D::serverRetired);
     
     _syphonDirIdx = -1;
-    
-    // ---
-#if defined(USE_SECOND_WINDOW_OPTION)
-    _syphonServerSecondWindow.setName(kSyphonOutputServerName);
-#endif
 }
 
 //--------------------------------------------------------------
@@ -991,32 +979,24 @@ void ofxMtlMapping2D::drawSyphon()
     }
 }
 
-#if defined(USE_SECOND_WINDOW_OPTION)
 //--------------------------------------------------------------
-void ofxMtlMapping2D::openOuputWindowApp()
+void ofxMtlMapping2D::openOuputWindow(ofRectangle rect)
 {
-	string shPath;
-	shPath = ofToDataPath( "openOutputWindowApp.sh", true );
-	
-	char *shPathChar;
-	shPathChar = new char[ shPath.length() + 1 ];
-	strcpy( shPathChar, shPath.c_str() );
-	
-	// ---
-	int pid = fork();
-	switch ( pid )
-	{
-		case -1 :
-			ofLogError() << "Opening output window app failes.";
-			
-		case  0 :
-			execl( shPathChar, shPathChar, NULL );
-			
-		default :
-			return;
-	}
+    if (bIsOutputWindowOn) return;
+    
+    bIsOutputWindowOn = true;
+    _outputWindow.setup("output window", rect, true);
 }
-#endif
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::closeOutputWindow()
+{
+    if (!bIsOutputWindowOn) return;
+
+    bIsOutputWindowOn = false;
+    _outputWindow.destroyWindow();
+    
+}
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
@@ -1027,14 +1007,14 @@ void ofxMtlMapping2D::selectSyphonServer(int syphonDirIdx)
     }
     
     int appServerId = -1;
-#if defined(USE_SECOND_WINDOW_OPTION)
-    for (int i=0; i < _syphonServerDir.getServerList().size(); i++) {
-        if (_syphonServerDir.getDescription(i).serverName == ofToString(kSyphonOutputServerName)) {
-            appServerId = i;
-            break;
-        }
-    }
-#endif
+//#if defined(USE_SECOND_WINDOW_OPTION)
+//    for (int i=0; i < _syphonServerDir.getServerList().size(); i++) {
+//        if (_syphonServerDir.getDescription(i).serverName == ofToString(kSyphonOutputServerName)) {
+//            appServerId = i;
+//            break;
+//        }
+//    }
+//#endif
     
     if(_syphonServerDir.isValidIndex(_syphonDirIdx)) {
         if (appServerId != -1 && appServerId <= _syphonDirIdx) {

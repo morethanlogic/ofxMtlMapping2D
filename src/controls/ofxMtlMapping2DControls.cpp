@@ -170,11 +170,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _outputUI->addButton("DETECT DISPLAYS", false);
     _outputUI->addSpacer((_outputUI->getRect()->width - 10) / 2, 1);
     
-#if defined(USE_SECOND_WINDOW_OPTION)
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    _outputUI->addToggle("OUTPUT WINDOW", false);
-#endif
-#endif
+    _outputUI->addToggle("OUTPUT WINDOW", &_bISOutScreenOn);
     
     ofAddListener(_outputUI->newGUIEvent, this, &ofxMtlMapping2DControls::outputUiEvent);
     _outputUI->autoSizeToFitWidgets();
@@ -449,15 +445,11 @@ void ofxMtlMapping2DControls::outputUiEvent(ofxUIEventArgs &event)
             displayConfigurationChanged();
         }
     }
-#if defined(USE_SECOND_WINDOW_OPTION)
-    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        else if (name == "OUTPUT WINDOW") {
-            if (getToggleValue(_outputUI, name)) {
-                _mtlMapping2D->openOuputWindowApp();
-            }
+    else if (name == "OUTPUT WINDOW") {
+        if (!getToggleValue(_outputUI, name)) {
+            _mtlMapping2D->closeOutputWindow();
         }
-    #endif
-#endif
+    }
 }
 
 //--------------------------------------------------------------
@@ -467,7 +459,12 @@ void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
     
     for (int i=0; i<_displayNames.size(); i++) {
         if (name == _displayNames[i] && getToggleValue(_displaysListUI, name)) {
-            ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+            
+            if (_bISOutScreenOn) {
+                _mtlMapping2D->openOuputWindow(ofxDetectDisplaysSharedInstance().getDisplayBounds(i));
+            } else {
+                ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
+            }
             return;
         }
     }
@@ -1102,10 +1099,6 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
             if (*it == serverID) {
                 return;
             }
-        }
-        
-        if (serverName != ofToString(kSyphonOutputServerName)) {
-            _syphonServersList.push_back(serverID);
         }
     }
     
