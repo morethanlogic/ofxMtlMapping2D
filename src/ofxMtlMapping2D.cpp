@@ -43,13 +43,14 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 void ofxMtlMapping2D::init(int width, int height, int numSample)
 {
     _mappingModeState = MAPPING_LOCKED;
-
+    
     bSaveShapes = false;
     bLoadShapes = false;
     bCreateQuad = false;
     bCreateGrid = false;
     bCreateTriangle = false;
     bCreateMask = false;
+    bIsOutputWindowOn = false;
     
     _bDeleteShape = false;
     _bSelectedShapeChanged = false;
@@ -222,50 +223,80 @@ void ofxMtlMapping2D::draw()
 {
 
     if (_mappingModeState == MAPPING_EDIT) {
-        switch (ofxMtlMapping2DGlobal::getEditView()) {
-            case MAPPING_INPUT_VIEW:
-                drawFbo();
-                break;
-                
-            case MAPPING_OUTPUT_VIEW:
-                render();
-                break;
-        }
         
-        // --- Draw all shapes
-        list<ofxMtlMapping2DShape*>::iterator it;
-        for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
-            ofxMtlMapping2DShape* shape = *it;
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            ofScale(ofxMtlMapping2DSettings::zoomFactor, ofxMtlMapping2DSettings::zoomFactor);
+            ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
             
-            if(shape != ofxMtlMapping2DShape::activeShape) {
-                shape->draw();
+            switch (ofxMtlMapping2DGlobal::getEditView()) {
+                case MAPPING_INPUT_VIEW:
+                    drawFbo();
+                    break;
+                    
+                case MAPPING_OUTPUT_VIEW:
+                    render();
+                    break;
             }
+            
+            // --- Draw all shapes
+            list<ofxMtlMapping2DShape*>::iterator it;
+            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+                ofxMtlMapping2DShape* shape = *it;
+                
+                if(shape != ofxMtlMapping2DShape::activeShape) {
+                    shape->draw();
+                }
+            }
+            
+            if(ofxMtlMapping2DShape::activeShape) {
+                //Draw active shape on top
+                ofxMtlMapping2DShape::activeShape->draw();
+            }
+            
+            
+            ofSetColor(255, 0, 0);
+            ofNoFill();
+            ofRect(.0f, .0f, ofGetWidth(), ofGetHeight());
+            
+
+            ofRectangle mainScreen;
+            ofRectangle zoomedScreen;
+            
+            ofxMtlMapping2DSettings::xLoNew = -(ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor - ofGetWidth())/2;
+            ofxMtlMapping2DSettings::yLoNew = -(ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor - ofGetHeight())/2;
+            
+            zoomedScreen.set(ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::yLoNew, ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor, ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor);
+            
+            ofxMtlMapping2DSettings::xHiNew = ofxMtlMapping2DSettings::xLoNew + (ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor);
+            ofxMtlMapping2DSettings::yHiNew = ofxMtlMapping2DSettings::yLoNew + (ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor);
+            
+            ofSetColor(0, 0, 255);
+            ofRect(zoomedScreen);
+
+            float eX = ofMap(ofGetMouseX(), .0f, ofGetWidth(), ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::xHiNew);
+            float eY = ofMap(ofGetMouseY(), .0f, ofGetHeight(), ofxMtlMapping2DSettings::yLoNew, ofxMtlMapping2DSettings::yHiNew);
+
+            ofFill();
+            ofSetColor(255, 0, 0);
+            ofRect(eX-5, eY-5, 10, 10);
+            
         }
-        
-        if(ofxMtlMapping2DShape::activeShape) {
-            //Draw active shape on top
-            ofxMtlMapping2DShape::activeShape->draw();
-        }
+        ofPopMatrix();
     }
     else {
         render();
     }
-
     
-#if defined(USE_SECOND_WINDOW_OPTION)
-    #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        _outputFboSecondWindow.begin();
+    if (bIsOutputWindowOn) {
+        _outputWindow.begin();
         {
-            ofClear(.0f, .0f, .0f, .0f);
-            ofClearAlpha();
+            ofBackground(0);
             render();
         }
-        _outputFboSecondWindow.end();
-        _syphonServerSecondWindow.publishTexture(&_outputFboSecondWindow.getTextureReference());
-    #endif
-#endif
-
-
+        _outputWindow.end();
+    }
 }
 
 #pragma mark -
@@ -474,6 +505,9 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     if(_mappingModeState == MAPPING_LOCKED)
         return;
     
+    eX = ofMap(eX, .0f, ofGetWidth(), ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::xHiNew);
+    eY = ofMap(eY, .0f, ofGetHeight(), ofxMtlMapping2DSettings::yLoNew, ofxMtlMapping2DSettings::yHiNew);
+
     
     // ----
     // A vertex has been selected

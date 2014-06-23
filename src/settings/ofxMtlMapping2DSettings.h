@@ -17,4 +17,11 @@ public:
     // ---
     static int gridDefaultNbCols;
     static int gridDefaultNbRows;
+    
+    static float zoomFactor;
+
+    static float xLoNew;
+    static float yLoNew;
+    static float xHiNew;
+    static float yHiNew;
 };

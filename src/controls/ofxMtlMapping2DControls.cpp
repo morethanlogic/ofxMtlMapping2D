@@ -121,6 +121,9 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI->addToggle("LOAD FILE ON START", false);
     _settingsUI->addButton("SELECT FILE", false);
     _settingsUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
+    
+    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
+    _settingsUI->addSlider("ZOOM", .0f, 10.0f, &ofxMtlMapping2DSettings::zoomFactor)->setIncrement(.1f);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
