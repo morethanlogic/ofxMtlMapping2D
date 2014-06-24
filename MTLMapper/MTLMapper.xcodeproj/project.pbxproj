@@ -267,7 +267,7 @@
 		F3AED6E318FB19F100C67B36 /* ofxMtlMapping2DDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxMtlMapping2DDefines.h; path = ../src/ofxMtlMapping2DDefines.h; sourceTree = "<group>"; };
 		F3C7C78318CFADD2002DD9BE /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		F3C7C78418CFADD2002DD9BE /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
-		F3E9AD3D1954C2BA003BA1E8 /* ofxExtraWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxExtraWindow.cpp; sourceTree = "<group>"; };
+		F3E9AD3D1954C2BA003BA1E8 /* ofxExtraWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = ofxExtraWindow.cpp; sourceTree = "<group>"; };
 		F3E9AD3E1954C2BA003BA1E8 /* ofxExtraWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxExtraWindow.h; sourceTree = "<group>"; };
 		a64b8aa7481267cd4a76c16bbdb9a1c8 /* ofxUITabBar.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxUITabBar.cpp; path = ../../ofxUI/src/ofxUITabBar.cpp; sourceTree = SOURCE_ROOT; };
 		a8896ac3becaaa504e3828f42f9f8d48 /* ofxUIEventArgs.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxUIEventArgs.cpp; path = ../../ofxUI/src/ofxUIEventArgs.cpp; sourceTree = SOURCE_ROOT; };
