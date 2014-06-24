@@ -74,7 +74,6 @@ public:
     bool bCreateGrid;
     bool bCreateTriangle;
     bool bCreateMask;
-    bool bIsOutputWindowOn;
 
     void selectShapeId(int shapeId);
     void setLockForShapeId(int shapeId, bool bLocked);

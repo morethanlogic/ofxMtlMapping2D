@@ -50,7 +50,6 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     bCreateGrid = false;
     bCreateTriangle = false;
     bCreateMask = false;
-    bIsOutputWindowOn = false;
     
     _bDeleteShape = false;
     _bSelectedShapeChanged = false;
@@ -283,7 +282,7 @@ void ofxMtlMapping2D::draw()
         render();
     }
     
-    if (bIsOutputWindowOn) {
+    if (_outputWindow.bIsSetup) {
         _outputWindow.begin();
         {
             ofBackground(0);
@@ -982,18 +981,17 @@ void ofxMtlMapping2D::drawSyphon()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::openOuputWindow(ofRectangle rect)
 {
-    if (bIsOutputWindowOn) return;
+    if (_outputWindow.bIsSetup) return;
     
-    bIsOutputWindowOn = true;
     _outputWindow.setup("output window", rect, true);
+    _outputWindow.setPostionAndSize(rect);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::closeOutputWindow()
 {
-    if (!bIsOutputWindowOn) return;
+    if (!_outputWindow.bIsSetup) return;
 
-    bIsOutputWindowOn = false;
     _outputWindow.destroyWindow();
     
 }
