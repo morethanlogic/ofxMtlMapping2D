@@ -19,15 +19,16 @@ public:
     void begin();
     void end();
     
-    void setPosition(int x, int y);
     void setPostionAndSize(ofRectangle rect);
     
-    int getWidth();
-    int getHeight();
+    bool bIsSetup;
     
 private:
+    static ofxExtraWindow	* instance;
+
     GLFWwindow *_mainWindow;
     GLFWwindow *_extraWindow;
-    int _width;
-    int _height;
+    
+    static void 	keyboard_cb(GLFWwindow* windowP_, int key, int scancode, int action, int mods);
+
 };
