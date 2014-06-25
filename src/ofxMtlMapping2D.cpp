@@ -1073,6 +1073,8 @@ void ofxMtlMapping2D::drawVideoPlayer()
         return;
     }
     
+    ofSetColor(255);
+    
 #if defined(TARGET_OSX)
     _videoPlayer.draw(_videoXOffset, _videoYOffset, _videoWidth, _videoHeight);
 #elif definfed(TARGET_WIN32)
