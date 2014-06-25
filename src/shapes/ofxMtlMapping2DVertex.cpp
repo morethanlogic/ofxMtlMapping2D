@@ -108,28 +108,28 @@ void ofxMtlMapping2DVertex::snapIt(float _x, float _y)
 void ofxMtlMapping2DVertex::left() 
 {
     if(activeVertex)
-        snapIt(x-1, y);
+        snapIt(x-(1/ofxMtlMapping2DSettings::zoomFactor), y);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::up() 
 {
     if(activeVertex)
-        snapIt(x, y-1);
+        snapIt(x, y-(1/ofxMtlMapping2DSettings::zoomFactor));
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::right() 
 {
     if(activeVertex)
-        snapIt(x+1, y);
+        snapIt(x+(1/ofxMtlMapping2DSettings::zoomFactor), y);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::down() 
 {
     if(activeVertex)
-        snapIt(x, y+1);
+        snapIt(x, y+(1/ofxMtlMapping2DSettings::zoomFactor));
 }
 
 
