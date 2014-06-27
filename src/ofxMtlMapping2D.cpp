@@ -1060,6 +1060,12 @@ void ofxMtlMapping2D::updateVideoPlayer()
 {
 #if defined(TARGET_OSX)
     _videoPlayer.update();
+    
+    if (_bIsVideoStopped && _videoPlayer.isLoaded() && _videoPlayer.isPlaying()) {
+        cout << "GO" << endl;
+        _bIsVideoStopped = false;
+        resizeVideo();
+    }
     videoPositionInSeconds = _videoPlayer.getPosition() * 100;
 #elif definfed(TARGET_WIN32)
     
@@ -1107,15 +1113,12 @@ void ofxMtlMapping2D::loadVideo(string filePath)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::playVideo()
 {
-    _bIsVideoStopped = false;
-
 #if defined(TARGET_OSX)
+    _videoPlayer.setPaused(false);
     _videoPlayer.play();
 #elif definfed(TARGET_WIN32)
     
 #endif
-    
-    resizeVideo();
 }
 
 //--------------------------------------------------------------
@@ -1134,6 +1137,7 @@ void ofxMtlMapping2D::stopVideo()
     _bIsVideoStopped = true;
     
 #if defined(TARGET_OSX)
+    _videoPlayer.setPaused(true);
     _videoPlayer.stop();
 #elif definfed(TARGET_WIN32)
     
