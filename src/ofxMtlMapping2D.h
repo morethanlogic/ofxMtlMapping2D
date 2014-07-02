@@ -60,8 +60,11 @@ public:
     MappingModeState getModeState();
 
     void mousePressed(ofMouseEventArgs &e);
+    void mouseDragged(ofMouseEventArgs &e);
     void keyPressed(ofKeyEventArgs &e);
     void windowResized(ofResizeEventArgs &e);
+    
+    void updateZoomAndOutput(bool updateFBO = false);
 
     vector<ofPolyline*> getMaskShapes();
     void chessBoard(int nbOfCol = 10);
@@ -107,17 +110,29 @@ private:
 
     ofFbo _fbo;
     int _numSample;
+    
+    ofxExtraWindow _outputWindow;
+    
+    float _sensitivityXY;
+    ofVec2f _mouse;
+	ofVec2f _lastMouse;
+	ofVec2f _mouseVel;
+    
+    float _moveX;
+	float _moveY;
 
     ofxXmlSettings _shapesListXML;
     list<ofxMtlMapping2DShape*>::iterator iteratorForShapeWithId(int shapeId);
     
-    void render();
+    void render(bool bIsOutput);
 
     void createQuad();
     void createGrid();
     void createTriangle();
     void createMask();
     void deleteShape();
+    
+    void drawAllShapes();
 
     void loadShapesList();
     void saveShapesList();
@@ -128,8 +143,6 @@ private:
     bool _bSelectedShapeChanged;
     int _selectedShapeId;
     bool _bDeleteShape;
-
-    ofxExtraWindow _outputWindow;
 
     // Syphon related
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -159,7 +172,7 @@ private:
     void updateVideoPlayer();
     void drawVideoPlayer();
     void exitVideoPlayer();
-    void resizeVideo();
+    void resizeVideo(ofRectangle outputRect);
     
     bool _bIsVideoStopped;
 #endif

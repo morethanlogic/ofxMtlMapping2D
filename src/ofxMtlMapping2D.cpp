@@ -1,9 +1,12 @@
 #include "ofxMtlMapping2D.h"
+#include "ofxMtlMapping2DSettings.h"
 #include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
 #include "ofxMtlMapping2DShapeType.h"
 #include "ofxMtlMapping2DShapes.h"
+
+#include "ofxMSAInteractiveObject.h"
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -42,6 +45,8 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::init(int width, int height, int numSample)
 {
+    ofxMSAInteractiveObject::doCoordTransformation = true;
+    
     _mappingModeState = MAPPING_LOCKED;
     
     bSaveShapes = false;
@@ -61,6 +66,8 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     // ---
     _numSample = numSample;
     _fbo.allocate(width, height, GL_RGBA, _numSample);
+    ofxMtlMapping2DGlobal::outputWidth = width;
+    ofxMtlMapping2DGlobal::outputHeight = height;
     
     // ---
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
@@ -163,6 +170,9 @@ void ofxMtlMapping2D::update()
                 shape->setAsIdle();
                 shape->inputPolygon->enable();
             }
+            
+            updateZoomAndOutput();
+            
             break;
         }
             
@@ -180,6 +190,9 @@ void ofxMtlMapping2D::update()
                     shape->inputPolygon->setAsIdle();
                 }
             }
+            
+            updateZoomAndOutput();
+
             break;
         }
     }
@@ -217,78 +230,102 @@ void ofxMtlMapping2D::draw()
 
     if (_mappingModeState == MAPPING_EDIT) {
         
-        ofPushMatrix();
-        {
-            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-            ofScale(ofxMtlMapping2DSettings::zoomFactor, ofxMtlMapping2DSettings::zoomFactor);
-            ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
-            
-            switch (ofxMtlMapping2DGlobal::getEditView()) {
-                case MAPPING_INPUT_VIEW:
-                    drawFbo();
-                    break;
-                    
-                case MAPPING_OUTPUT_VIEW:
-                    render();
-                    break;
-            }
-            
-            // --- Draw all shapes
-            list<ofxMtlMapping2DShape*>::iterator it;
-            for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
-                ofxMtlMapping2DShape* shape = *it;
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            ofPushMatrix();
+            {
+                ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+                ofScale(ofxMtlMapping2DGlobal::inputViewZoomFactor, ofxMtlMapping2DGlobal::inputViewZoomFactor);
+                ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
                 
-                if(shape != ofxMtlMapping2DShape::activeShape) {
-                    shape->draw();
+                drawFbo();
+                
+                ofPushMatrix();
+                {
+                    ofTranslate(ofxMtlMapping2DGlobal::inputViewOutputPreview.x, ofxMtlMapping2DGlobal::inputViewOutputPreview.y);
+                    drawAllShapes();
                 }
+                ofPopMatrix();
+                
+                // Zoom
+                ofSetColor(255, 0, 0);
+                ofNoFill();
+                ofRect(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+                
+                ofSetColor(0, 0, 255);
+                ofRect(ofxMtlMapping2DGlobal::inputViewZoomedCoordSystem);
+                
+                ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
+                
+                ofFill();
+                ofSetColor(255, 0, 0);
+                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
             }
-            
-            if(ofxMtlMapping2DShape::activeShape) {
-                //Draw active shape on top
-                ofxMtlMapping2DShape::activeShape->draw();
-            }
-            
-            
-            ofSetColor(255, 0, 0);
-            ofNoFill();
-            ofRect(.0f, .0f, ofGetWidth(), ofGetHeight());
-            
-
-            ofRectangle mainScreen;
-            ofRectangle zoomedScreen;
-            
-            ofxMtlMapping2DSettings::xLoNew = -(ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor - ofGetWidth())/2;
-            ofxMtlMapping2DSettings::yLoNew = -(ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor - ofGetHeight())/2;
-            
-            zoomedScreen.set(ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::yLoNew, ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor, ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor);
-            
-            ofxMtlMapping2DSettings::xHiNew = ofxMtlMapping2DSettings::xLoNew + (ofGetWidth()/ofxMtlMapping2DSettings::zoomFactor);
-            ofxMtlMapping2DSettings::yHiNew = ofxMtlMapping2DSettings::yLoNew + (ofGetHeight()/ofxMtlMapping2DSettings::zoomFactor);
-            
-            ofSetColor(0, 0, 255);
-            ofRect(zoomedScreen);
-
-            float eX = ofMap(ofGetMouseX(), .0f, ofGetWidth(), ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::xHiNew);
-            float eY = ofMap(ofGetMouseY(), .0f, ofGetHeight(), ofxMtlMapping2DSettings::yLoNew, ofxMtlMapping2DSettings::yHiNew);
-
-            ofFill();
-            ofSetColor(255, 0, 0);
-            ofRect(eX-5, eY-5, 10, 10);
+            ofPopMatrix();
             
         }
-        ofPopMatrix();
+        
+        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+            ofPushMatrix();
+            {
+                ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+                ofScale(ofxMtlMapping2DGlobal::outputViewZoomFactor, ofxMtlMapping2DGlobal::outputViewZoomFactor);
+                ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
+                
+                render(false);
+                
+                ofPushMatrix();
+                {
+                    ofTranslate(ofxMtlMapping2DGlobal::outputViewOutputPreview.x, ofxMtlMapping2DGlobal::outputViewOutputPreview.y);
+                    drawAllShapes();
+                }
+                ofPopMatrix();
+                
+                // Zoom
+                ofSetColor(255, 0, 0);
+                ofNoFill();
+                ofRect(ofxMtlMapping2DGlobal::outputViewOutputPreview);
+                
+                ofSetColor(0, 0, 255);
+                ofRect(ofxMtlMapping2DGlobal::outputViewZoomedCoordSystem);
+                
+                ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
+                
+                ofFill();
+                ofSetColor(255, 0, 0);
+                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
+            }
+            ofPopMatrix();
+        }
     }
     else {
-        render();
+        render(true);
     }
     
     if (_outputWindow.bIsSetup) {
         _outputWindow.begin();
         {
             ofBackground(0);
-            render();
+            render(true);
         }
         _outputWindow.end();
+    }
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::drawAllShapes()
+{
+    list<ofxMtlMapping2DShape*>::iterator it;
+    for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
+        ofxMtlMapping2DShape* shape = *it;
+        
+        if(shape != ofxMtlMapping2DShape::activeShape) {
+            shape->draw();
+        }
+    }
+    
+    if(ofxMtlMapping2DShape::activeShape) {
+        //Draw active shape on top
+        ofxMtlMapping2DShape::activeShape->draw();
     }
 }
 
@@ -320,15 +357,20 @@ void ofxMtlMapping2D::unbind()
 void ofxMtlMapping2D::drawFbo()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
-    _fbo.draw(0, 0);
+    _fbo.draw(ofxMtlMapping2DGlobal::inputViewOutputPreview);
 }
 
 #pragma mark -
 #pragma mark Render - Mapping Mode
 //--------------------------------------------------------------
-void ofxMtlMapping2D::render()
+void ofxMtlMapping2D::render(bool bIsOutput)
 {
     list<ofxMtlMapping2DShape*>::iterator it;
+    
+    if (!bIsOutput) {
+        ofPushMatrix();
+        ofTranslate(ofxMtlMapping2DGlobal::outputViewOutputPreview.x, ofxMtlMapping2DGlobal::outputViewOutputPreview.y);
+    }
     
     // Textured shapes
     _fbo.getTextureReference().bind();
@@ -350,6 +392,10 @@ void ofxMtlMapping2D::render()
         if (shape->shapeType == MAPPING_2D_SHAPE_MASK) {
             shape->render();
         }
+    }
+    
+    if (!bIsOutput) {
+        ofPopMatrix();
     }
 }
 
@@ -450,18 +496,71 @@ void ofxMtlMapping2D::deleteShape()
 }
 
 #pragma mark -
+#pragma mark Zoom / Output
+//--------------------------------------------------------------
+void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
+{
+    cout << "HEY" << endl;
+
+    float zoomFactor;
+    ofRectangle *outputPreview;
+    ofRectangle *zoomedCoordSystem;
+    
+    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+        cout << "YO" << endl;
+        zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
+        outputPreview = &ofxMtlMapping2DGlobal::inputViewOutputPreview;
+        zoomedCoordSystem = &ofxMtlMapping2DGlobal::inputViewZoomedCoordSystem;
+    }
+    
+    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+        cout << "YEAH" << endl;
+
+        zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
+        outputPreview = &ofxMtlMapping2DGlobal::outputViewOutputPreview;
+        zoomedCoordSystem = &ofxMtlMapping2DGlobal::outputViewZoomedCoordSystem;
+
+    }
+    
+    outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+    
+    float xLoNew = -(ofGetWidth()/zoomFactor - ofGetWidth())/2;
+    float yLoNew = -(ofGetHeight()/zoomFactor - ofGetHeight())/2;
+    
+    zoomedCoordSystem->set(xLoNew, yLoNew, ofGetWidth()/zoomFactor, ofGetHeight()/zoomFactor);
+    
+    ofxMSAInteractiveObject::coordSystemRect.set(zoomedCoordSystem->x - outputPreview->x, zoomedCoordSystem->y - outputPreview->y, zoomedCoordSystem->width, zoomedCoordSystem->height);
+    
+    if (updateFBO) {
+        // resize / re-allocate the source FBO
+        if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
+            cout << "ALLOCATION" << endl;
+            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
+        }
+    }
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+        resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+    }
+#endif
+}
+
+#pragma mark -
 #pragma mark Add / Remove Listeners
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::addListeners() {
 	ofAddListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
+    ofAddListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
     ofAddListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofAddListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
 }
 
 //--------------------------------------------------------------
 void ofxMtlMapping2D::removeListeners() {
-	ofRemoveListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);   
+	ofRemoveListener(ofEvents().mousePressed, this, &ofxMtlMapping2D::mousePressed);
+    ofRemoveListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
     ofRemoveListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofRemoveListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
 
@@ -473,14 +572,7 @@ void ofxMtlMapping2D::removeListeners() {
 //--------------------------------------------------------------
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
-    // resize / re-allocate the source FBO
-    _fbo.allocate(e.width , e.height, GL_RGBA, _numSample);
-
     ofxMtlMapping2DControlsSharedInstance().updateUIsPosition();
-    
-#if defined(USE_VIDEO_PLAYER_OPTION)
-    resizeVideo();
-#endif
 }
 
 
@@ -497,9 +589,24 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     if(_mappingModeState == MAPPING_LOCKED)
         return;
     
-    eX = ofMap(eX, .0f, ofGetWidth(), ofxMtlMapping2DSettings::xLoNew, ofxMtlMapping2DSettings::xHiNew);
-    eY = ofMap(eY, .0f, ofGetHeight(), ofxMtlMapping2DSettings::yLoNew, ofxMtlMapping2DSettings::yHiNew);
+    // ---
+    ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(eX, eY));
+    eX = transformedCoord.x;
+    eY = transformedCoord.y;
 
+    _mouse = ofVec2f(eX, eY);
+    _lastMouse = _mouse;
+    
+    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+        transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(e.x, e.y), -ofxMtlMapping2DGlobal::inputViewOutputPreview.x, -ofxMtlMapping2DGlobal::inputViewOutputPreview.y);
+    }
+    
+    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+        transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(e.x, e.y), -ofxMtlMapping2DGlobal::outputViewOutputPreview.x, -ofxMtlMapping2DGlobal::outputViewOutputPreview.y);
+    }
+    
+    eX = transformedCoord.x;
+    eY = transformedCoord.y;
     
     // ----
     // A vertex has been selected
@@ -566,6 +673,41 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
     
 }
 
+//--------------------------------------------------------------
+void ofxMtlMapping2D::mouseDragged(ofMouseEventArgs &e)
+{
+    if (!ofxMtlMapping2DGlobal::bIsDraggingZone) return;
+    
+    int eX = e.x;
+    int eY = e.y;
+    int eButton = e.button;
+
+    ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(eX, eY));
+    eX = transformedCoord.x;
+    eY = transformedCoord.y;
+    
+    _mouse = ofVec2f(eX, eY);
+    _mouseVel = _mouse  - _lastMouse;
+    _lastMouse = _mouse;
+    
+    _sensitivityXY = 1.0f;
+    _moveX = _mouseVel.x * _sensitivityXY;
+    _moveY = _mouseVel.y * _sensitivityXY;
+    
+    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+        ofxMtlMapping2DGlobal::inputViewOutputPreview.x += _moveX;
+        ofxMtlMapping2DGlobal::inputViewOutputPreview.y += _moveY;
+    }
+    
+    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+        ofxMtlMapping2DGlobal::outputViewOutputPreview.x += _moveX;
+        ofxMtlMapping2DGlobal::outputViewOutputPreview.y += _moveY;
+    }
+    
+    ofxMSAInteractiveObject::coordSystemRect.x -= _moveX;
+    ofxMSAInteractiveObject::coordSystemRect.y -= _moveY;
+    
+}
 //--------------------------------------------------------------
 void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 {
@@ -911,8 +1053,8 @@ void ofxMtlMapping2D::chessBoard(int nbOfCol)
     ofSetColor(ofColor::white);
     ofFill();
     
-    int boardWidth = ofGetWidth();
-    int boardHeight = ofGetHeight();
+    int boardWidth = ofxMtlMapping2DGlobal::outputWidth;
+    int boardHeight = ofxMtlMapping2DGlobal::outputHeight;
     
     float squareSize = boardWidth / nbOfCol;
     int nbOfRow = ceil(boardHeight / squareSize);
@@ -1062,9 +1204,10 @@ void ofxMtlMapping2D::updateVideoPlayer()
     _videoPlayer.update();
     
     if (_bIsVideoStopped && _videoPlayer.isLoaded() && _videoPlayer.isPlaying()) {
-        cout << "GO" << endl;
         _bIsVideoStopped = false;
-        resizeVideo();
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+        }
     }
     videoPositionInSeconds = _videoPlayer.getPosition() * 100;
 #elif definfed(TARGET_WIN32)
@@ -1165,22 +1308,21 @@ void ofxMtlMapping2D::setVideoPostion(float position)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::resizeVideo()
+void ofxMtlMapping2D::resizeVideo(ofRectangle outputRect)
 {
-    
     _videoRatio = _videoPlayer.getWidth()/_videoPlayer.getHeight();
     
-    if (ofGetWidth() > ofGetHeight() && (ofGetHeight() * _videoRatio) < ofGetWidth()) {
-        _videoWidth = ofGetHeight() * _videoRatio;
-        _videoHeight = ofGetHeight();
-        _videoXOffset = (ofGetWidth() - _videoWidth)/2;
-        _videoYOffset = 0;
+    if (outputRect.width > outputRect.height && (outputRect.height * _videoRatio) < outputRect.width) {
+        _videoWidth = outputRect.height * _videoRatio;
+        _videoHeight = outputRect.height;
+        _videoXOffset = (outputRect.width - _videoWidth)/2; // + outputRect.x;
+        _videoYOffset = 0;//outputRect.y;
         
     } else {
-        _videoWidth = ofGetWidth();
-        _videoHeight = ofGetWidth()/_videoRatio;
-        _videoXOffset = 0;
-        _videoYOffset = (ofGetHeight() - _videoHeight)/2;
+        _videoWidth = outputRect.width;
+        _videoHeight = outputRect.width/_videoRatio;
+        _videoXOffset = 0;//outputRect.x;
+        _videoYOffset = (outputRect.height - _videoHeight)/2;// + outputRect.y;
     }
     
 }

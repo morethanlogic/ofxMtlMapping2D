@@ -54,7 +54,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
 #elif defined(TARGET_WIN32)
 	_rootPath = "settings/";
 #endif
-
+    
     ofColor uiColor;
     uiColor.set(0, 210, 255, 130);
     ofColor uiColorB;
@@ -123,7 +123,13 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
     
     _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
-    _settingsUI->addSlider("ZOOM", .0f, 10.0f, &ofxMtlMapping2DSettings::zoomFactor)->setIncrement(.1f);
+    _settingsUI->addLabel("PROJECTION SIZE");
+    _settingsUI->addTextInput("PROJ. WIDTH", ofToString(ofGetWidth()));
+    _settingsUI->addTextInput("PROJ. HEIGHT", ofToString(ofGetHeight()));
+    
+    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
+    _settingsUI->addToggle("DRAG", &ofxMtlMapping2DGlobal::bIsDraggingZone);
+    _settingsUI->addSlider("ZOOM", .0f, 10.0f, 1.0f)->setIncrement(.1f);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
@@ -222,6 +228,7 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     // ---
     // Syphon UI
     _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
+    
     _syphonUI->setColorBack(uiColor);
     
     ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
@@ -363,6 +370,8 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             
             // ---
             showGridSettingsCanvas();
+            
+            setSliderValue(_settingsUI, "ZOOM", ofxMtlMapping2DGlobal::outputViewZoomFactor);
         }
         else if (name == kSettingMappingModeInput) {
             ofxMtlMapping2DGlobal::setEditView(MAPPING_CHANGE_TO_INPUT_VIEW);
@@ -380,7 +389,9 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             
             // ---
             hideGridSettingsCanvas();
-        }
+            
+            setSliderValue(_settingsUI, "ZOOM", ofxMtlMapping2DGlobal::inputViewZoomFactor);
+        }        
     }
 }
 
@@ -429,7 +440,48 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
         textInput->setTextString(fileDialogResult.getName());
         _mtlMapping2D->loadXml(path);
     }
+    
+    else if (name == "ZOOM") {
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            ofxMtlMapping2DGlobal::inputViewZoomFactor = getSliderValue(_settingsUI, name);
+        }
+        
+        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+            ofxMtlMapping2DGlobal::outputViewZoomFactor = getSliderValue(_settingsUI, name);
+        }
+        cout << "1" << endl;
+        _mtlMapping2D->updateZoomAndOutput();
+    }
+
+    else if (name == "PROJ. WIDTH" || name == "PROJ. HEIGHT") {
+        ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget(name);
+        
+        if (!textInput->isFocused()) {
+            // Make sure we have an Int value
+            if (name == "PROJ. WIDTH") {
+                ofxMtlMapping2DGlobal::outputWidth = ofToInt(textInput->getTextString());
+                textInput->setTextString(ofToString(ofxMtlMapping2DGlobal::outputWidth));
+            } else {
+                ofxMtlMapping2DGlobal::outputHeight = ofToInt(textInput->getTextString());
+                textInput->setTextString(ofToString(ofxMtlMapping2DGlobal::outputHeight));
+            }
+            
+            // Update Zoomed area and Resize the FBO
+            cout << "2" << endl;
+
+            _mtlMapping2D->updateZoomAndOutput(true);
+        }
+    }
 }
+
+/*
+ bool is_number(const std::string& s)
+ {
+ std::string::const_iterator it = s.begin();
+ while (it != s.end() && std::isdigit(*it)) ++it;
+ return !s.empty() && it == s.end();
+ }
+ */
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
 //--------------------------------------------------------------
@@ -1084,6 +1136,7 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
         string serverName = syphonServerDir.serverName;
         string appName = syphonServerDir.appName;
         
+        
         if (serverName.empty()) {
             serverName = "N.C.";
         }
@@ -1092,7 +1145,7 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
             appName = "N.C.";
         }
         
-        string serverID = serverName;// + " - " + appName;
+        string serverID = serverName; // + " - " + appName;
 
         list<string>::iterator it;
         for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
@@ -1100,6 +1153,9 @@ void ofxMtlMapping2DControls::addSyphonServer(vector<ofxSyphonServerDescription>
                 return;
             }
         }
+        
+        _syphonServersList.push_back(serverID);
+
     }
     
     updateSyphonServersList();
@@ -1141,13 +1197,21 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
     _syphonUI->removeWidgets();
     _syphonServersNames.clear();
     
+    //_syphonUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_UP);
+    //_syphonUI->addLabel("SYPHON SETTINGS");
+    //_syphonUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+
     _syphonUI->addSpacer(_syphonUI->getRect()->width - 10, 2);
     
     _syphonUI->addButton("NONE", false);
     _syphonUI->addSpacer((_syphonUI->getRect()->width - 10) / 2, 1);
     
+    cout << "updateSyphonServersList" << endl;
+
     list<string>::iterator it;
     for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
+        cout << "updateSyphonServersList: " << *it << endl;
+
         _syphonServersNames.push_back(*it);
     }
     
