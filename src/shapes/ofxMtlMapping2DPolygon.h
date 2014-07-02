@@ -46,6 +46,7 @@ public:
     void select(int x, int y);
 
     ofxMtlMapping2DVertex* getVertex(int index);
+    int getNbOfVertices();
 
     // ---- ofxMSAInteractiveObject related
     void enable();

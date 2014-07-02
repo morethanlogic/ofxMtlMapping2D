@@ -305,7 +305,11 @@ ofxMtlMapping2DVertex* ofxMtlMapping2DPolygon::getVertex(int index)
     return *it;
 }
 
-
+//--------------------------------------------------------------
+int ofxMtlMapping2DPolygon::getNbOfVertices()
+{
+    return vertices.size();
+}
 
 #pragma mark -
 #pragma mark Modify Shape at run time
