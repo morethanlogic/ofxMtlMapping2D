@@ -1,5 +1,6 @@
 #include "ofxMtlMapping2DVertex.h"
 #include "ofxMtlMapping2DSettings.h"
+#include "ofxMtlMapping2DShapes.h"
 
 ofxMtlMapping2DVertex* ofxMtlMapping2DVertex::activeVertex = NULL;
 
@@ -151,7 +152,8 @@ void ofxMtlMapping2DVertex::onPress(int x, int y, int button)
 	if (button == 0) {
         _bMouseGrabbed = true;
 		activeVertex = this;
-	} else if (button == 2 && !isDefiningTectureCoord && ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled) {
+	} else if (button == 2 && !isDefiningTectureCoord && ofxMtlMapping2DSettings::kIsManuallyAddingDeletingVertexEnabled
+               && ofxMtlMapping2DShape::activeShape->getNbOfVertices() > 3 && ofxMtlMapping2DShape::activeShape->shapeType == MAPPING_2D_SHAPE_MASK) {
 		toBeRemoved = true;
 		activeVertex = NULL;
 	}
