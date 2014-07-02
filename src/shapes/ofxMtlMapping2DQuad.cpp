@@ -30,7 +30,6 @@ void ofxMtlMapping2DQuad::render()
     
     for (int i = 0; i < inputPolygon->polyline->size(); i++) {
         glTexCoord2f(inputPolygon->polyline->getVertices()[i].x, inputPolygon->polyline->getVertices()[i].y);
-        //glVertex2f(inputPolygon->polyline->getVertices()[i].x, inputPolygon->polyline->getVertices()[i].y);
         glVertex2f(inputPolygon->polyline->getVertices()[i].x - inputPolygon->boundingBox.x, inputPolygon->polyline->getVertices()[i].y - inputPolygon->boundingBox.y);
     }
     
