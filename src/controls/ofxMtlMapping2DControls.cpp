@@ -449,7 +449,6 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
         else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
             ofxMtlMapping2DGlobal::outputViewZoomFactor = getSliderValue(_settingsUI, name);
         }
-        cout << "1" << endl;
         _mtlMapping2D->updateZoomAndOutput();
     }
 
@@ -467,8 +466,6 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
             }
             
             // Update Zoomed area and Resize the FBO
-            cout << "2" << endl;
-
             _mtlMapping2D->updateZoomAndOutput(true);
         }
     }

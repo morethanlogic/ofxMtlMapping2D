@@ -500,22 +500,17 @@ void ofxMtlMapping2D::deleteShape()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
 {
-    cout << "HEY" << endl;
-
     float zoomFactor;
     ofRectangle *outputPreview;
     ofRectangle *zoomedCoordSystem;
     
     if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-        cout << "YO" << endl;
         zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
         outputPreview = &ofxMtlMapping2DGlobal::inputViewOutputPreview;
         zoomedCoordSystem = &ofxMtlMapping2DGlobal::inputViewZoomedCoordSystem;
     }
     
     else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-        cout << "YEAH" << endl;
-
         zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
         outputPreview = &ofxMtlMapping2DGlobal::outputViewOutputPreview;
         zoomedCoordSystem = &ofxMtlMapping2DGlobal::outputViewZoomedCoordSystem;
@@ -534,7 +529,6 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
     if (updateFBO) {
         // resize / re-allocate the source FBO
         if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
-            cout << "ALLOCATION" << endl;
             _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
         }
     }
