@@ -45,7 +45,7 @@ void ofxExtraWindow::setup(const char *name, int xpos, int ypos, int width, int 
     //_extraWindow = glfwCreateWindow(width, height, "My Title", glfwGetPrimaryMonitor(), NULL);
     glfwSetWindowPos(_extraWindow, xpos, ypos);
     
-    glfwSetKeyCallback(_extraWindow, keyboard_cb);
+    glfwSetKeyCallback(_extraWindow, (GLFWkeyfun)keyboard_cb);
     
     bIsSetup = true;
 
