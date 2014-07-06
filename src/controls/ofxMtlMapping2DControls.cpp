@@ -103,6 +103,13 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
         _toolsCanvas->addImageToggle(kSettingMappingCreateNewMask, uiDataPath + "mask.png", &_mtlMapping2D->bCreateMask, kToggleSize, kToggleSize);
     }
     
+    _toolsCanvas->addWidgetDown(spacer);
+    _toolsCanvas->addImageButton("ZOOM FIT", uiDataPath + "zoomFit.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageButton("ZOOM IN", uiDataPath + "zoomIn.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageButton("ZOOM OUT", uiDataPath + "zoomOut.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle("ZOOM DRAG", uiDataPath + "zoomDrag.png", &ofxMtlMapping2DGlobal::bIsDraggingZone, kToggleSize, kToggleSize);
+
+    
     ofAddListener(_toolsCanvas->newGUIEvent, this, &ofxMtlMapping2DControls::toolsUiEvent);
     _uiSuperCanvases.push_back(_toolsCanvas);
     
@@ -126,10 +133,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI->addLabel("PROJECTION SIZE");
     _settingsUI->addTextInput("PROJ. WIDTH", ofToString(ofGetWidth()));
     _settingsUI->addTextInput("PROJ. HEIGHT", ofToString(ofGetHeight()));
-    
-    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
-    _settingsUI->addToggle("DRAG", &ofxMtlMapping2DGlobal::bIsDraggingZone);
-    _settingsUI->addSlider("ZOOM", .0f, 10.0f, 1.0f)->setIncrement(.1f);
 
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxMtlMapping2DControls::settingsUiEvent);
@@ -349,7 +352,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     }
     
     // ---
-    if ((name == kSettingMappingModeOutput || name == kSettingMappingModeInput) && getToggleValue(_toolsCanvas, name)) {
+    else if ((name == kSettingMappingModeOutput || name == kSettingMappingModeInput) && getToggleValue(_toolsCanvas, name)) {
         unselectShapesToggles();
         ofxMtlMapping2DShape::resetActiveShapeVars();
         ofxMtlMapping2DPolygon::resetActivePolygonVars();
@@ -371,7 +374,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             // ---
             showGridSettingsCanvas();
             
-            setSliderValue(_settingsUI, "ZOOM", ofxMtlMapping2DGlobal::outputViewZoomFactor);
         }
         else if (name == kSettingMappingModeInput) {
             ofxMtlMapping2DGlobal::setEditView(MAPPING_CHANGE_TO_INPUT_VIEW);
@@ -390,8 +392,51 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             // ---
             hideGridSettingsCanvas();
             
-            setSliderValue(_settingsUI, "ZOOM", ofxMtlMapping2DGlobal::inputViewZoomFactor);
-        }        
+        }
+    }
+    
+    // ---
+    else if (name == "ZOOM FIT" && getButtonValue(_toolsCanvas, name)) {
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            ofxMtlMapping2DGlobal::inputViewZoomFactor = 1.0f;
+        } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+            ofxMtlMapping2DGlobal::outputViewZoomFactor = 1.0f;
+        }
+        
+        _mtlMapping2D->updateZoomAndOutput();
+    }
+    else if (name == "ZOOM IN" && getButtonValue(_toolsCanvas, name)) {
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            ofxMtlMapping2DGlobal::inputViewZoomFactor += .05f;
+            if (ofxMtlMapping2DGlobal::inputViewZoomFactor > 10.0f) {
+                ofxMtlMapping2DGlobal::inputViewZoomFactor = 10.0f;
+            }
+        } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+            ofxMtlMapping2DGlobal::outputViewZoomFactor += .05f;
+            if (ofxMtlMapping2DGlobal::outputViewZoomFactor > 10.0f) {
+                ofxMtlMapping2DGlobal::outputViewZoomFactor = 10.0f;
+            }
+        }
+        
+        _mtlMapping2D->updateZoomAndOutput();
+    }
+    else if (name == "ZOOM OUT" && getButtonValue(_toolsCanvas, name)) {
+        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+            ofxMtlMapping2DGlobal::inputViewZoomFactor -= .05f;
+            if (ofxMtlMapping2DGlobal::inputViewZoomFactor < .1f) {
+                ofxMtlMapping2DGlobal::inputViewZoomFactor = .1f;
+            }
+        } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+            ofxMtlMapping2DGlobal::outputViewZoomFactor -= .05f;
+            if (ofxMtlMapping2DGlobal::outputViewZoomFactor < .1f) {
+                ofxMtlMapping2DGlobal::outputViewZoomFactor = .1f;
+            }
+        }
+        
+        _mtlMapping2D->updateZoomAndOutput();
+    }
+    else if (name == "ZOOM DRAG") {
+        
     }
 }
 
@@ -439,17 +484,6 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
         extraOutputSettings["path"] = path;
         textInput->setTextString(fileDialogResult.getName());
         _mtlMapping2D->loadXml(path);
-    }
-    
-    else if (name == "ZOOM") {
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            ofxMtlMapping2DGlobal::inputViewZoomFactor = getSliderValue(_settingsUI, name);
-        }
-        
-        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            ofxMtlMapping2DGlobal::outputViewZoomFactor = getSliderValue(_settingsUI, name);
-        }
-        _mtlMapping2D->updateZoomAndOutput();
     }
 
     else if (name == "PROJ. WIDTH" || name == "PROJ. HEIGHT") {
@@ -655,6 +689,12 @@ void ofxMtlMapping2DControls::setUIShapeEditingState(bool isOn)
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewTriangle))->setVisible(isOn);
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingCreateNewMask))->setVisible(isOn);
     }
+    
+    // ---
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM FIT"))->setVisible(isOn);
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM IN"))->setVisible(isOn);
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM OUT"))->setVisible(isOn);
+    ((ofxUIImageToggle *)_toolsCanvas->getWidget("ZOOM DRAG"))->setVisible(isOn);
 }
 
 
@@ -825,6 +865,16 @@ void ofxMtlMapping2DControls::updateUIsPosition()
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setImage(&_fullscreenExpandIcon);
         ((ofxUIImageToggle *)_toolsCanvas->getWidget(kSettingMappingFullscreen))->setValue(false);
     }
+    
+    float togglePadding = 6.0f;
+    float yOffset = ofGetHeight() - (5 * (kToggleSize + togglePadding));
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM FIT"))->getRect()->setY(yOffset);
+    yOffset += kToggleSize + togglePadding;
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM IN"))->getRect()->setY(yOffset);
+    yOffset += kToggleSize + togglePadding;
+    ((ofxUIImageButton *)_toolsCanvas->getWidget("ZOOM OUT"))->getRect()->setY(yOffset);
+    yOffset += kToggleSize + togglePadding;
+    ((ofxUIImageToggle *)_toolsCanvas->getWidget("ZOOM DRAG"))->getRect()->setY(yOffset);
     
     _toolsCanvas->setHeight(ofGetHeight());
 
