@@ -524,6 +524,10 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
         if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
             _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
         }
+        
+#if defined(USE_VIDEO_PLAYER_OPTION)
+        resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+#endif
     
     } else if (outputPreview->width == 0 || outputPreview->height == 0) {
         outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
