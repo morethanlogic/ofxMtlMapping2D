@@ -517,7 +517,17 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
 
     }
     
-    outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+    if (updateFBO) {
+        outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+        
+        // resize / re-allocate the source FBO
+        if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
+            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
+        }
+    
+    } else if (outputPreview->width == 0 || outputPreview->height == 0) {
+        outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+    }
     
     float xLoNew = -(ofGetWidth()/zoomFactor - ofGetWidth())/2;
     float yLoNew = -(ofGetHeight()/zoomFactor - ofGetHeight())/2;
@@ -525,13 +535,6 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
     zoomedCoordSystem->set(xLoNew, yLoNew, ofGetWidth()/zoomFactor, ofGetHeight()/zoomFactor);
     
     ofxMSAInteractiveObject::coordSystemRect.set(zoomedCoordSystem->x - outputPreview->x, zoomedCoordSystem->y - outputPreview->y, zoomedCoordSystem->width, zoomedCoordSystem->height);
-    
-    if (updateFBO) {
-        // resize / re-allocate the source FBO
-        if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
-            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
-        }
-    }
     
 #if defined(USE_VIDEO_PLAYER_OPTION)
     if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
