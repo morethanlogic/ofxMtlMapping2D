@@ -65,7 +65,8 @@ public:
     void windowResized(ofResizeEventArgs &e);
     
     void updateZoomAndOutput(bool updateFBO = false);
-
+    void zoomScaleToFit();
+    
     vector<ofPolyline*> getMaskShapes();
     void chessBoard(int nbOfCol = 10);
 
@@ -156,11 +157,7 @@ private:
     
     // Video playback related
 #if defined(USE_VIDEO_PLAYER_OPTION)
-    int _videoXOffset;
-    int _videoYOffset;
-    int _videoWidth;
-    int _videoHeight;
-    float _videoRatio;
+    ofRectangle _videoRect;
     
     #if defined(TARGET_OSX)
         ofxAVFVideoPlayer _videoPlayer;
@@ -172,7 +169,7 @@ private:
     void updateVideoPlayer();
     void drawVideoPlayer();
     void exitVideoPlayer();
-    void resizeVideo(ofRectangle outputRect);
+    void resizeVideo(ofRectangle targetRect);
     
     bool _bIsVideoStopped;
 #endif

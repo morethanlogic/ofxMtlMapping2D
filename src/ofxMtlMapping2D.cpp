@@ -539,12 +539,46 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
     zoomedCoordSystem->set(xLoNew, yLoNew, ofGetWidth()/zoomFactor, ofGetHeight()/zoomFactor);
     
     ofxMSAInteractiveObject::coordSystemRect.set(zoomedCoordSystem->x - outputPreview->x, zoomedCoordSystem->y - outputPreview->y, zoomedCoordSystem->width, zoomedCoordSystem->height);
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2D::zoomScaleToFit()
+{
+    // Calculate what would be a scale to fit.
+    ofRectangle outputPreview;
+    ofRectangle targetRect(.0f, .0f, ofGetWidth(), ofGetHeight());
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
     if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-        resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+        outputPreview = ofxMtlMapping2DGlobal::inputViewOutputPreview;
     }
-#endif
+    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+        outputPreview = ofxMtlMapping2DGlobal::outputViewOutputPreview;
+    }
+
+    outputPreview.scaleTo(targetRect, OF_SCALEMODE_FIT);
+    
+    // Get the data out and make them compatible with our Zoom and Drag shizzle.
+    float zoomFactor = ofxMtlMapping2DGlobal::outputWidth / outputPreview.getWidth();
+
+    outputPreview.x = (targetRect.width - outputPreview.width * zoomFactor)/2;
+    outputPreview.y = (targetRect.height - outputPreview.height * zoomFactor)/2;
+    
+    zoomFactor = 1/zoomFactor;
+    
+    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+        ofxMtlMapping2DGlobal::inputViewZoomFactor = zoomFactor;
+
+        ofxMtlMapping2DGlobal::inputViewOutputPreview.x = outputPreview.x;
+        ofxMtlMapping2DGlobal::inputViewOutputPreview.y = outputPreview.y;
+    }
+    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+        ofxMtlMapping2DGlobal::outputViewZoomFactor = zoomFactor;
+        ofxMtlMapping2DGlobal::outputViewOutputPreview.x = outputPreview.x;
+        ofxMtlMapping2DGlobal::outputViewOutputPreview.y = outputPreview.y;
+    }
+    
+    // Update the Zoom.
+    updateZoomAndOutput();
 }
 
 #pragma mark -
