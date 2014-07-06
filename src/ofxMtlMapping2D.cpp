@@ -1227,7 +1227,7 @@ void ofxMtlMapping2D::drawVideoPlayer()
     ofSetColor(255);
     
 #if defined(TARGET_OSX)
-    _videoPlayer.draw(_videoXOffset, _videoYOffset, _videoWidth, _videoHeight);
+    _videoPlayer.draw(_videoRect.x, _videoRect.y, _videoRect.width, _videoRect.height);
 #elif definfed(TARGET_WIN32)
     
 #endif
@@ -1310,23 +1310,13 @@ void ofxMtlMapping2D::setVideoPostion(float position)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::resizeVideo(ofRectangle outputRect)
+void ofxMtlMapping2D::resizeVideo(ofRectangle targetRect)
 {
-    _videoRatio = _videoPlayer.getWidth()/_videoPlayer.getHeight();
+    _videoRect.set(.0f, .0f, _videoPlayer.getWidth(), _videoPlayer.getHeight());
+    _videoRect.scaleTo(targetRect, OF_SCALEMODE_FIT);
     
-    if (outputRect.width > outputRect.height && (outputRect.height * _videoRatio) < outputRect.width) {
-        _videoWidth = outputRect.height * _videoRatio;
-        _videoHeight = outputRect.height;
-        _videoXOffset = (outputRect.width - _videoWidth)/2; // + outputRect.x;
-        _videoYOffset = 0;//outputRect.y;
-        
-    } else {
-        _videoWidth = outputRect.width;
-        _videoHeight = outputRect.width/_videoRatio;
-        _videoXOffset = 0;//outputRect.x;
-        _videoYOffset = (outputRect.height - _videoHeight)/2;// + outputRect.y;
-    }
-    
+    _videoRect.x = (targetRect.width - _videoRect.width)/2;
+    _videoRect.y = (targetRect.height - _videoRect.height)/2;
 }
 
 #endif
