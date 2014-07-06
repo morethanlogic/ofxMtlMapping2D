@@ -435,9 +435,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         
         _mtlMapping2D->updateZoomAndOutput();
     }
-    else if (name == "ZOOM DRAG") {
-        
-    }
 }
 
 
