@@ -567,6 +567,7 @@ void ofxMtlMapping2D::removeListeners() {
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
     ofxMtlMapping2DControlsSharedInstance().updateUIsPosition();
+    updateZoomAndOutput();
 }
 
 
