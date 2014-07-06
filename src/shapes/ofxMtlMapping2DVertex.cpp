@@ -110,17 +110,7 @@ void ofxMtlMapping2DVertex::snapIt(float _x, float _y)
 void ofxMtlMapping2DVertex::left() 
 {
     if(activeVertex) {
-        float zoomFactor;
-        
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
-        }
-        
-        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
-        }
-        
-        snapIt(x-(1/zoomFactor), y);
+        snapIt(x-(1/ofxMtlMapping2DGlobal::getCurrZoomFactor()), y);
     }
 }
 
@@ -128,17 +118,7 @@ void ofxMtlMapping2DVertex::left()
 void ofxMtlMapping2DVertex::up() 
 {
     if(activeVertex) {
-        float zoomFactor;
-        
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
-        }
-        
-        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
-        }
-        
-        snapIt(x, y-(1/zoomFactor));
+        snapIt(x, y-(1/ofxMtlMapping2DGlobal::getCurrZoomFactor()));
     }
 }
 
@@ -146,17 +126,7 @@ void ofxMtlMapping2DVertex::up()
 void ofxMtlMapping2DVertex::right() 
 {
     if(activeVertex) {
-        float zoomFactor;
-        
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
-        }
-        
-        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
-        }
-        
-        snapIt(x+(1/zoomFactor), y);
+        snapIt(x+(1/ofxMtlMapping2DGlobal::getCurrZoomFactor()), y);
     }
 }
 
@@ -164,17 +134,7 @@ void ofxMtlMapping2DVertex::right()
 void ofxMtlMapping2DVertex::down() 
 {
     if(activeVertex) {
-        float zoomFactor;
-        
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
-        }
-        
-        else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
-        }
-        
-        snapIt(x, y+(1/zoomFactor));
+        snapIt(x, y+(1/ofxMtlMapping2DGlobal::getCurrZoomFactor()));
     }
 }
 
