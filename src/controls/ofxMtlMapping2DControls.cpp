@@ -357,6 +357,8 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         ofxMtlMapping2DShape::resetActiveShapeVars();
         ofxMtlMapping2DPolygon::resetActivePolygonVars();
         
+        setToggleValue(_toolsCanvas, "ZOOM DRAG", false);
+        
         if (name == kSettingMappingModeOutput) {
             ofxMtlMapping2DGlobal::setEditView(MAPPING_CHANGE_TO_OUTPUT_VIEW);
             refreshShapesListForMappingView(MAPPING_CHANGE_TO_OUTPUT_VIEW);
