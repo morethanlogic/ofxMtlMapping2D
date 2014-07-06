@@ -399,13 +399,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     
     // ---
     else if (name == "ZOOM FIT" && getButtonValue(_toolsCanvas, name)) {
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            ofxMtlMapping2DGlobal::inputViewZoomFactor = 1.0f;
-        } else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-            ofxMtlMapping2DGlobal::outputViewZoomFactor = 1.0f;
-        }
-        
-        _mtlMapping2D->updateZoomAndOutput();
+        _mtlMapping2D->zoomScaleToFit();
     }
     else if (name == "ZOOM IN" && getButtonValue(_toolsCanvas, name)) {
         if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
