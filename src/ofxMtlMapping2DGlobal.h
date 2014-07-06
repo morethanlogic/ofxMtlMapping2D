@@ -23,13 +23,14 @@ public:
     static float inputViewZoomFactor;
     static float outputViewZoomFactor;
     
+    static float getCurrZoomFactor();
+    
     static ofRectangle inputViewOutputPreview;
     static ofRectangle outputViewOutputPreview;
     
     static ofRectangle inputViewZoomedCoordSystem;
     static ofRectangle outputViewZoomedCoordSystem;
 
-    
     static ofVec2f screenToZoomed(ofVec2f point, float xOffset = .0f, float yOffset = .0f);
     
     static int outputWidth;

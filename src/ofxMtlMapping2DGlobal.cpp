@@ -28,6 +28,22 @@ MappingEditView ofxMtlMapping2DGlobal::getEditView()
 }
 
 //--------------------------------------------------------------
+float ofxMtlMapping2DGlobal::getCurrZoomFactor()
+{
+    float zoomFactor;
+    
+    if (getEditView() == MAPPING_INPUT_VIEW) {
+        zoomFactor = inputViewZoomFactor;
+    }
+    
+    else if (getEditView() == MAPPING_OUTPUT_VIEW) {
+        zoomFactor = outputViewZoomFactor;
+    }
+    
+    return zoomFactor;
+}
+
+//--------------------------------------------------------------
 ofVec2f ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f point, float xOffset, float yOffset)
 {
     float transformedX;
