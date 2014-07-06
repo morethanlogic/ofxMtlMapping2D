@@ -53,4 +53,4 @@ Optional add-on(s). See the 'ofxMtlMapping2DDefines.h' header file.
 
 Compatibility
 ------------
-OF 0.8.0
+OF 0.8.3
