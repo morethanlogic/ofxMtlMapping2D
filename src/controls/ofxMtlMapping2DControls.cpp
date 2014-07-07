@@ -399,7 +399,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
     
     // ---
     else if (name == "ZOOM FIT" && getButtonValue(_toolsCanvas, name)) {
-        _mtlMapping2D->zoomScaleToFit();
+        _mtlMapping2D->zoomScaleToFit(ofxMtlMapping2DGlobal::getEditView());
     }
     else if (name == "ZOOM IN" && getButtonValue(_toolsCanvas, name)) {
         if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
@@ -414,7 +414,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             }
         }
         
-        _mtlMapping2D->updateZoomAndOutput();
+        _mtlMapping2D->updateZoomAndOutput(ofxMtlMapping2DGlobal::getEditView());
     }
     else if (name == "ZOOM OUT" && getButtonValue(_toolsCanvas, name)) {
         if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
@@ -429,7 +429,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             }
         }
         
-        _mtlMapping2D->updateZoomAndOutput();
+        _mtlMapping2D->updateZoomAndOutput(ofxMtlMapping2DGlobal::getEditView());
     }
 }
 
@@ -493,7 +493,8 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
             }
             
             // Update Zoomed area and Resize the FBO
-            _mtlMapping2D->updateZoomAndOutput(true);
+            _mtlMapping2D->updateZoomAndOutput(MAPPING_INPUT_VIEW, true);
+            _mtlMapping2D->updateZoomAndOutput(MAPPING_OUTPUT_VIEW, true);
         }
     }
 }

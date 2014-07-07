@@ -1,6 +1,5 @@
 #include "ofxMtlMapping2D.h"
 #include "ofxMtlMapping2DSettings.h"
-#include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DInput.h"
 #include "ofxMtlMapping2DShapeType.h"
@@ -64,14 +63,16 @@ void ofxMtlMapping2D::init(int width, int height, int numSample)
     addListeners();
     
     // ---
-    _numSample = numSample;
-    _fbo.allocate(width, height, GL_RGBA, _numSample);
-    ofxMtlMapping2DGlobal::outputWidth = width;
-    ofxMtlMapping2DGlobal::outputHeight = height;
-    
-    // ---
     // The first time we call ofxMtlMapping2DControls we need to call the init() method
     ofxMtlMapping2DControlsSharedInstance(this).init();
+    
+    // ---
+    ofxMtlMapping2DGlobal::inputViewOutputPreview.set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+    ofxMtlMapping2DGlobal::outputViewOutputPreview.set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
+    
+    _numSample = numSample;
+    zoomScaleToFit(MAPPING_INPUT_VIEW, true);
+    zoomScaleToFit(MAPPING_OUTPUT_VIEW, true);
     
     // ---
     ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
@@ -171,7 +172,7 @@ void ofxMtlMapping2D::update()
                 shape->inputPolygon->enable();
             }
             
-            updateZoomAndOutput();
+            updateZoomAndOutput(MAPPING_INPUT_VIEW);
             
             break;
         }
@@ -191,7 +192,7 @@ void ofxMtlMapping2D::update()
                 }
             }
             
-            updateZoomAndOutput();
+            updateZoomAndOutput(MAPPING_OUTPUT_VIEW);
 
             break;
         }
@@ -498,26 +499,26 @@ void ofxMtlMapping2D::deleteShape()
 #pragma mark -
 #pragma mark Zoom / Output
 //--------------------------------------------------------------
-void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
+void ofxMtlMapping2D::updateZoomAndOutput(MappingEditView view, bool updateOutputResolution)
 {
     float zoomFactor;
     ofRectangle *outputPreview;
     ofRectangle *zoomedCoordSystem;
     
-    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+    if (view == MAPPING_INPUT_VIEW) {
         zoomFactor = ofxMtlMapping2DGlobal::inputViewZoomFactor;
         outputPreview = &ofxMtlMapping2DGlobal::inputViewOutputPreview;
         zoomedCoordSystem = &ofxMtlMapping2DGlobal::inputViewZoomedCoordSystem;
     }
     
-    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+    else if (view == MAPPING_OUTPUT_VIEW) {
         zoomFactor = ofxMtlMapping2DGlobal::outputViewZoomFactor;
         outputPreview = &ofxMtlMapping2DGlobal::outputViewOutputPreview;
         zoomedCoordSystem = &ofxMtlMapping2DGlobal::outputViewZoomedCoordSystem;
 
     }
     
-    if (updateFBO) {
+    if (updateOutputResolution) {
         outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
         
         // resize / re-allocate the source FBO
@@ -526,12 +527,10 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
         }
         
 #if defined(USE_VIDEO_PLAYER_OPTION)
-        resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
+        resizeVideo(*outputPreview);
 #endif
     
     }
-    
-    outputPreview->set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
     
     float xLoNew = -(ofGetWidth()/zoomFactor - ofGetWidth())/2;
     float yLoNew = -(ofGetHeight()/zoomFactor - ofGetHeight())/2;
@@ -542,16 +541,16 @@ void ofxMtlMapping2D::updateZoomAndOutput(bool updateFBO)
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::zoomScaleToFit()
+void ofxMtlMapping2D::zoomScaleToFit(MappingEditView view, bool updateFBO)
 {
     // Calculate what would be a scale to fit.
     ofRectangle outputPreview;
     ofRectangle targetRect(.0f, .0f, ofGetWidth(), ofGetHeight());
     
-    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+    if (view == MAPPING_INPUT_VIEW) {
         outputPreview = ofxMtlMapping2DGlobal::inputViewOutputPreview;
     }
-    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+    else if (view == MAPPING_OUTPUT_VIEW) {
         outputPreview = ofxMtlMapping2DGlobal::outputViewOutputPreview;
     }
 
@@ -565,20 +564,20 @@ void ofxMtlMapping2D::zoomScaleToFit()
     
     zoomFactor = 1/zoomFactor;
     
-    if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+    if (view == MAPPING_INPUT_VIEW) {
         ofxMtlMapping2DGlobal::inputViewZoomFactor = zoomFactor;
 
         ofxMtlMapping2DGlobal::inputViewOutputPreview.x = outputPreview.x;
         ofxMtlMapping2DGlobal::inputViewOutputPreview.y = outputPreview.y;
     }
-    else if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+    else if (view == MAPPING_OUTPUT_VIEW) {
         ofxMtlMapping2DGlobal::outputViewZoomFactor = zoomFactor;
         ofxMtlMapping2DGlobal::outputViewOutputPreview.x = outputPreview.x;
         ofxMtlMapping2DGlobal::outputViewOutputPreview.y = outputPreview.y;
     }
     
     // Update the Zoom.
-    updateZoomAndOutput();
+    updateZoomAndOutput(view, updateFBO);
 }
 
 #pragma mark -
@@ -608,7 +607,7 @@ void ofxMtlMapping2D::removeListeners() {
 void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 {
     ofxMtlMapping2DControlsSharedInstance().updateUIsPosition();
-    updateZoomAndOutput();
+    updateZoomAndOutput(ofxMtlMapping2DGlobal::getEditView());
 }
 
 
@@ -1241,9 +1240,7 @@ void ofxMtlMapping2D::updateVideoPlayer()
     
     if (_bIsVideoStopped && _videoPlayer.isLoaded() && _videoPlayer.isPlaying()) {
         _bIsVideoStopped = false;
-        if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-            resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
-        }
+        resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
     }
     videoPositionInSeconds = _videoPlayer.getPosition() * 100;
 #elif definfed(TARGET_WIN32)

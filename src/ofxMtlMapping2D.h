@@ -11,6 +11,7 @@
 #include "ofxMtlMapping2DTriangle.h"
 #include "ofxMtlMapping2DMask.h"
 #include "ofxMtlMapping2DShape.h"
+#include "ofxMtlMapping2DGlobal.h"
 
 #include "mtlUtils.h"
 
@@ -64,8 +65,8 @@ public:
     void keyPressed(ofKeyEventArgs &e);
     void windowResized(ofResizeEventArgs &e);
     
-    void updateZoomAndOutput(bool updateFBO = false);
-    void zoomScaleToFit();
+    void updateZoomAndOutput(MappingEditView view, bool updateOutputResolution = false);
+    void zoomScaleToFit(MappingEditView view, bool updateFBO = false);
     
     vector<ofPolyline*> getMaskShapes();
     void chessBoard(int nbOfCol = 10);
