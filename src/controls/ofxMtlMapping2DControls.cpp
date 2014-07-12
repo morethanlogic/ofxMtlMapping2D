@@ -276,6 +276,8 @@ void ofxMtlMapping2DControls::init()
     
     disable();
     
+    _bHasFocus = false;
+    
     _bInitialized = true;
 }
 
@@ -483,6 +485,8 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
         ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget(name);
         
         if (!textInput->isFocused()) {
+            _bHasFocus = false;
+            
             // Make sure we have an Int value
             if (name == "PROJ. WIDTH") {
                 ofxMtlMapping2DGlobal::outputWidth = ofToInt(textInput->getTextString());
@@ -495,6 +499,9 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
             // Update Zoomed area and Resize the FBO
             _mtlMapping2D->updateZoomAndOutput(MAPPING_INPUT_VIEW, true);
             _mtlMapping2D->updateZoomAndOutput(MAPPING_OUTPUT_VIEW, true);
+        
+        } else {
+            _bHasFocus = true;
         }
     }
 }
@@ -1103,6 +1110,12 @@ bool ofxMtlMapping2DControls::isHit(int x, int y) {
     }
     
     return false;
+}
+
+//--------------------------------------------------------------
+bool ofxMtlMapping2DControls::hasFocus()
+{
+    return _bHasFocus;
 }
 
 

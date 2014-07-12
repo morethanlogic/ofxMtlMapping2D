@@ -59,11 +59,13 @@ public:
 
     void enable();
     void disable();
-
+    
     void toggleVisible();
     bool isVisible();
     bool isEnabled();
     bool isHit(int x, int y);
+    
+    bool hasFocus();
 
     void addShapeToList(int shapeID, int shapeType, bool bLocked = false);
     void clearShapesList();
@@ -130,6 +132,8 @@ private:
     void loadExtraSettings();
 
     map<string,string> extraOutputSettings;
+    
+    bool _bHasFocus;
     
     bool _bISOutScreenOn;
 #if defined(USE_OFX_DETECT_DISPLAYS)

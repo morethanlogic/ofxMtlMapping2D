@@ -745,6 +745,8 @@ void ofxMtlMapping2D::mouseDragged(ofMouseEventArgs &e)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::keyPressed(ofKeyEventArgs &e)
 {
+    if (ofxMtlMapping2DControls::sharedInstance()->hasFocus()) return;
+    
     // ----
     switch (e.key) {
         case 9:  // TAB
