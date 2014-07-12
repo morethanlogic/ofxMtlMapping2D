@@ -4,6 +4,9 @@
 void ofApp::setup(){
     ofSetFrameRate(60);
     ofBackground(50);
+    
+    ofSetWindowPosition(0, 0);
+    ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
 
     // ---
     _mapping = new ofxMtlMapping2D();
