@@ -614,16 +614,13 @@ void ofxMtlMapping2D::windowResized(ofResizeEventArgs &e)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
 {
+
     int eX = e.x;
     int eY = e.y;
     int eButton = e.button;
     
-    if (ofxMtlMapping2DControlsSharedInstance().isHit(eX, eY))
-        return;
-    
-    if(_mappingModeState == MAPPING_LOCKED)
-        return;
-    
+    if (ofxMtlMapping2DControlsSharedInstance().isHit(eX, eY) || _mappingModeState == MAPPING_LOCKED) return;
+
     // ---
     ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(eX, eY));
     eX = transformedCoord.x;
@@ -631,6 +628,8 @@ void ofxMtlMapping2D::mousePressed(ofMouseEventArgs &e)
 
     _mouse = ofVec2f(eX, eY);
     _lastMouse = _mouse;
+    
+    if ( ofxMtlMapping2DGlobal::bIsDraggingZone) return;
     
     if (ofxMtlMapping2DGlobal::getEditView() == MAPPING_INPUT_VIEW) {
         transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(e.x, e.y), -ofxMtlMapping2DGlobal::inputViewOutputPreview.x, -ofxMtlMapping2DGlobal::inputViewOutputPreview.y);
