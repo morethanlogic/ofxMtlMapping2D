@@ -1,4 +1,5 @@
 #include "ofxMtlMapping2DPolygon.h"
+#include "ofxMtlMapping2DGlobal.h"
 
 ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::activePolygon         = NULL;
 ofxMtlMapping2DPolygon*  ofxMtlMapping2DPolygon::previousActivePolygon = NULL;
@@ -144,22 +145,30 @@ void ofxMtlMapping2DPolygon::draw()
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::drawID() 
 {
-    ofSetHexColor(0x000000);
-    ofFill();
-    ofRect(_centroid2D.x - 10, _centroid2D.y - 10, 20, 20);
-    ofSetHexColor(0xFFFFFF);
-    
+   
     int xOffset;
-    int yOffset = 3;
+    int yOffset = 4;
     if (shapeId < 10) {
         xOffset = -3;
     } else if (shapeId < 100) {
-        xOffset = -7;
+        xOffset = -6;
     } else {
         xOffset = -11;
     }
     
-    ofxMtlMapping2DSettings::infoFont.drawString(ofToString(shapeId), _centroid2D.x + xOffset, _centroid2D.y + yOffset);
+    ofPushMatrix();
+    {
+        ofTranslate(_centroid2D.x, _centroid2D.y);
+        ofScale(1/ofxMtlMapping2DGlobal::getCurrZoomFactor(), 1/ofxMtlMapping2DGlobal::getCurrZoomFactor());
+        
+        
+        ofSetHexColor(0x000000);
+        ofFill();
+        ofRect(-10, -10, 20, 20);
+        ofSetHexColor(0xFFFFFF);
+        ofxMtlMapping2DSettings::infoFont.drawString(ofToString(shapeId), xOffset, yOffset);
+    }
+    ofPopMatrix();
 }
 
 

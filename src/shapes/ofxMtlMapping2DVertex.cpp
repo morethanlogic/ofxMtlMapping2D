@@ -56,13 +56,22 @@ void ofxMtlMapping2DVertex::update()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::drawBack()
 {
+    float currWidth = width;
+    float currHeight = height;
+    
+    setSize(30/ofxMtlMapping2DGlobal::getCurrZoomFactor(), 30/ofxMtlMapping2DGlobal::getCurrZoomFactor());
+    setPosition(x+(currWidth - width)/2, y+(currHeight - height)/2);
+    
+    float halfSize = width/2;
+    float skinSize = 20/ofxMtlMapping2DGlobal::getCurrZoomFactor();
+    
     ofFill();
     if(activeVertex == this) {
         ofSetColor(255, 255, 255, 150);
-        ofCircle(x+15, y+15, 20);
+        ofCircle(x+halfSize, y+halfSize, skinSize);
     } else if(isMouseOver()) {
         ofSetColor(255, 255, 255, 125);
-        ofCircle(x+15, y+15, 20);
+        ofCircle(x+halfSize, y+halfSize, skinSize);
     } else {
         //ofSetColor(255, 255, 255, 80);
     }		
@@ -81,7 +90,11 @@ void ofxMtlMapping2DVertex::drawTop()
     }
     
     //ofCircle(x+11, y+11, 8);
-    ofRect(x+11, y+11, 8, 8);		
+    
+    float skinOffset = 11/ofxMtlMapping2DGlobal::getCurrZoomFactor();
+    float skinSize = 8/ofxMtlMapping2DGlobal::getCurrZoomFactor();
+
+    ofRect(x+skinOffset, y+skinOffset, skinSize, skinSize);
 }
 
 //--------------------------------------------------------------
@@ -93,7 +106,9 @@ ofxMtlMapping2DVertex* ofxMtlMapping2DVertex::getActiveVertex()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::updateCenter() 
 {
-	center.set(x+15, y+15);
+    float halfSize = width/2;
+
+    center.set(x+halfSize, y+halfSize);
 }
 
 //--------------------------------------------------------------
