@@ -42,7 +42,7 @@ Copy to your openFrameworks/addons folder. Some examples are included.
 
 Dependencies
 ------------
-* [ofxMSAInteractiveObject](https://github.com/memo/ofxMSAInteractiveObject)
+* [For now this specific branch of ofxMSAInteractiveObject](https://github.com/smallfly/ofxMSAInteractiveObject/tree/feature/coord_transformation)
 * [ofxUI](https://github.com/rezaali/ofxUI)
 * ofxXmlSettings
 * homography.h by Arturo Castro (included in this repo)
