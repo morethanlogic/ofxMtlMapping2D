@@ -42,7 +42,7 @@ ofxMtlMapping2D::~ofxMtlMapping2D()
 }
 
 //--------------------------------------------------------------
-void ofxMtlMapping2D::init(int width, int height, int numSample)
+void ofxMtlMapping2D::setup(int width, int height, int numSample)
 {
     ofxMSAInteractiveObject::doCoordTransformation = true;
     
@@ -1159,9 +1159,9 @@ void ofxMtlMapping2D::drawSyphon()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::openOuputWindow(ofRectangle rect)
 {
-    if (_outputWindow.bIsSetup) return;
-    
-    _outputWindow.setup("output window", rect, true);
+    if (!_outputWindow.bIsSetup) {
+        _outputWindow.setup("output window", rect, true);
+    }
     _outputWindow.setPostionAndSize(rect);
 }
 
