@@ -79,7 +79,6 @@ public:
 #if defined(USE_OFX_DETECT_DISPLAYS)
     void displayConfigurationChanged();
     void outputUiEvent(ofxUIEventArgs &event);
-    void displaysUiEvent(ofxUIEventArgs &event);
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -135,10 +134,9 @@ private:
     
     bool _bHasFocus;
     
-    bool _bISOutScreenOn;
 #if defined(USE_OFX_DETECT_DISPLAYS)
     ofxUISuperCanvas* _outputUI;
-    ofxUISuperCanvas* _displaysListUI;
+    string _currActiveDisplayName;
     vector<string> _displayNames;
 #endif
     

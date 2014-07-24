@@ -171,31 +171,19 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
 #if defined(USE_OFX_DETECT_DISPLAYS)
     // ---
     // Output Settings UI
-    _outputUI = new ofxUISuperCanvas("OUTPUT SETTINGS");
+    _currActiveDisplayName = "";
+    
+    _outputUI = new ofxUISuperCanvas("OUTPUT WINDOW");
     _outputUI->setColorBack(uiColor);
     
     _outputUI->addSpacer(_outputUI->getRect()->width - 10, 2);
     
     _outputUI->addButton("DETECT DISPLAYS", false);
-    _outputUI->addSpacer((_outputUI->getRect()->width - 10) / 2, 1);
-    
-    _outputUI->addToggle("OUTPUT WINDOW", &_bISOutScreenOn);
     
     ofAddListener(_outputUI->newGUIEvent, this, &ofxMtlMapping2DControls::outputUiEvent);
     _outputUI->autoSizeToFitWidgets();
     _outputUI->disable();
     _uiSuperCanvases.push_back(_outputUI);
-    
-    // ---
-    // Displays Settings UI
-    
-    _displaysListUI = new ofxUISuperCanvas("DISPLAYS LIST");
-    _displaysListUI->setColorBack(uiColor);
-    
-    ofAddListener(_displaysListUI->newGUIEvent, this, &ofxMtlMapping2DControls::displaysUiEvent);
-    _displaysListUI->autoSizeToFitWidgets();
-    _displaysListUI->disable();
-    _uiSuperCanvases.push_back(_displaysListUI);
     
 #endif
     
@@ -233,6 +221,9 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
     
     _syphonUI->setColorBack(uiColor);
+
+    _syphonUI->addButton("NONE", false);
+    _syphonUI->addSpacer((_syphonUI->getRect()->width - 10) / 2, 1);
     
     ofAddListener(_syphonUI->newGUIEvent, this, &ofxMtlMapping2DControls::syphonUiEvent);
     _syphonUI->autoSizeToFitWidgets();
@@ -302,6 +293,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         ofSetFullscreen(bGoFullscreen);
         
 #if defined(USE_OFX_DETECT_DISPLAYS)
+        /*
         if (!bGoFullscreen) {
             ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysListUI->getWidget("DISPLAYS");
             
@@ -309,6 +301,7 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
                 uiRadio->getToggles()[i]->setValue(false);
             }
         }
+         */
 #endif
         
     }
@@ -319,7 +312,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _settingsUI->enable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
             _outputUI->enable();
-            _displaysListUI->enable();
 #endif
    
 #if defined(USE_VIDEO_PLAYER_OPTION)
@@ -334,7 +326,6 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
             _settingsUI->disable();
 #if defined(USE_OFX_DETECT_DISPLAYS)
             _outputUI->disable();
-            _displaysListUI->disable();
 #endif
 
 #if defined(USE_VIDEO_PLAYER_OPTION)
@@ -520,7 +511,7 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::outputUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
-    
+
     if(name == "DETECT DISPLAYS") {
         if (getButtonValue(_outputUI, name)) {
             ofxDetectDisplaysSharedInstance().detectDisplays();
@@ -529,30 +520,26 @@ void ofxMtlMapping2DControls::outputUiEvent(ofxUIEventArgs &event)
             displayConfigurationChanged();
         }
     }
-    else if (name == "OUTPUT WINDOW") {
-        if (!getToggleValue(_outputUI, name)) {
+    
+    else {
+        if (name == _currActiveDisplayName) {
+            _currActiveDisplayName = "";
+            setToggleValue(_outputUI, name, false);
             _mtlMapping2D->closeOutputWindow();
+            return;
+        }
+
+        for (int i=0; i<_displayNames.size(); i++) {
+            if (name == _displayNames[i] && getToggleValue(_outputUI, name)) {
+                _currActiveDisplayName = name;
+                _mtlMapping2D->openOuputWindow(ofxDetectDisplaysSharedInstance().getDisplayBounds(i));
+                
+                return;
+            }
         }
     }
 }
 
-//--------------------------------------------------------------
-void ofxMtlMapping2DControls::displaysUiEvent(ofxUIEventArgs &event)
-{
-    string name = event.widget->getName();
-    
-    for (int i=0; i<_displayNames.size(); i++) {
-        if (name == _displayNames[i] && getToggleValue(_displaysListUI, name)) {
-            
-            if (_bISOutScreenOn) {
-                _mtlMapping2D->openOuputWindow(ofxDetectDisplaysSharedInstance().getDisplayBounds(i));
-            } else {
-                ofxDetectDisplaysSharedInstance().fullscreenWindowOnDisplay(i);
-            }
-            return;
-        }
-    }
-}
 #endif
 
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -883,12 +870,11 @@ void ofxMtlMapping2DControls::updateUIsPosition()
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _outputUI->setPosition(ofGetWidth() - _outputUI->getRect()->width, _settingsUI->getRect()->height + 5);
-    _displaysListUI->setPosition(ofGetWidth() - _displaysListUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height);
 #endif
     
 #if defined(USE_VIDEO_PLAYER_OPTION)
     #if defined(USE_OFX_DETECT_DISPLAYS)
-        _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
+        _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
     #elif
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _settingsUI->getRect()->height + 5);
     #endif
@@ -915,15 +901,16 @@ void ofxMtlMapping2DControls::updateUIsPosition()
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::displayConfigurationChanged()
 {
-    _displaysListUI->removeWidgets();
+    _outputUI->removeWidget("DISPLAYS");
     _displayNames.clear();
     
     for (int i=0; i<ofxDetectDisplaysSharedInstance().getDisplays().size(); i++) {
         _displayNames.push_back(ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->width) + "x" + ofToString(ofxDetectDisplaysSharedInstance().getDisplays()[i]->height) + " - UID:" + ofxDetectDisplaysSharedInstance().getDisplays()[i]->UID);
     }
     
-    _displaysListUI->addRadio("DISPLAYS", _displayNames);
-    _displaysListUI->autoSizeToFitWidgets();
+    _outputUI->addRadio("DISPLAYS", _displayNames);
+    _outputUI->autoSizeToFitWidgets();
+    _outputUI->setWidth(_outputUI->getRect()->width);
     
     updateUIsPosition();
 }
@@ -1026,7 +1013,6 @@ void ofxMtlMapping2DControls::saveSettings()
     _settingsUI->saveSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _outputUI->saveSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
-    _displaysListUI->saveSettings(_rootPath + _displaysListUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -1048,7 +1034,6 @@ void ofxMtlMapping2DControls::loadSettings()
     _settingsUI->loadSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
 #if defined(USE_OFX_DETECT_DISPLAYS)
     _outputUI->loadSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
-    _displaysListUI->loadSettings(_rootPath + _displaysListUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
 #if defined(USE_VIDEO_PLAYER_OPTION)
@@ -1248,20 +1233,9 @@ void ofxMtlMapping2DControls::removeSyphonServer(vector<ofxSyphonServerDescripti
 //--------------------------------------------------------------
 void ofxMtlMapping2DControls::updateSyphonServersList()
 {
-    _syphonUI->removeWidgets();
+    _syphonUI->removeWidget("SERVERS");
     _syphonServersNames.clear();
     
-    //_syphonUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_UP);
-    //_syphonUI->addLabel("SYPHON SETTINGS");
-    //_syphonUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-
-    _syphonUI->addSpacer(_syphonUI->getRect()->width - 10, 2);
-    
-    _syphonUI->addButton("NONE", false);
-    _syphonUI->addSpacer((_syphonUI->getRect()->width - 10) / 2, 1);
-    
-    cout << "updateSyphonServersList" << endl;
-
     list<string>::iterator it;
     for (it=_syphonServersList.begin(); it!=_syphonServersList.end(); it++) {
         cout << "updateSyphonServersList: " << *it << endl;
