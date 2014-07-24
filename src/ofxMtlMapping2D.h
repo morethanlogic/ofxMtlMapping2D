@@ -26,7 +26,7 @@
 #if defined(USE_VIDEO_PLAYER_OPTION)
     #if defined(TARGET_OSX)
         #include "ofxAVFVideoPlayer.h"
-    #elif definfed(TARGET_WIN32)
+    #elif defined(TARGET_WIN32)
 
     #endif
 #endif
@@ -162,7 +162,7 @@ private:
     
     #if defined(TARGET_OSX)
         ofxAVFVideoPlayer _videoPlayer;
-    #elif definfed(TARGET_WIN32)
+    #elif defined(TARGET_WIN32)
     
     #endif
     
