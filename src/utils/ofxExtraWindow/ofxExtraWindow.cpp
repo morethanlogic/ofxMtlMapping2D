@@ -96,7 +96,6 @@ void ofxExtraWindow::setPostionAndSize(ofRectangle rect)
 {
     
 #ifdef TARGET_OSX
-    [NSApp setPresentationOptions:NSApplicationPresentationHideMenuBar | NSApplicationPresentationHideDock];
     NSWindow * cocoaWindow = glfwGetCocoaWindow(_extraWindow);
     
     [cocoaWindow setStyleMask:NSBorderlessWindowMask];
