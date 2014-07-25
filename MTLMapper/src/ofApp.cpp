@@ -5,8 +5,17 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofBackground(50);
     
-    ofSetWindowPosition(0, 0);
+#if defined(TARGET_OSX)
+	ofSetWindowPosition(0, 0); 
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
+#elif defined(TARGET_WIN32)
+	// Not sure why, and I did not Google it yet.
+	// But the on Windows we need an offset and to reduce the size of the window a bit to see the chromes.
+	ofSetWindowPosition(10, 10); 
+    ofSetWindowShape(ofGetScreenWidth()-20, ofGetScreenHeight()-20);
+#endif
+
+
 
     // ---
     _mapping = new ofxMtlMapping2D();
