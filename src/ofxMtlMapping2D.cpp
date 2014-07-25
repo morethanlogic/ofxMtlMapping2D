@@ -1270,6 +1270,10 @@ void ofxMtlMapping2D::loadVideo(string filePath)
 //--------------------------------------------------------------
 void ofxMtlMapping2D::playVideo()
 {
+    if (!_videoPlayer.isLoaded()) {
+        loadVideo(ofxMtlMapping2DControls::sharedInstance()->getVideoFilePath());
+    }
+    
     _videoPlayer.setPaused(false);
     _videoPlayer.play();
 }
