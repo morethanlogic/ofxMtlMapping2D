@@ -91,6 +91,7 @@ public:
 #if defined(USE_VIDEO_PLAYER_OPTION)
     void videoPlayerUiEvent(ofxUIEventArgs &event);
     void loadVideoPlayerSettings();
+    string getVideoFilePath();
 #endif
 
 private:

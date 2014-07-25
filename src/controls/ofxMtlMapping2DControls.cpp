@@ -633,6 +633,13 @@ void ofxMtlMapping2DControls::videoPlayerUiEvent(ofxUIEventArgs &event)
         _mtlMapping2D->setVideoPostion(getSliderValue(_videoPlayerUI, name));
     }
 }
+
+//--------------------------------------------------------------
+string ofxMtlMapping2DControls::getVideoFilePath()
+{
+    return extraOutputSettings["video_file_path"];
+}
+
 #endif
 
 //--------------------------------------------------------------
