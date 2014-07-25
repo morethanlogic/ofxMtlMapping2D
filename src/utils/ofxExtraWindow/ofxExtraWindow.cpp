@@ -105,7 +105,7 @@ void ofxExtraWindow::setPostionAndSize(ofRectangle rect)
     glfwSetWindowPos(_extraWindow, rect.x, rect.y);
     
 #elif defined(TARGET_WIN32)
-    HWND hwnd = glfwGetWin32Window(windowP);
+    HWND hwnd = glfwGetWin32Window(_extraWindow);
     
     SetWindowLong(hwnd, GWL_EXSTYLE, 0);
     SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
