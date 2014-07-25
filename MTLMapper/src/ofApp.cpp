@@ -34,7 +34,7 @@ void ofApp::draw(){
     // ---
     _mapping->bind();
     
-    _mapping->chessBoard();
+    //_mapping->chessBoard();
     
     _mapping->unbind();
     
