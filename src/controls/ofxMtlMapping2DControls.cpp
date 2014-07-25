@@ -522,14 +522,13 @@ void ofxMtlMapping2DControls::outputUiEvent(ofxUIEventArgs &event)
     }
     
     else {
-		/*
         if (name == _currActiveDisplayName) {
             _currActiveDisplayName = "";
             setToggleValue(_outputUI, name, false);
             _mtlMapping2D->closeOutputWindow();
             return;
         }
-		*/
+		
         for (int i=0; i<_displayNames.size(); i++) {
             if (name == _displayNames[i] && getToggleValue(_outputUI, name)) {
                 _currActiveDisplayName = name;
