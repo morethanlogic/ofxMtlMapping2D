@@ -113,12 +113,6 @@ ofxMtlMapping2DControls::ofxMtlMapping2DControls() //ofxMtlMapping2D * mtlMappin
     _settingsUI = new ofxUISuperCanvas("SETTINGS");
     _settingsUI->setColorBack(uiColor);
     
-    _settingsUI->addSpacer(_settingsUI->getRect()->width - 10, 2);
-    _settingsUI->addButton("SAVE", false);
-    _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    _settingsUI->addButton("LOAD", false);
-    _settingsUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-    
     _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
     _settingsUI->addToggle("LOAD FILE ON START", false);
     _settingsUI->addButton("SELECT FILE", false);
@@ -265,6 +259,14 @@ void ofxMtlMapping2DControls::init()
     _bHasFocus = false;
     
     _bInitialized = true;
+}
+
+//--------------------------------------------------------------
+void ofxMtlMapping2DControls::exit()
+{
+    cout << "ofxMtlMapping2DControls::exit()" << endl;
+
+    saveSettings();
 }
 
 //--------------------------------------------------------------
@@ -427,23 +429,7 @@ void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
         
-    if (name == "SAVE" && getButtonValue(_settingsUI, name)) {
-        saveSettings();
-    }
-    else if (name == "LOAD"  && getButtonValue(_settingsUI, name)) {
-        loadSettings();
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-        loadSyphonSettings();
-#endif
-    }
-    else if (name == "LOAD FILE ON START"  && getToggleValue(_settingsUI, name)) {
-        if (!_bInitialized && extraOutputSettings["path"] != "") {
-            _mtlMapping2D->loadXml(extraOutputSettings["path"]);
-        }
-    }
-    
-    
-    else if ((name == "SELECT FILE" && getButtonValue(_settingsUI, name)) || (_bInitialized && name == "FILE PATH")) {
+    if ((name == "SELECT FILE" && getButtonValue(_settingsUI, name)) || (_bInitialized && name == "FILE PATH")) {
         
         ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget("FILE PATH");
         

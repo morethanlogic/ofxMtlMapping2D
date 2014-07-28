@@ -50,6 +50,8 @@ public:
     
 //  void init(int width, int height, string mappingXmlFilePath = "mapping/xml/shapes.xml", string uiXmlFilePath = "mapping/controls/mapping.xml", int numSample = 0);
     void setup(int width, int height, int numSample = 0);
+    void exit(ofEventArgs &e);
+    
     void update();
     
     void bind();

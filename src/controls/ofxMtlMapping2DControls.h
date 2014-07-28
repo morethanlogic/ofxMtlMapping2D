@@ -44,6 +44,7 @@ public:
     static ofxMtlMapping2DControls* sharedInstance();
 
     void init();
+    void exit();
     
     void toolsUiEvent(ofxUIEventArgs &event);
     void settingsUiEvent(ofxUIEventArgs &event);

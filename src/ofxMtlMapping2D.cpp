@@ -88,6 +88,12 @@ void ofxMtlMapping2D::setup(int width, int height, int numSample)
 }
 
 //--------------------------------------------------------------
+void ofxMtlMapping2D::exit(ofEventArgs &e)
+{
+    ofxMtlMapping2DControls::sharedInstance()->exit();
+}
+
+//--------------------------------------------------------------
 void ofxMtlMapping2D::setModeState(MappingModeState mappingModeState)
 {
     _mappingModeState = mappingModeState;
@@ -589,6 +595,7 @@ void ofxMtlMapping2D::addListeners() {
     ofAddListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
     ofAddListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofAddListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
+    ofAddListener(ofEvents().exit, this, &ofxMtlMapping2D::exit);
 }
 
 //--------------------------------------------------------------
@@ -597,7 +604,7 @@ void ofxMtlMapping2D::removeListeners() {
     ofRemoveListener(ofEvents().mouseDragged, this, &ofxMtlMapping2D::mouseDragged);
     ofRemoveListener(ofEvents().keyPressed, this, &ofxMtlMapping2D::keyPressed);
     ofRemoveListener(ofEvents().windowResized, this, &ofxMtlMapping2D::windowResized);
-
+    ofRemoveListener(ofEvents().exit, this, &ofxMtlMapping2D::exit);
 }
 
 #pragma mark -
