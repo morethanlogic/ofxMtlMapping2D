@@ -428,8 +428,14 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
 void ofxMtlMapping2DControls::settingsUiEvent(ofxUIEventArgs &event)
 {
     string name = event.widget->getName();
-        
-    if ((name == "SELECT FILE" && getButtonValue(_settingsUI, name)) || (_bInitialized && name == "FILE PATH")) {
+    
+    if (name == "LOAD FILE ON START"  && getToggleValue(_settingsUI, name)) {
+        if (!_bInitialized && extraOutputSettings["path"] != "") {
+            _mtlMapping2D->loadXml(extraOutputSettings["path"]);
+        }
+    }
+    
+    else if ((name == "SELECT FILE" && getButtonValue(_settingsUI, name)) || (_bInitialized && name == "FILE PATH")) {
         
         ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget("FILE PATH");
         
