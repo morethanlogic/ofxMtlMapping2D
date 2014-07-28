@@ -859,10 +859,13 @@ void ofxMtlMapping2DControls::updateUIsPosition()
     ((ofxUIImageToggle *)_toolsCanvas->getWidget("ZOOM DRAG"))->getRect()->setY(yOffset);
     
     _toolsCanvas->setHeight(ofGetHeight());
-
     _gridSettingsCanvas->setPosition(_toolsCanvas->getRect()->width, ofGetHeight() - 90);
+    
+    // Update the position of the UIs
+    float maxWidth = _settingsUI->getRect()->width;
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
 #if defined(USE_OFX_DETECT_DISPLAYS)
+    maxWidth = MAX(maxWidth, _outputUI->getRect()->width);
     _outputUI->setPosition(ofGetWidth() - _outputUI->getRect()->width, _settingsUI->getRect()->height + 5);
 #endif
     
@@ -872,6 +875,8 @@ void ofxMtlMapping2DControls::updateUIsPosition()
     #elif
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _settingsUI->getRect()->height + 5);
     #endif
+    
+    maxWidth = MAX(maxWidth, _videoPlayerUI->getRect()->width);
 #endif
     
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
@@ -884,7 +889,25 @@ void ofxMtlMapping2DControls::updateUIsPosition()
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
         #endif
     #endif
+    
+    maxWidth = MAX(maxWidth, _syphonUI->getRect()->width);
+
 #endif
+    
+    // Update the width of the UIs.
+    _settingsUI->setWidth(maxWidth);
+#if defined(USE_OFX_DETECT_DISPLAYS)
+    _outputUI->setWidth(maxWidth);
+#endif
+    
+#if defined(USE_VIDEO_PLAYER_OPTION)
+    _videoPlayerUI->setWidth(maxWidth);
+#endif
+    
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+    _syphonUI->setWidth(maxWidth);
+#endif
+
 }
 
 #pragma mark -
@@ -1239,6 +1262,7 @@ void ofxMtlMapping2DControls::updateSyphonServersList()
     
     _syphonUI->addRadio("SERVERS", _syphonServersNames);
     _syphonUI->autoSizeToFitWidgets();
+    updateUIsPosition();
 }
 
 //--------------------------------------------------------------
