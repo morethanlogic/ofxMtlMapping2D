@@ -2,8 +2,8 @@
     <Kind>40</Kind>
     <Name>OFX_UI_WIDGET_CANVAS</Name>
     <IsMinified>0</IsMinified>
-    <XPosition>2349.000000000</XPosition>
-    <YPosition>317.000000000</YPosition>
+    <XPosition>2345.000000000</XPosition>
+    <YPosition>293.000000000</YPosition>
 </Canvas>
 <Widget>
     <Kind>2</Kind>
@@ -23,5 +23,5 @@
 <Widget>
     <Kind>25</Kind>
     <Name>TRACK</Name>
-    <Value>0.070165150</Value>
+    <Value>0.000000000</Value>
 </Widget>
