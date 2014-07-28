@@ -6,7 +6,11 @@ void ofApp::setup(){
     ofBackground(50);
     
 #if defined(TARGET_OSX)
-	ofSetWindowPosition(0, 0); 
+    #if defined(OF_RELEASE)
+        ofSetDataPathRoot("../Resources/");
+    #endif
+    
+	ofSetWindowPosition(0, 0);
     ofSetWindowShape(ofGetScreenWidth(), ofGetScreenHeight());
 #elif defined(TARGET_WIN32)
 	// Not sure why, and I did not Google it yet.
