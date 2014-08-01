@@ -1,50 +1,18 @@
 <root>
-    <shape id="1">
+    <shape id="0">
         <setting key="isLocked">0</setting>
         <setting key="type">quad</setting>
         <outputVertices>
-            <vertex x="49" y="232"></vertex>
-            <vertex x="467" y="220"></vertex>
-            <vertex x="433" y="612"></vertex>
-            <vertex x="78" y="615"></vertex>
+            <vertex x="216" y="168"></vertex>
+            <vertex x="1050" y="159"></vertex>
+            <vertex x="1172" y="758"></vertex>
+            <vertex x="106" y="784"></vertex>
         </outputVertices>
         <inputPolygon>
-            <vertex x="1" y="1"></vertex>
-            <vertex x="1440" y="1"></vertex>
-            <vertex x="1440" y="900"></vertex>
-            <vertex x="1" y="900"></vertex>
-        </inputPolygon>
-    </shape>
-    <shape id="2">
-        <setting key="isLocked">0</setting>
-        <setting key="type">quad</setting>
-        <outputVertices>
-            <vertex x="506" y="510"></vertex>
-            <vertex x="795" y="550"></vertex>
-            <vertex x="997" y="865"></vertex>
-            <vertex x="595" y="781"></vertex>
-        </outputVertices>
-        <inputPolygon>
-            <vertex x="127" y="298"></vertex>
-            <vertex x="631" y="298"></vertex>
-            <vertex x="631" y="685"></vertex>
-            <vertex x="127" y="685"></vertex>
-        </inputPolygon>
-    </shape>
-    <shape id="3">
-        <setting key="isLocked">1</setting>
-        <setting key="type">quad</setting>
-        <outputVertices>
-            <vertex x="599" y="99"></vertex>
-            <vertex x="1029" y="223"></vertex>
-            <vertex x="937" y="544"></vertex>
-            <vertex x="588" y="465"></vertex>
-        </outputVertices>
-        <inputPolygon>
-            <vertex x="729" y="299"></vertex>
-            <vertex x="1256" y="299"></vertex>
-            <vertex x="1256" y="675"></vertex>
-            <vertex x="729" y="675"></vertex>
+            <vertex x="43" y="66"></vertex>
+            <vertex x="1365" y="66"></vertex>
+            <vertex x="1365" y="809"></vertex>
+            <vertex x="43" y="809"></vertex>
         </inputPolygon>
     </shape>
 </root>
