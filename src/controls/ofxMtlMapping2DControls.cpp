@@ -730,7 +730,7 @@ void ofxMtlMapping2DControls::shapesListUiEvent(ofxUIEventArgs &event)
         
         _mtlMapping2D->selectShapeId(shapeId);
     }
-    else if (action == "Shape") {
+    else if (action == "Lock") {
         ofxUIImageToggle* uiImageToggle = ((ofxUIImageToggle *)_shapesListCanvas->getWidget(name));
         
         // Lock / Unlock this shape
@@ -752,8 +752,9 @@ void ofxMtlMapping2DControls::addShapeToList(int shapeID, int shapeType, bool bL
     //_shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second), false, kToggleSize, kToggleSize));
     _shapesListCanvas->addToggle("Select " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second, false, 16, 16)->setLabelVisible(false);
     _shapesListCanvas->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second, "", bLocked, 16, 16);
-    uiImageToggle->setLabelVisible(true);
+    ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Lock " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second, "", bLocked, 16, 16);
+    uiImageToggle->setLabelVisible(false);
+    _shapesListCanvas->addLabel(shapeTypesAsString.find((ofxMtlMapping2DShapeType)shapeType)->second  + " " +  ofToString(shapeID));
     
     if (bLocked) {
         uiImageToggle->setImage(&_lockedIcon);
