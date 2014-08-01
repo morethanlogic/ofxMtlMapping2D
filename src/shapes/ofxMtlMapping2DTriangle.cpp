@@ -33,12 +33,12 @@ void ofxMtlMapping2DTriangle::createDefaultShape()
     shapeSettings["type"] = "triangle";
     inputPolygon = new ofxMtlMapping2DInput();
     
-    int xOffset = ofGetWidth()/2.0;
-    int yOffset = ofGetHeight()/2.0;
+    int xOffset = 0;
+    int yOffset = 0;
 
-    int x = 50;
+    //Create a new vertex
+    int x = ofxMtlMapping2DGlobal::outputWidth/2;
     int y = 0;
-    
     ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     vertices.push_back(newVertex);
@@ -50,7 +50,7 @@ void ofxMtlMapping2DTriangle::createDefaultShape()
     inputPolygon->vertices.push_back(newVertex);
     
     x = 0;
-    y = 100;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     
     //Create a new vertex
     newVertex = new ofxMtlMapping2DVertex();
@@ -63,8 +63,8 @@ void ofxMtlMapping2DTriangle::createDefaultShape()
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
-    x = 100;
-    y = 100;
+    x = ofxMtlMapping2DGlobal::outputWidth;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     
     //Create a new vertex
     newVertex = new ofxMtlMapping2DVertex();

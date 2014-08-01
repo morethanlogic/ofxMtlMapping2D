@@ -38,8 +38,8 @@ void ofxMtlMapping2DQuad::createDefaultShape()
     inputPolygon = new ofxMtlMapping2DInput();
     
     
-    int xOffset = ofGetWidth()/2.0;
-    int yOffset = ofGetHeight()/2.0;
+    int xOffset = 0;
+    int yOffset = 0;
     
     //Create a new vertex
     int x = 0;
@@ -54,7 +54,7 @@ void ofxMtlMapping2DQuad::createDefaultShape()
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
-    x = 100;
+    x = ofxMtlMapping2DGlobal::outputWidth;
     y = 0;
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
@@ -66,8 +66,8 @@ void ofxMtlMapping2DQuad::createDefaultShape()
     newVertex->isDefiningTectureCoord = true;
     inputPolygon->vertices.push_back(newVertex);
     
-    x = 100;
-    y = 100;
+    x = ofxMtlMapping2DGlobal::outputWidth;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     vertices.push_back(newVertex);
@@ -79,7 +79,7 @@ void ofxMtlMapping2DQuad::createDefaultShape()
     inputPolygon->vertices.push_back(newVertex);
     
     x = 0;
-    y = 100;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     vertices.push_back(newVertex);

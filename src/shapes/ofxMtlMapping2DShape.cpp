@@ -1,5 +1,4 @@
 #include "ofxMtlMapping2DShape.h"
-#include "ofxMtlMapping2DGlobal.h"
 #include "ofxMtlMapping2DControls.h"
 #include "ofxMtlMapping2DGrid.h"
 

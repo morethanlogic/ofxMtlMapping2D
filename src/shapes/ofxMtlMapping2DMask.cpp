@@ -28,11 +28,11 @@ void ofxMtlMapping2DMask::createDefaultShape()
 {
     shapeSettings["type"] = "mask";
     
-    int xOffset = ofGetWidth()/2.0;
-    int yOffset = ofGetHeight()/2.0;
+    int xOffset = 0;
+    int yOffset = 0;
 
     //Create a new vertex
-    int x = 50;
+    int x = ofxMtlMapping2DGlobal::outputWidth/2;
     int y = 0;
     
     ofxMtlMapping2DVertex* newVertex = new ofxMtlMapping2DVertex();
@@ -41,15 +41,15 @@ void ofxMtlMapping2DMask::createDefaultShape()
     
     //Create a new vertex
     x = 0;
-    y = 100;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);
     vertices.push_back(newVertex);
     
     //Create a new vertex
-    x = 100;
-    y = 100;
+    x = ofxMtlMapping2DGlobal::outputWidth;
+    y = ofxMtlMapping2DGlobal::outputHeight;
     
     newVertex = new ofxMtlMapping2DVertex();
     newVertex->init(xOffset + x - newVertex->width/2, yOffset + y - newVertex->height/2);

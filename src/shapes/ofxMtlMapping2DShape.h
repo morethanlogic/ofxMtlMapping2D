@@ -9,6 +9,8 @@
 #include "ofxMtlMapping2DInput.h"
 #include "ofxMtlMapping2DVertex.h"
 
+#include "ofxMtlMapping2DGlobal.h"
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
