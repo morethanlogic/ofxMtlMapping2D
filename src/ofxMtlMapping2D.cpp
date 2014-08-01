@@ -385,10 +385,16 @@ void ofxMtlMapping2D::render(bool bIsOutput)
     for (it=ofxMtlMapping2DShapes::pmShapes.begin(); it!=ofxMtlMapping2DShapes::pmShapes.end(); it++) {
         ofxMtlMapping2DShape* shape = *it;
         
-        if (shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+        if (shape != ofxMtlMapping2DShape::activeShape && shape->shapeType != MAPPING_2D_SHAPE_MASK) {
             shape->render();
         }
     }
+    
+    if(ofxMtlMapping2DShape::activeShape) {
+        //Render active shape on top
+        ofxMtlMapping2DShape::activeShape->render();
+    }
+    
     _fbo.getTextureReference().unbind();
     
     // Masks - non textured shapes
