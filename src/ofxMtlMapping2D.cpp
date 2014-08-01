@@ -535,7 +535,7 @@ void ofxMtlMapping2D::updateZoomAndOutput(MappingEditView view, bool updateOutpu
         
         // resize / re-allocate the source FBO
         if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
-            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
+            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA32F_ARB, _numSample);
         }
         
 #if defined(USE_VIDEO_PLAYER_OPTION)
