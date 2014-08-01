@@ -421,6 +421,11 @@ void ofxMtlMapping2DControls::toolsUiEvent(ofxUIEventArgs &event)
         
         _mtlMapping2D->updateZoomAndOutput(ofxMtlMapping2DGlobal::getEditView());
     }
+    else if (name == "ZOOM DRAG" && getButtonValue(_toolsCanvas, name)) {
+        unselectShapesToggles();
+        ofxMtlMapping2DShape::resetActiveShapeVars();
+        ofxMtlMapping2DPolygon::resetActivePolygonVars();
+    }
 }
 
 
