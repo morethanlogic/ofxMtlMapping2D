@@ -263,9 +263,9 @@ void ofxMtlMapping2D::draw()
                 
                 ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
                 
-                ofFill();
-                ofSetColor(255, 0, 0);
-                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
+//                ofFill();
+//                ofSetColor(255, 0, 0);
+//                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
             }
             ofPopMatrix();
             
