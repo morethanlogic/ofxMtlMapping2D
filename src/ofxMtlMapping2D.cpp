@@ -71,8 +71,8 @@ void ofxMtlMapping2D::setup(int width, int height, int numSample)
     ofxMtlMapping2DGlobal::outputViewOutputPreview.set((ofGetWidth() - ofxMtlMapping2DGlobal::outputWidth)/2, (ofGetHeight() - ofxMtlMapping2DGlobal::outputHeight)/2, ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight);
     
     _numSample = numSample;
-    zoomScaleToFit(MAPPING_INPUT_VIEW, true);
-    zoomScaleToFit(MAPPING_OUTPUT_VIEW, true);
+//    zoomScaleToFit(MAPPING_INPUT_VIEW, true);
+//    zoomScaleToFit(MAPPING_OUTPUT_VIEW, true);
     
     // ---
     ofxMtlMapping2DSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
