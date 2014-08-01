@@ -19,15 +19,6 @@ void ofxMtlMapping2DQuad::render()
     glMultMatrixf(inputPolygon->homoMatrix);
     glBegin(GL_POLYGON);
     
-//    int i = 0;
-//    list<ofxMtlMapping2DVertex*>::iterator it;
-//    for (it=inputPolygon->vertices.begin(); it!=inputPolygon->vertices.end(); it++) {
-//        ofxMtlMapping2DVertex* vertex = *it;
-//        glTexCoord2f(vertex->center.x, vertex->center.y);
-//        glVertex2f(inputPolygon->polyline->getVertices()[i].x - inputPolygon->boundingBox.x, inputPolygon->polyline->getVertices()[i].y - inputPolygon->boundingBox.y);
-//        i++;
-//    }
-    
     for (int i = 0; i < inputPolygon->polyline->size(); i++) {
         glTexCoord2f(inputPolygon->polyline->getVertices()[i].x, inputPolygon->polyline->getVertices()[i].y);
         glVertex2f(inputPolygon->polyline->getVertices()[i].x - inputPolygon->boundingBox.x, inputPolygon->polyline->getVertices()[i].y - inputPolygon->boundingBox.y);
