@@ -267,9 +267,9 @@ void ofxMtlMapping2D::draw()
                 
                 ofVec2f transformedCoord = ofxMtlMapping2DGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
                 
-                ofFill();
-                ofSetColor(255, 0, 0);
-                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
+//                ofFill();
+//                ofSetColor(255, 0, 0);
+//                ofRect(transformedCoord.x-5, transformedCoord.y-5, 10, 10);
             }
             ofPopMatrix();
             
@@ -539,7 +539,7 @@ void ofxMtlMapping2D::updateZoomAndOutput(MappingEditView view, bool updateOutpu
         
         // resize / re-allocate the source FBO
         if (_fbo.getWidth() != ofxMtlMapping2DGlobal::outputWidth || _fbo.getHeight() != ofxMtlMapping2DGlobal::outputHeight) {
-            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA, _numSample);
+            _fbo.allocate(ofxMtlMapping2DGlobal::outputWidth , ofxMtlMapping2DGlobal::outputHeight, GL_RGBA32F_ARB, _numSample);
         }
         
 #if defined(USE_VIDEO_PLAYER_OPTION)
