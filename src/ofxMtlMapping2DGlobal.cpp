@@ -11,8 +11,8 @@ ofRectangle ofxMtlMapping2DGlobal::outputViewOutputPreview;
 ofRectangle ofxMtlMapping2DGlobal::inputViewZoomedCoordSystem;
 ofRectangle ofxMtlMapping2DGlobal::outputViewZoomedCoordSystem;
 
-int ofxMtlMapping2DGlobal::outputWidth = 500;
-int ofxMtlMapping2DGlobal::outputHeight = 500;
+int ofxMtlMapping2DGlobal::outputWidth = 10;
+int ofxMtlMapping2DGlobal::outputHeight = 10;
 bool ofxMtlMapping2DGlobal::bIsDraggingZone = false;
 
 //--------------------------------------------------------------
