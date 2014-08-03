@@ -27,7 +27,7 @@
     #if defined(TARGET_OSX)
         #include "ofxAVFVideoPlayer.h"
     #elif defined(TARGET_WIN32)
-
+		#include "ofDirectShowPlayer.h"
     #endif
 #endif
 
@@ -165,7 +165,8 @@ private:
     #if defined(TARGET_OSX)
         ofxAVFVideoPlayer _videoPlayer;
     #elif defined(TARGET_WIN32)
-		ofVideoPlayer _videoPlayer;
+		ofDirectShowPlayer _videoPlayer;    
+		ofTexture tex;
     #endif
     
     void setupVideoPlayer();

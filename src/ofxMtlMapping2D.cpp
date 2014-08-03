@@ -1251,7 +1251,14 @@ void ofxMtlMapping2D::setupVideoPlayer()
 void ofxMtlMapping2D::updateVideoPlayer()
 {
     _videoPlayer.update();
-    
+
+#if defined(TARGET_WIN32)
+	if (_videoPlayer.isLoaded() && _videoPlayer.isFrameNew()) {
+        if(!tex.isAllocated()) tex.allocate(_videoPlayer.getPixelsRef());
+        else tex.loadData(_videoPlayer.getPixelsRef());
+    }
+#endif
+
     if (_bIsVideoStopped && _videoPlayer.isLoaded() && _videoPlayer.isPlaying()) {
         _bIsVideoStopped = false;
         resizeVideo(ofxMtlMapping2DGlobal::inputViewOutputPreview);
@@ -1265,9 +1272,14 @@ void ofxMtlMapping2D::drawVideoPlayer()
     if (_bIsVideoStopped) {
         return;
     }
-    
+  
     ofSetColor(255);
+
+#if defined(TARGET_OSX)
     _videoPlayer.draw(_videoRect.x, _videoRect.y, _videoRect.width, _videoRect.height);
+#elif defined(TARGET_WIN32)
+    tex.draw(_videoRect.x, _videoRect.y, _videoRect.width, _videoRect.height);
+#endif
 }
 
 //--------------------------------------------------------------
