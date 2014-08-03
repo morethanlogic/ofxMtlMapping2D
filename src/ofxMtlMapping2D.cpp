@@ -85,6 +85,10 @@ void ofxMtlMapping2D::setup(int width, int height, int numSample)
 #if defined(USE_VIDEO_PLAYER_OPTION)
     setupVideoPlayer();
 #endif
+
+	// Allocating the fbo right at the beginning. Not allocating it here/now was causing issue on Windows.
+	// Not sure why. So for now I will do this.
+	_fbo.allocate(ofxMtlMapping2DGlobal::outputWidth, ofxMtlMapping2DGlobal::outputHeight, GL_RGBA32F_ARB, _numSample);
 }
 
 //--------------------------------------------------------------
@@ -363,7 +367,7 @@ void ofxMtlMapping2D::unbind()
 //--------------------------------------------------------------
 void ofxMtlMapping2D::drawFbo()
 {
-    glColor3f(1.0f, 1.0f, 1.0f);
+	ofSetColor(255, 255, 255);
     _fbo.draw(ofxMtlMapping2DGlobal::inputViewOutputPreview);
 }
 
