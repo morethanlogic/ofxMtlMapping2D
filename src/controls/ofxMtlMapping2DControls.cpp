@@ -890,7 +890,7 @@ void ofxMtlMapping2DControls::updateUIsPosition()
         _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _videoPlayerUI->getRect()->y + _videoPlayerUI->getRect()->height + 5);
     #else
         #if defined(USE_OFX_DETECT_DISPLAYS)
-            _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _displaysListUI->getRect()->y + _displaysListUI->getRect()->height + 5);
+            _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
         #elif
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
         #endif
