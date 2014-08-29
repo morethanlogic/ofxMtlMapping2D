@@ -80,6 +80,7 @@ void ofxMtlMapping2DShape::update()
 void ofxMtlMapping2DShape::draw()
 {		
     //--------
+    ofPushStyle();
     ofEnableAlphaBlending();
         
     // ---- OUTPUT MODE
@@ -96,6 +97,7 @@ void ofxMtlMapping2DShape::draw()
     drawID();
     
 	ofDisableAlphaBlending();
+    ofPopStyle();
 }
 
 

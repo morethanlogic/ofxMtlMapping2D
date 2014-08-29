@@ -94,6 +94,8 @@ void ofxMtlMapping2DPolygon::update()
 //--------------------------------------------------------------
 void ofxMtlMapping2DPolygon::draw()
 {		
+    ofPushStyle();
+    
     ofEnableAlphaBlending();
         
     // ----
@@ -138,7 +140,8 @@ void ofxMtlMapping2DPolygon::draw()
         vertex->drawTop();
     }
 
-	ofDisableAlphaBlending();	
+	ofDisableAlphaBlending();
+    ofPopStyle();
 }
 
 
