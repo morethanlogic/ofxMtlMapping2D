@@ -7,7 +7,7 @@ void ofApp::setup(){
 
     // ---
     _mapping = new ofxGemcutter();
-    _mapping->init(ofGetWidth(), ofGetHeight());
+    _mapping->setup(ofGetWidth(), ofGetHeight());
 }
 
 //--------------------------------------------------------------

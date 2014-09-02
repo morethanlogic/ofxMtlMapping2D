@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MTLMapper</RootNamespace>
+    <RootNamespace>example_ofxGemcutter</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -58,7 +58,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src;..\..\..\addons\ofDirectShowVideoPlayer</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src;..\..\..\addons\ofDirectShowVideoPlayer</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -75,7 +75,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ofDirectShowVideoPlayer\ofDirectShowPlayer.cpp" />
+    <ClCompile Include="..\src\utils\ofxExtraWindow\ofxExtraWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.cpp">
@@ -166,10 +167,6 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxGemcutter\src\shapes\ofxGemcutterVertex.cpp">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow\ofxExtraWindow.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     </ClCompile>
@@ -352,6 +349,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ofDirectShowVideoPlayer\ofDirectShowPlayer.h" />
+    <ClInclude Include="..\src\utils\ofxExtraWindow\ofxExtraWindow.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.h" />
     <ClInclude Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.h" />
@@ -359,7 +357,6 @@
     <ClInclude Include="..\..\..\addons\ofxMSAInteractiveObject\src\ofxMSAInteractiveObject.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\controls\ofxGemcutterControls.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\ofxGemcutter.h" />
-    <ClInclude Include="..\..\..\addons\ofxGemcutter\src\ofxGemcutterDefines.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\ofxGemcutterGlobal.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\ofxGemcutterShapes.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\ofxGemcutterShapeType.h" />
@@ -374,7 +371,6 @@
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\shapes\ofxGemcutterVertex.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\utils\homography\homography.h" />
     <ClInclude Include="..\..\..\addons\ofxGemcutter\src\utils\mtlUtils.h" />
-    <ClInclude Include="..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow\ofxExtraWindow.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUI.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUI2DGraph.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUI2DPad.h" />
