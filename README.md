@@ -6,28 +6,28 @@ Introduction
 C++ openFrameworks addon to achieve 2D projection-mapping of textures to physical objects. Each instance of ofxGemcutter has its own FBO to draw content into. Each created shape has an output polygon used for mapping, and an input polygon defining the texture coordinates to be used.
 
 **Output mode**  
-![output mode](http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_output.png)
+![output mode](http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_output.png)
 
 **Input mode**  
-![input mode](http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_input.png)
+![input mode](http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_input.png)
 
 **Settings**  
-![settings](http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_settings.png)
+![settings](http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_settings.png)
 
 Some projects using this addon...
 ------------
 ... or variations of it.
 <table style="border-style: hidden; background:#FFFFFF">
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_Echos__.jpg" alt="Echos"></a></td>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_Barcode.jpg" alt="Barcode"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2012/08/echos/"><img src="http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_Echos__.jpg" alt="Echos"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/12/barcode/"><img src="http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_Barcode.jpg" alt="Barcode"></a></td>
 </tr>
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_DesignOpenHouse.jpg" alt="Open House"></a></td>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_SamRobertBand.jpg" alt="Sam Robert's Band"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/306/"><img src="http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_DesignOpenHouse.jpg" alt="Open House"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2011/06/sam-roberts-band-i-feel-you/"><img src="http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_SamRobertBand.jpg" alt="Sam Robert's Band"></a></td>
 </tr>
 <tr>
-<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2013/11/tedxmontreal/"><img src="http://www.morethanlogic.com/ofxMtl/ofxGemcutter/ofxGemcutter_TEDxMTL.jpg" alt="TEDxMTL"></a></td>
+<td style="border-style: hidden; background:#FFFFFF"><a href="http://www.smallfly.com/2013/11/tedxmontreal/"><img src="http://www.smallfly.com/ofx/ofxGemcutter/ofxGemcutter/ofxGemcutter_TEDxMTL.jpg" alt="TEDxMTL"></a></td>
 </tr>
 </table>
 
