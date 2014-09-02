@@ -1,5 +1,0 @@
-ofxXmlSettings
-ofxDetectDisplays
-ofxMSAInteractiveObject
-ofxMtlMapping2D
-ofxUI

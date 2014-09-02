@@ -1,0 +1,5 @@
+ofxXmlSettings
+ofxDetectDisplays
+ofxGemcutter
+ofxUI
+ofxMSAInteractiveObject
