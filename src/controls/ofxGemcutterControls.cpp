@@ -1143,6 +1143,38 @@ void ofxGemcutterControls::toggleVisible()
         _shapesListCanvas->disable();
         hideGridSettingsCanvas();
     }
+    
+    // --- Settings
+    if(_toolsCanvas->isVisible() && getToggleValue(_toolsCanvas, kSettingMappingSettings)) {
+        _settingsUI->enable();
+#if defined(USE_OFX_DETECT_DISPLAYS)
+        _outputUI->enable();
+#endif
+        
+#if defined(USE_VIDEO_PLAYER_OPTION)
+        _videoPlayerUI->enable();
+#endif
+        
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _syphonUI->enable();
+#endif
+        
+    } else {
+        _settingsUI->disable();
+#if defined(USE_OFX_DETECT_DISPLAYS)
+        _outputUI->disable();
+#endif
+        
+#if defined(USE_VIDEO_PLAYER_OPTION)
+        _videoPlayerUI->disable();
+#endif
+        
+#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+        _syphonUI->disable();
+#endif
+    }
+    
+    
 }
 
 //--------------------------------------------------------------
