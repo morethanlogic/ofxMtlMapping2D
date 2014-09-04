@@ -66,6 +66,9 @@ void ofxExtraWindow::keyboard_cb(GLFWwindow* windowP_, int key, int scancode, in
 void ofxExtraWindow::destroyWindow() {
     bIsSetup = false;
     glfwDestroyWindow(_extraWindow);
+    
+    int isClosed = 1;
+    ofNotifyEvent(windowClosedEvent, isClosed, this);
 }
 
 //--------------------------------------------------------------

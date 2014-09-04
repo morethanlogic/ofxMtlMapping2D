@@ -23,6 +23,8 @@ public:
     
     bool bIsSetup;
     
+    ofEvent<int> windowClosedEvent;
+    
 private:
     static ofxExtraWindow	* instance;
 
