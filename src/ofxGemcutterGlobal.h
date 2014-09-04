@@ -19,6 +19,8 @@ public:
     static void setEditView(MappingEditView mappingEditView);
     static MappingEditView getEditView();
     
+    static float delayBeforeHiddingUI;
+    
     // Zoom and Drag of the canvases
     static float inputViewZoomFactor;
     static float outputViewZoomFactor;

@@ -4,6 +4,7 @@
 MappingEditView ofxGemcutterGlobal::_mappingEditView = MAPPING_OUTPUT_VIEW;
 
 //--------------------------------------------------------------
+float ofxGemcutterGlobal::delayBeforeHiddingUI = 30000;
 float ofxGemcutterGlobal::inputViewZoomFactor = 1.0f;
 float ofxGemcutterGlobal::outputViewZoomFactor = 1.0f;
 ofRectangle ofxGemcutterGlobal::inputViewOutputPreview;

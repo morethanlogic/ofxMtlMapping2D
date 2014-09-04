@@ -125,6 +125,10 @@ private:
     
     float _moveX;
 	float _moveY;
+    
+    float _timeUILastActivation;
+    
+    void updateUiTimer();
 
     ofxXmlSettings _shapesListXML;
     list<ofxGemcutterShape*>::iterator iteratorForShapeWithId(int shapeId);

@@ -59,6 +59,8 @@ void ofxGemcutter::setup(int width, int height, int numSample)
     _bSelectedShapeChanged = false;
     _selectedShapeId = -1;
     
+    _timeUILastActivation = 0;
+    
     // ---
     addListeners();
     
@@ -111,7 +113,11 @@ MappingModeState ofxGemcutter::getModeState()
 
 //--------------------------------------------------------------
 void ofxGemcutter::update()
-{    
+{
+    if (ofxGemcutterGlobal::delayBeforeHiddingUI > 0 && ofGetElapsedTimeMillis() - _timeUILastActivation >= ofxGemcutterGlobal::delayBeforeHiddingUI) {
+        ofxGemcutterControls::sharedInstance()->disable();
+    }
+    
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     if (_syphonLoadSettingsAtLaunch && (ofGetFrameNum() - _syphonNumFrameWhenLastServerAnnounced) > 0) {
         _syphonLoadSettingsAtLaunch = false;
@@ -621,6 +627,16 @@ void ofxGemcutter::removeListeners() {
 #pragma mark Events
 
 //--------------------------------------------------------------
+void ofxGemcutter::updateUiTimer()
+{
+    _timeUILastActivation = ofGetElapsedTimeMillis() ;
+    
+    if (!ofxGemcutterControls::sharedInstance()->isEnabled()) {
+        ofxGemcutterControls::sharedInstance()->toggleVisible();
+    }
+}
+
+//--------------------------------------------------------------
 void ofxGemcutter::windowResized(ofResizeEventArgs &e)
 {
     ofxGemcutterControlsSharedInstance().updateUIsPosition();
@@ -631,7 +647,9 @@ void ofxGemcutter::windowResized(ofResizeEventArgs &e)
 //--------------------------------------------------------------
 void ofxGemcutter::mousePressed(ofMouseEventArgs &e)
 {
-
+    updateUiTimer();
+    
+    // ---
     int eX = e.x;
     int eY = e.y;
     int eButton = e.button;
@@ -727,6 +745,9 @@ void ofxGemcutter::mousePressed(ofMouseEventArgs &e)
 //--------------------------------------------------------------
 void ofxGemcutter::mouseDragged(ofMouseEventArgs &e)
 {
+    updateUiTimer();
+    
+    // ---
     if (!ofxGemcutterGlobal::bIsDraggingZone) return;
     
     int eX = e.x;
@@ -762,6 +783,9 @@ void ofxGemcutter::mouseDragged(ofMouseEventArgs &e)
 //--------------------------------------------------------------
 void ofxGemcutter::keyPressed(ofKeyEventArgs &e)
 {
+    updateUiTimer();
+    
+    // ---
     if (ofxGemcutterControls::sharedInstance()->hasFocus()) return;
     
     // ----
@@ -775,7 +799,7 @@ void ofxGemcutter::keyPressed(ofKeyEventArgs &e)
             break;
             
         case 'm':
-            ofxGemcutterControlsSharedInstance().toggleVisible();
+            //ofxGemcutterControlsSharedInstance().toggleVisible();
             break;
             
         case 's':

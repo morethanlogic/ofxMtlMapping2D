@@ -121,6 +121,10 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _settingsUI->addTextInput("PROJ. WIDTH", ofToString(ofGetWidth()));
     _settingsUI->addTextInput("PROJ. HEIGHT", ofToString(ofGetHeight()));
 
+    _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
+    _settingsUI->addLabel("UI HIDES AFTER SEC");
+    _settingsUI->addTextInput("DELAY IN SEC", ofToString(ofxGemcutterGlobal::delayBeforeHiddingUI))->setOnlyNumericInput(true);
+    
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxGemcutterControls::settingsUiEvent);
     _settingsUI->disable();
@@ -490,6 +494,17 @@ void ofxGemcutterControls::settingsUiEvent(ofxUIEventArgs &event)
             _mtlMapping2D->updateZoomAndOutput(MAPPING_INPUT_VIEW, true);
             _mtlMapping2D->updateZoomAndOutput(MAPPING_OUTPUT_VIEW, true);
         
+        } else {
+            _bHasFocus = true;
+        }
+    }
+    
+    else if (name == "DELAY IN SEC") {
+        ofxUITextInput* textInput = (ofxUITextInput*) _settingsUI->getWidget(name);
+
+        if (!textInput->isFocused()) {
+            _bHasFocus = false;
+            ofxGemcutterGlobal::delayBeforeHiddingUI = textInput->getFloatValue() * 1000;
         } else {
             _bHasFocus = true;
         }
@@ -1104,6 +1119,16 @@ void ofxGemcutterControls::loadSettings()
 #endif
 
     updateUIsPosition();
+}
+
+//--------------------------------------------------------------
+void ofxGemcutterControls::autoHide()
+{
+    if (isVisible()) {
+        disable();
+    } else {
+        enable();
+    }
 }
 
 //--------------------------------------------------------------

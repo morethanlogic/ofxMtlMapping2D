@@ -136,6 +136,8 @@ private:
     void saveExtraSettings();
     void loadExtraSettings();
 
+    void autoHide();
+    
     map<string,string> extraOutputSettings;
     
     bool _bHasFocus;
