@@ -289,6 +289,15 @@ void ofxGemcutterControls::toolsUiEvent(ofxUIEventArgs &event)
         bool bGoFullscreen = getToggleValue(_toolsCanvas, name);
         ofSetFullscreen(bGoFullscreen);
         
+        
+        if (bGoFullscreen && _displayNames.size() == 1) {
+            _currActiveDisplayName = _displayNames[0];
+            setToggleValue(_outputUI, _currActiveDisplayName, true);        
+        } else if (!bGoFullscreen && _displayNames.size() == 1) {
+            setToggleValue(_outputUI, _currActiveDisplayName, false);
+            _currActiveDisplayName = "";
+        }
+        
 #if defined(USE_OFX_DETECT_DISPLAYS)
         /*
         if (!bGoFullscreen) {
@@ -517,18 +526,35 @@ void ofxGemcutterControls::outputUiEvent(ofxUIEventArgs &event)
         if (name == _currActiveDisplayName) {
             _currActiveDisplayName = "";
             setToggleValue(_outputUI, name, false);
-            _mtlMapping2D->closeOutputWindow();
+
+            if (_displayNames.size() == 1) {
+                setToggleValue(_toolsCanvas, kSettingMappingFullscreen, false);
+                ofSetFullscreen(false);
+            } else {
+                _mtlMapping2D->closeOutputWindow();
+            }
             return;
         }
-		
-        for (int i=0; i<_displayNames.size(); i++) {
-            if (name == _displayNames[i] && getToggleValue(_outputUI, name)) {
+        
+        if (_displayNames.size() == 1) {
+            if (name == _displayNames[0] && getToggleValue(_outputUI, name)) {
                 _currActiveDisplayName = name;
-                _mtlMapping2D->openOuputWindow(ofxDetectDisplaysSharedInstance().getDisplayBounds(i));
-                
+                setToggleValue(_toolsCanvas, kSettingMappingFullscreen, true);
+                ofSetFullscreen(true);
+
                 return;
             }
+        } else {
+            for (int i=0; i<_displayNames.size(); i++) {
+                if (name == _displayNames[i] && getToggleValue(_outputUI, name)) {
+                    _currActiveDisplayName = name;
+                    _mtlMapping2D->openOuputWindow(ofxDetectDisplaysSharedInstance().getDisplayBounds(i));
+
+                    return;
+                }
+            }
         }
+        
     }
 }
 
@@ -924,6 +950,17 @@ void ofxGemcutterControls::updateUIsPosition()
 //--------------------------------------------------------------
 void ofxGemcutterControls::displayConfigurationChanged()
 {
+    if (ofxDetectDisplaysSharedInstance().getDisplays().size() == _displayNames.size()) {
+        return;
+    }
+    
+    // Reset
+    ofSetFullscreen(false);
+    setToggleValue(_toolsCanvas, kSettingMappingFullscreen, false);
+    _mtlMapping2D->closeOutputWindow();
+    _currActiveDisplayName = "";
+    
+    // Clear the actual display list
     _outputUI->removeWidget("DISPLAYS");
     _displayNames.clear();
     
