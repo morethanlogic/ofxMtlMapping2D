@@ -79,6 +79,7 @@ public:
 
 #if defined(USE_OFX_DETECT_DISPLAYS)
     void displayConfigurationChanged();
+    void resetDisplaySelection();
     void outputUiEvent(ofxUIEventArgs &event);
 #endif
     

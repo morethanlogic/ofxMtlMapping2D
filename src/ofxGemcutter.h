@@ -87,6 +87,7 @@ public:
 
     void openOuputWindow(ofRectangle rect);
     void closeOutputWindow();
+    void outputWindowClosedEvent(int & i);
 
 #if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
     void selectSyphonServer(int syphonDirIdx);

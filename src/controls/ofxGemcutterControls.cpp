@@ -975,6 +975,12 @@ void ofxGemcutterControls::displayConfigurationChanged()
     updateUIsPosition();
 }
 
+//--------------------------------------------------------------
+void ofxGemcutterControls::resetDisplaySelection()
+{
+    setToggleValue(_outputUI, _currActiveDisplayName, false);
+    _currActiveDisplayName = "";
+}
 #endif
 
 #pragma mark -

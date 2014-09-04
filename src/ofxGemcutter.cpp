@@ -1149,6 +1149,7 @@ void ofxGemcutter::openOuputWindow(ofRectangle rect)
 {
     if (!_outputWindow.bIsSetup) {
         _outputWindow.setup("output window", rect, true);
+        ofAddListener(_outputWindow.windowClosedEvent, this, &ofxGemcutter::outputWindowClosedEvent);
     }
     _outputWindow.setPostionAndSize(rect);
 }
@@ -1158,9 +1159,18 @@ void ofxGemcutter::closeOutputWindow()
 {
     if (!_outputWindow.bIsSetup) return;
 
+    ofRemoveListener(_outputWindow.windowClosedEvent, this, &ofxGemcutter::outputWindowClosedEvent);
     _outputWindow.destroyWindow();
     
 }
+
+//--------------------------------------------------------------
+void ofxGemcutter::outputWindowClosedEvent(int & i)
+{
+    ofRemoveListener(_outputWindow.windowClosedEvent, this, &ofxGemcutter::outputWindowClosedEvent);
+    ofxGemcutterControls::sharedInstance()->resetDisplaySelection();
+}
+
 
 #pragma mark -
 #pragma mark Syphon
