@@ -50,10 +50,8 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
 {
     _rootPath = "settings/";
  
-    ofColor uiColor;
-    uiColor.set(0, 210, 255, 130);
-    ofColor uiColorB;
-    uiColorB.set(0, 210, 255, 90);
+    uiColor.set(83, 83, 83, 160);
+    uiColorB.set(203, 203, 203, 130);
     
     // --- Tool box
     shapeTypesAsString[MAPPING_2D_SHAPE_QUAD] = "quad";
@@ -73,36 +71,36 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _lockedIcon.loadImage(uiDataPath + "locked.png");
     _unlockedIcon.loadImage(uiDataPath + "unlocked.png");
     
-    _toolsCanvas->addImageToggle(kSettingMappingFullscreen, uiDataPath + "expand.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingFullscreen, uiDataPath + "expand.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     
     // Edit
-    _toolsCanvas->addImageToggle(kSettingMappingSettings, uiDataPath + "settings-3.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageToggle(kSettingMappingEditShapes, uiDataPath + "edit.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton(kSettingMappingSave, uiDataPath + "file-down.png", &_mtlMapping2D->bSaveShapes, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton(kSettingMappingLoad, uiDataPath + "file-up.png", &_mtlMapping2D->bLoadShapes, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingSettings, uiDataPath + "settings-3.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageToggle(kSettingMappingEditShapes, uiDataPath + "edit.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageButton(kSettingMappingSave, uiDataPath + "file-down.png", &_mtlMapping2D->bSaveShapes, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageButton(kSettingMappingLoad, uiDataPath + "file-up.png", &_mtlMapping2D->bLoadShapes, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     
     // Mapping controls Output / Input
     ofxUISpacer *spacer = new ofxUISpacer(kWidgetWidth, kSpacerHeight);
     spacer->setDrawFill(false);
     
     _toolsCanvas->addWidgetDown(spacer);
-    _toolsCanvas->addImageToggle(kSettingMappingModeOutput, uiDataPath + "projo.png", true, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageToggle(kSettingMappingModeInput, uiDataPath + "texture.png", false, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageToggle(kSettingMappingModeOutput, uiDataPath + "projo.png", true, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageToggle(kSettingMappingModeInput, uiDataPath + "texture.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     
     // Mapping shape controls
     if (ofxGemcutterSettings::kIsManuallyCreatingShapeEnabled) {
         _toolsCanvas->addWidgetDown(spacer);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewQuad, uiDataPath + "quad.png", &_mtlMapping2D->bCreateQuad, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewGrid, uiDataPath + "grid.png", &_mtlMapping2D->bCreateGrid, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewTriangle, uiDataPath + "triangle.png", &_mtlMapping2D->bCreateTriangle, kToggleSize, kToggleSize);
-        _toolsCanvas->addImageToggle(kSettingMappingCreateNewMask, uiDataPath + "mask.png", &_mtlMapping2D->bCreateMask, kToggleSize, kToggleSize);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewQuad, uiDataPath + "quad.png", &_mtlMapping2D->bCreateQuad, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewGrid, uiDataPath + "grid.png", &_mtlMapping2D->bCreateGrid, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewTriangle, uiDataPath + "triangle.png", &_mtlMapping2D->bCreateTriangle, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+        _toolsCanvas->addImageToggle(kSettingMappingCreateNewMask, uiDataPath + "mask.png", &_mtlMapping2D->bCreateMask, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     }
     
     _toolsCanvas->addWidgetDown(spacer);
-    _toolsCanvas->addImageButton("ZOOM FIT", uiDataPath + "zoomFit.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton("ZOOM IN", uiDataPath + "zoomIn.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageButton("ZOOM OUT", uiDataPath + "zoomOut.png", false, kToggleSize, kToggleSize);
-    _toolsCanvas->addImageToggle("ZOOM DRAG", uiDataPath + "zoomDrag.png", &ofxGemcutterGlobal::bIsDraggingZone, kToggleSize, kToggleSize);
+    _toolsCanvas->addImageButton("ZOOM FIT", uiDataPath + "zoomFit.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageButton("ZOOM IN", uiDataPath + "zoomIn.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageButton("ZOOM OUT", uiDataPath + "zoomOut.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
+    _toolsCanvas->addImageToggle("ZOOM DRAG", uiDataPath + "zoomDrag.png", &ofxGemcutterGlobal::bIsDraggingZone, kToggleSize, kToggleSize)->setColorBack(uiColorB);
 
     
     ofAddListener(_toolsCanvas->newGUIEvent, this, &ofxGemcutterControls::toolsUiEvent);
@@ -191,9 +189,9 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _videoPlayerUI->addTextInput("FILE PATH", "NONE", OFX_UI_FONT_SMALL);
     
     _videoPlayerUI->addSpacer(_videoPlayerUI->getRect()->width - 10, 2);
-    _videoPlayerUI->addImageButton("STOP", uiDataPath + "stop.png", false, kToggleSize, kToggleSize);
+    _videoPlayerUI->addImageButton("STOP", uiDataPath + "stop.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     _videoPlayerUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    _videoPlayerUI->addImageToggle("PLAY", uiDataPath + "play.png", false, kToggleSize, kToggleSize);
+    _videoPlayerUI->addImageToggle("PLAY", uiDataPath + "play.png", false, kToggleSize, kToggleSize)->setColorBack(uiColorB);
     _videoPlayerUI->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
 
     _videoPlayerUI->addMinimalSlider("TRACK", .0f, 100.0f, &_mtlMapping2D->videoPositionInSeconds);
@@ -768,9 +766,7 @@ void ofxGemcutterControls::shapesListUiEvent(ofxUIEventArgs &event)
             uiImageToggle->setImage(&_unlockedIcon);
         }
     }
-
 }
-
 
 //--------------------------------------------------------------
 void ofxGemcutterControls::addShapeToList(int shapeID, int shapeType, bool bLocked)
@@ -779,6 +775,7 @@ void ofxGemcutterControls::addShapeToList(int shapeID, int shapeType, bool bLock
     _shapesListCanvas->addToggle("Select " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, false, 16, 16)->setLabelVisible(false);
     _shapesListCanvas->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
     ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Lock " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, "", bLocked, 16, 16);
+    uiImageToggle->setColorBack(uiColorB);
     uiImageToggle->setLabelVisible(false);
     _shapesListCanvas->addLabel(shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second  + " " +  ofToString(shapeID));
     

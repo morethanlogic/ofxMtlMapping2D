@@ -109,6 +109,9 @@ private:
     ofxUIScrollableCanvas *_shapesListCanvas;
     ofxUICanvas *_gridSettingsCanvas;
     
+    ofColor uiColor;
+    ofColor uiColorB;
+    
     void setUIShapeEditingState(bool isOn);
     void resizeShapeList();
     void refreshShapesListForMappingView(MappingEditView currView);

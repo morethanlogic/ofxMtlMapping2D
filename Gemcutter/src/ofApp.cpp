@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(60);
-    ofBackground(50);
+    ofBackground(0);
     
 #if defined(TARGET_OSX)
     #if defined(OF_RELEASE)
