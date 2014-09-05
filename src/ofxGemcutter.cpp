@@ -608,7 +608,8 @@ void ofxGemcutter::zoomScaleToFit(MappingEditView view, bool updateFBO)
 #pragma mark Add / Remove Listeners
 
 //--------------------------------------------------------------
-void ofxGemcutter::addListeners() {
+void ofxGemcutter::addListeners()
+{
     ofAddListener(ofEvents().mouseMoved, this, &ofxGemcutter::mouseMoved);
 	ofAddListener(ofEvents().mousePressed, this, &ofxGemcutter::mousePressed);
     ofAddListener(ofEvents().mouseDragged, this, &ofxGemcutter::mouseDragged);
@@ -618,7 +619,8 @@ void ofxGemcutter::addListeners() {
 }
 
 //--------------------------------------------------------------
-void ofxGemcutter::removeListeners() {
+void ofxGemcutter::removeListeners()
+{
     ofRemoveListener(ofEvents().mouseMoved, this, &ofxGemcutter::mouseMoved);
 	ofRemoveListener(ofEvents().mousePressed, this, &ofxGemcutter::mousePressed);
     ofRemoveListener(ofEvents().mouseDragged, this, &ofxGemcutter::mouseDragged);
