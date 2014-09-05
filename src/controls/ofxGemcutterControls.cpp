@@ -278,6 +278,20 @@ ofxGemcutterControls::~ofxGemcutterControls()
 	_uiSuperCanvases.clear();
 }
 
+//--------------------------------------------------------------
+void ofxGemcutterControls::drawBg()
+{
+    if (!_settingsUI->isEnabled()) {
+        return;
+    }
+    
+    ofPushStyle();
+    ofFill();
+    ofSetColor(ofColor(83, 83, 83, 110));
+    ofRect(ofGetWidth()-_settingsUI->getRect()->width, .0f, _settingsUI->getRect()->width, ofGetHeight());
+    ofPopStyle();
+}
+
 
 #pragma mark -
 #pragma mark Tool Box

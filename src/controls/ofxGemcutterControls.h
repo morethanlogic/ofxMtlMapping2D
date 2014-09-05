@@ -46,6 +46,8 @@ public:
     void init();
     void exit();
     
+    void drawBg();
+    
     void toolsUiEvent(ofxUIEventArgs &event);
     void settingsUiEvent(ofxUIEventArgs &event);
 

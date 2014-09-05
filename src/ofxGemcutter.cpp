@@ -318,6 +318,8 @@ void ofxGemcutter::draw()
         render(true);
     }
     
+    ofxGemcutterControls::sharedInstance()->drawBg();
+    
     if (_outputWindow.bIsSetup) {
         _outputWindow.begin();
         {
