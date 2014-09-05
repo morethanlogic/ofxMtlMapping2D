@@ -607,6 +607,7 @@ void ofxGemcutter::zoomScaleToFit(MappingEditView view, bool updateFBO)
 
 //--------------------------------------------------------------
 void ofxGemcutter::addListeners() {
+    ofAddListener(ofEvents().mouseMoved, this, &ofxGemcutter::mouseMoved);
 	ofAddListener(ofEvents().mousePressed, this, &ofxGemcutter::mousePressed);
     ofAddListener(ofEvents().mouseDragged, this, &ofxGemcutter::mouseDragged);
     ofAddListener(ofEvents().keyPressed, this, &ofxGemcutter::keyPressed);
@@ -616,6 +617,7 @@ void ofxGemcutter::addListeners() {
 
 //--------------------------------------------------------------
 void ofxGemcutter::removeListeners() {
+    ofRemoveListener(ofEvents().mouseMoved, this, &ofxGemcutter::mouseMoved);
 	ofRemoveListener(ofEvents().mousePressed, this, &ofxGemcutter::mousePressed);
     ofRemoveListener(ofEvents().mouseDragged, this, &ofxGemcutter::mouseDragged);
     ofRemoveListener(ofEvents().keyPressed, this, &ofxGemcutter::keyPressed);
@@ -643,6 +645,11 @@ void ofxGemcutter::windowResized(ofResizeEventArgs &e)
     updateZoomAndOutput(ofxGemcutterGlobal::getEditView());
 }
 
+//--------------------------------------------------------------
+void ofxGemcutter::mouseMoved(ofMouseEventArgs &e)
+{
+    updateUiTimer();
+}
 
 //--------------------------------------------------------------
 void ofxGemcutter::mousePressed(ofMouseEventArgs &e)

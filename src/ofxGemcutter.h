@@ -63,6 +63,7 @@ public:
     void setModeState(MappingModeState mappingModeState);
     MappingModeState getModeState();
 
+    void mouseMoved(ofMouseEventArgs &e);
     void mousePressed(ofMouseEventArgs &e);
     void mouseDragged(ofMouseEventArgs &e);
     void keyPressed(ofKeyEventArgs &e);
