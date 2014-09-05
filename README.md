@@ -39,6 +39,7 @@ Copyright (c) 2014 Hugues Bruyère, Elie Zananiri | [Dpt.](http://dpt.co)
 Installation
 ------------
 Copy to your openFrameworks/addons folder. Some examples are included.
+On OS X make sure that, in Xcode, the file ofxExtraWindow.cpp is define with the type 'Objective-C++ Source'.
 
 Dependencies
 ------------
