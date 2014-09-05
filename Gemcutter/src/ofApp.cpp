@@ -5,6 +5,8 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofBackground(0);
     
+    ofSetWindowTitle("Gemcutter");
+    
 #if defined(TARGET_OSX)
     #if defined(OF_RELEASE)
         ofSetDataPathRoot("../Resources/");
@@ -18,8 +20,6 @@ void ofApp::setup(){
 	ofSetWindowPosition(10, 10); 
     ofSetWindowShape(ofGetScreenWidth()-20, ofGetScreenHeight()-20);
 #endif
-
-
 
     // ---
     _mapping = new ofxGemcutter();
