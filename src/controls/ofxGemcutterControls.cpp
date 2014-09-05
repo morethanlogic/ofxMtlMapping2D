@@ -159,7 +159,7 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _uiSuperCanvases.push_back(_gridSettingsCanvas);
     
     
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     // ---
     // Output Settings UI
     _currActiveDisplayName = "";
@@ -178,7 +178,7 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     // ---
     // Video player UI
     _videoPlayIcon.loadImage(uiDataPath + "play.png");
@@ -206,7 +206,7 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _uiSuperCanvases.push_back(_videoPlayerUI);
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     // ---
     // Syphon UI
     _syphonUI = new ofxUISuperCanvas("SYPHON SETTINGS");
@@ -223,7 +223,7 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
 #endif
 
     // ---
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     #if defined(TARGET_OSX)
         // You should only use the shared instance of ofxDetectDisplays,
         // otherwise event registration will be messed up.
@@ -300,7 +300,7 @@ void ofxGemcutterControls::toolsUiEvent(ofxUIEventArgs &event)
             _currActiveDisplayName = "";
         }
         
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
         /*
         if (!bGoFullscreen) {
             ofxUIRadio* uiRadio = (ofxUIRadio*) _displaysListUI->getWidget("DISPLAYS");
@@ -318,29 +318,29 @@ void ofxGemcutterControls::toolsUiEvent(ofxUIEventArgs &event)
     else if (name == kSettingMappingSettings) {
         if(getToggleValue(_toolsCanvas, name)) {
             _settingsUI->enable();
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
             _outputUI->enable();
 #endif
    
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
             _videoPlayerUI->enable();
 #endif
             
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
             _syphonUI->enable();
 #endif
         
         } else {
             _settingsUI->disable();
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
             _outputUI->disable();
 #endif
 
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
             _videoPlayerUI->disable();
 #endif
             
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
             _syphonUI->disable();
 #endif
         }
@@ -520,7 +520,7 @@ void ofxGemcutterControls::settingsUiEvent(ofxUIEventArgs &event)
  }
  */
 
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
 //--------------------------------------------------------------
 void ofxGemcutterControls::outputUiEvent(ofxUIEventArgs &event)
 {
@@ -573,7 +573,7 @@ void ofxGemcutterControls::outputUiEvent(ofxUIEventArgs &event)
 
 #endif
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
 //--------------------------------------------------------------
 void ofxGemcutterControls::syphonUiEvent(ofxUIEventArgs &event)
 {
@@ -600,7 +600,7 @@ void ofxGemcutterControls::syphonUiEvent(ofxUIEventArgs &event)
 #endif
 
 
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
 //--------------------------------------------------------------
 void ofxGemcutterControls::videoPlayerUiEvent(ofxUIEventArgs &event)
 {
@@ -908,13 +908,13 @@ void ofxGemcutterControls::updateUIsPosition()
     // Update the position of the UIs
     float maxWidth = _settingsUI->getRect()->width;
     _settingsUI->setPosition(ofGetWidth() - _settingsUI->getRect()->width, 0);
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     maxWidth = MAX(maxWidth, _outputUI->getRect()->width);
     _outputUI->setPosition(ofGetWidth() - _outputUI->getRect()->width, _settingsUI->getRect()->height + 5);
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
-    #if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
+    #if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
     #elif
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _settingsUI->getRect()->height + 5);
@@ -923,11 +923,11 @@ void ofxGemcutterControls::updateUIsPosition()
     maxWidth = MAX(maxWidth, _videoPlayerUI->getRect()->width);
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
-    #if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
+    #if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
         _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _videoPlayerUI->getRect()->y + _videoPlayerUI->getRect()->height + 5);
     #else
-        #if defined(USE_OFX_DETECT_DISPLAYS)
+        #if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
         #elif
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
@@ -940,15 +940,15 @@ void ofxGemcutterControls::updateUIsPosition()
     
     // Update the width of the UIs.
     _settingsUI->setWidth(maxWidth);
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     _outputUI->setWidth(maxWidth);
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     _videoPlayerUI->setWidth(maxWidth);
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     _syphonUI->setWidth(maxWidth);
 #endif
 
@@ -957,7 +957,7 @@ void ofxGemcutterControls::updateUIsPosition()
 #pragma mark -
 #pragma mark Settings UI
 
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
 
 //--------------------------------------------------------------
 void ofxGemcutterControls::displayConfigurationChanged()
@@ -1089,15 +1089,15 @@ void ofxGemcutterControls::setSliderValue(ofxUICanvas* ui, const string& name, f
 void ofxGemcutterControls::saveSettings()
 {
     _settingsUI->saveSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     _outputUI->saveSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     _syphonUI->saveSettings(_rootPath + _syphonUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     _videoPlayerUI->saveSettings(_rootPath + _videoPlayerUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
@@ -1110,11 +1110,11 @@ void ofxGemcutterControls::loadSettings()
     loadExtraSettings();
     
     _settingsUI->loadSettings(_rootPath + _settingsUI->getCanvasTitle()->getLabel() + ".xml");
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     _outputUI->loadSettings(_rootPath + _outputUI->getCanvasTitle()->getLabel() + ".xml");
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     loadVideoPlayerSettings();
 #endif
 
@@ -1169,29 +1169,29 @@ void ofxGemcutterControls::toggleVisible()
     // --- Settings
     if(_toolsCanvas->isVisible() && getToggleValue(_toolsCanvas, kSettingMappingSettings)) {
         _settingsUI->enable();
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
         _outputUI->enable();
 #endif
         
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
         _videoPlayerUI->enable();
 #endif
         
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
         _syphonUI->enable();
 #endif
         
     } else {
         _settingsUI->disable();
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
         _outputUI->disable();
 #endif
         
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
         _videoPlayerUI->disable();
 #endif
         
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
         _syphonUI->disable();
 #endif
     }
@@ -1285,7 +1285,7 @@ void ofxGemcutterControls::loadExtraSettings()
 }
 
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
 #pragma mark -
 #pragma mark Syphon
 //--------------------------------------------------------------
@@ -1378,7 +1378,7 @@ void ofxGemcutterControls::loadSyphonSettings()
 
 #endif
 
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
 //--------------------------------------------------------------
 void ofxGemcutterControls::loadVideoPlayerSettings()
 {

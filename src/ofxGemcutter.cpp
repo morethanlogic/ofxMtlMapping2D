@@ -80,11 +80,11 @@ void ofxGemcutter::setup(int width, int height, int numSample)
     ofxGemcutterSettings::infoFont.loadFont("ui/ReplicaBold.ttf", 10);
 
     // ---
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     setupSyphon();
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     setupVideoPlayer();
 #endif
 
@@ -118,14 +118,14 @@ void ofxGemcutter::update()
         ofxGemcutterControls::sharedInstance()->disable();
     }
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     if (_syphonLoadSettingsAtLaunch && (ofGetFrameNum() - _syphonNumFrameWhenLastServerAnnounced) > 0) {
         _syphonLoadSettingsAtLaunch = false;
         ofxGemcutterControlsSharedInstance().loadSyphonSettings();
     }
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     updateVideoPlayer();
 #endif
 
@@ -355,11 +355,11 @@ void ofxGemcutter::bind()
     ofClear(.0f, .0f, .0f, .0f);
     ofClearAlpha();
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     drawSyphon();
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     drawVideoPlayer();
 #endif
 }
@@ -548,7 +548,7 @@ void ofxGemcutter::updateZoomAndOutput(MappingEditView view, bool updateOutputRe
             _fbo.allocate(ofxGemcutterGlobal::outputWidth , ofxGemcutterGlobal::outputHeight, GL_RGBA32F_ARB, _numSample);
         }
         
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
         resizeVideo(*outputPreview);
 #endif
     
@@ -1199,7 +1199,7 @@ void ofxGemcutter::outputWindowClosedEvent(int & i)
 #pragma mark -
 #pragma mark Syphon
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
 
 //--------------------------------------------------------------
 void ofxGemcutter::setupSyphon()
@@ -1272,7 +1272,7 @@ void ofxGemcutter::serverRetired(ofxSyphonServerDirectoryEventArgs &arg)
 #pragma mark -
 #pragma mark Video Player
 
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
 
 //--------------------------------------------------------------
 void ofxGemcutter::setupVideoPlayer()

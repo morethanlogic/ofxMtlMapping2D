@@ -4,6 +4,7 @@
 #include "ofMain.h"
 
 //Mapping
+#include "ofxGemcutterDefines.h"
 #include "ofxGemcutterSettings.h"
 #include "ofxGemcutterVertex.h"
 #include "ofxGemcutterQuad.h"
@@ -19,11 +20,11 @@
 #include "ofxXmlSettings.h"
 #include "ofxExtraWindow.h"
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
 #include "ofxSyphon.h"
 #endif
 
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     #if defined(TARGET_OSX)
         #include "ofxAVFVideoPlayer.h"
     #elif defined(TARGET_WIN32)
@@ -89,7 +90,7 @@ public:
     void closeOutputWindow();
     void outputWindowClosedEvent(int & i);
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     void selectSyphonServer(int syphonDirIdx);
 
     void serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg);
@@ -97,7 +98,7 @@ public:
 #endif
     
     // Video playback related
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     void loadVideo(string filePath);
     void playVideo();
     void pauseVideo();
@@ -154,7 +155,7 @@ private:
     bool _bDeleteShape;
 
     // Syphon related
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     ofxSyphonServerDirectory _syphonServerDir;
     ofxSyphonClient _syphonClient;
     int _syphonDirIdx;
@@ -164,7 +165,7 @@ private:
 #endif
     
     // Video playback related
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     ofRectangle _videoRect;
     
     #if defined(TARGET_OSX)

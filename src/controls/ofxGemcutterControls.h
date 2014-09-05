@@ -8,11 +8,11 @@
 #include "ofxUI.h"
 #include "ofxGemcutterShapeType.h"
 
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
 #include "ofxDetectDisplays.h"
 #endif
 
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
 #include "ofxSyphon.h"
 #endif
 
@@ -77,20 +77,20 @@ public:
     void updateUIsPosition();
 
 
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     void displayConfigurationChanged();
     void resetDisplaySelection();
     void outputUiEvent(ofxUIEventArgs &event);
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     void syphonUiEvent(ofxUIEventArgs &event);
     void addSyphonServer(vector<ofxSyphonServerDescription> servers);
     void removeSyphonServer(vector<ofxSyphonServerDescription> servers);
     void loadSyphonSettings();
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     void videoPlayerUiEvent(ofxUIEventArgs &event);
     void loadVideoPlayerSettings();
     string getVideoFilePath();
@@ -142,20 +142,20 @@ private:
     
     bool _bHasFocus;
     
-#if defined(USE_OFX_DETECT_DISPLAYS)
+#if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
     ofxUISuperCanvas* _outputUI;
     string _currActiveDisplayName;
     vector<string> _displayNames;
 #endif
     
-#if defined(USE_OFX_SYPHON) && defined(TARGET_OSX)
+#if defined(OFX_GEMCUTTER_USE_OFX_SYPHON) && defined(TARGET_OSX)
     ofxUISuperCanvas* _syphonUI;
     list<string> _syphonServersList;
     vector<string> _syphonServersNames;
     void updateSyphonServersList();
 #endif
     
-#if defined(USE_VIDEO_PLAYER_OPTION)
+#if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     ofxUISuperCanvas* _videoPlayerUI;
     
     ofImage _videoPlayIcon;
