@@ -268,8 +268,8 @@ void ofxGemcutter::draw()
                 ofNoFill();
                 ofRect(ofxGemcutterGlobal::inputViewOutputPreview);
                 
-                ofSetColor(0, 0, 255);
-                ofRect(ofxGemcutterGlobal::inputViewZoomedCoordSystem);
+//                ofSetColor(0, 0, 255);
+//                ofRect(ofxGemcutterGlobal::inputViewZoomedCoordSystem);
                 
                 ofVec2f transformedCoord = ofxGemcutterGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
                 
@@ -302,8 +302,8 @@ void ofxGemcutter::draw()
                 ofNoFill();
                 ofRect(ofxGemcutterGlobal::outputViewOutputPreview);
                 
-                ofSetColor(0, 0, 255);
-                ofRect(ofxGemcutterGlobal::outputViewZoomedCoordSystem);
+//                ofSetColor(0, 0, 255);
+//                ofRect(ofxGemcutterGlobal::outputViewZoomedCoordSystem);
                 
                 ofVec2f transformedCoord = ofxGemcutterGlobal::screenToZoomed(ofVec2f(ofGetMouseX(), ofGetMouseY()));
                 
