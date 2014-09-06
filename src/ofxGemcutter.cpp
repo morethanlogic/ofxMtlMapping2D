@@ -176,42 +176,33 @@ void ofxGemcutter::update()
     
     // ---
     // Output Mode
-    switch (ofxGemcutterGlobal::getEditView()) {
-        case MAPPING_CHANGE_TO_INPUT_VIEW:
-        {
-            ofxGemcutterGlobal::setEditView(MAPPING_INPUT_VIEW);
-            
-            list<ofxGemcutterShape*>::iterator it;
-            for (it=ofxGemcutterShapes::pmShapes.begin(); it!=ofxGemcutterShapes::pmShapes.end(); it++) {
-                ofxGemcutterShape* shape = *it;
-                shape->setAsIdle();
-                shape->inputPolygon->enable();
-            }
-            
-            updateZoomAndOutput(MAPPING_INPUT_VIEW);
-            
-            break;
+    if (ofxGemcutterGlobal::getEditView() == MAPPING_CHANGE_TO_INPUT_VIEW) {
+        ofxGemcutterGlobal::setEditView(MAPPING_INPUT_VIEW);
+        
+        list<ofxGemcutterShape*>::iterator it;
+        for (it=ofxGemcutterShapes::pmShapes.begin(); it!=ofxGemcutterShapes::pmShapes.end(); it++) {
+            ofxGemcutterShape* shape = *it;
+            shape->setAsIdle();
+            shape->inputPolygon->enable();
         }
-            
-        case MAPPING_CHANGE_TO_OUTPUT_VIEW:
-        {
-            ofxGemcutterGlobal::setEditView(MAPPING_OUTPUT_VIEW);
-            
-            list<ofxGemcutterShape*>::iterator it;
-            for (it=ofxGemcutterShapes::pmShapes.begin(); it!=ofxGemcutterShapes::pmShapes.end(); it++) {
-                ofxGemcutterShape* shape = *it;
-                shape->enable();
-                
-                if(shape->inputPolygon) {
-                    // If this Shape is textured and has an 'inputPolygon'
-                    shape->inputPolygon->setAsIdle();
-                }
-            }
-            
-            updateZoomAndOutput(MAPPING_OUTPUT_VIEW);
+        
+        updateZoomAndOutput(MAPPING_INPUT_VIEW);
 
-            break;
+    } else if (ofxGemcutterGlobal::getEditView() == MAPPING_CHANGE_TO_OUTPUT_VIEW) {
+        ofxGemcutterGlobal::setEditView(MAPPING_OUTPUT_VIEW);
+        
+        list<ofxGemcutterShape*>::iterator it;
+        for (it=ofxGemcutterShapes::pmShapes.begin(); it!=ofxGemcutterShapes::pmShapes.end(); it++) {
+            ofxGemcutterShape* shape = *it;
+            shape->enable();
+            
+            if(shape->inputPolygon) {
+                // If this Shape is textured and has an 'inputPolygon'
+                shape->inputPolygon->setAsIdle();
+            }
         }
+        
+        updateZoomAndOutput(MAPPING_OUTPUT_VIEW);
     }
     
     // ---
@@ -703,24 +694,21 @@ void ofxGemcutter::mousePressed(ofMouseEventArgs &e)
         
         if (!shape->isLocked()) {
             
-            switch (ofxGemcutterGlobal::getEditView()) {
-                case MAPPING_INPUT_VIEW:
-                    if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
-                        if(shape->inputPolygon->hitTest(eX, eY)) {
-                            grabbedOne = true;
-                            shape->inputPolygon->select(eX, eY);
-                            shape->inputPolygon->enable();
-                        }
-                    }
-                    break;
-                    
-                case MAPPING_OUTPUT_VIEW:
-                    if(shape->hitTest(eX, eY)) {
+            if (ofxGemcutterGlobal::getEditView() == MAPPING_INPUT_VIEW) {
+                if (shape->inputPolygon || shape->shapeType != MAPPING_2D_SHAPE_MASK) {
+                    if(shape->inputPolygon->hitTest(eX, eY)) {
                         grabbedOne = true;
-                        shape->select(eX, eY);
-                        shape->enable();
+                        shape->inputPolygon->select(eX, eY);
+                        shape->inputPolygon->enable();
                     }
-                    break;
+                }
+
+            } else if (ofxGemcutterGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+                if(shape->hitTest(eX, eY)) {
+                    grabbedOne = true;
+                    shape->select(eX, eY);
+                    shape->enable();
+                }
             }
             
             if(grabbedOne) {
