@@ -801,12 +801,12 @@ void ofxGemcutterControls::shapesListUiEvent(ofxUIEventArgs &event)
 void ofxGemcutterControls::addShapeToList(int shapeID, int shapeType, bool bLocked)
 {
     //_shapesListCanvas->addWidgetDown(new ofxUIToggle(("Shape " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second), false, kToggleSize, kToggleSize));
-    _shapesListCanvas->addToggle("Select " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, false, 16, 16)->setLabelVisible(false);
+    _shapesListCanvas->addToggle("Select " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, false, 11, 11)->setLabelVisible(false);
     _shapesListCanvas->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-    ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Lock " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, "", bLocked, 16, 16);
+    ofxUIImageToggle* uiImageToggle = _shapesListCanvas->addImageToggle("Lock " + ofToString(shapeID) + " " + shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second, "", bLocked, 11, 11);
     uiImageToggle->setColorBack(uiColorB);
     uiImageToggle->setLabelVisible(false);
-    _shapesListCanvas->addLabel(shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second  + " " +  ofToString(shapeID));
+    _shapesListCanvas->addLabel(shapeTypesAsString.find((ofxGemcutterShapeType)shapeType)->second  + " " +  ofToString(shapeID), OFX_UI_FONT_SMALL);
     
     if (bLocked) {
         uiImageToggle->setImage(&_lockedIcon);
