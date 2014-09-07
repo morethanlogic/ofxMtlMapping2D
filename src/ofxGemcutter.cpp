@@ -496,6 +496,10 @@ void ofxGemcutter::setLockForShapeId(int shapeId, bool bLocked)
 void ofxGemcutter::deleteShape()
 {
     if (ofxGemcutterShape::activeShape) {
+        if (ofxGemcutterShape::activeShape->shapeType == MAPPING_2D_SHAPE_GRID) {
+            ofxGemcutterControlsSharedInstance().hideGridSettingsCanvas();
+        }
+        
         ofxGemcutterControlsSharedInstance().clearShapesList();
         ofxGemcutterShapes::pmShapes.remove(ofxGemcutterShape::activeShape);
         delete ofxGemcutterShape::activeShape;
