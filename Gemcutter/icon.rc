@@ -4,5 +4,5 @@
 #if defined(_DEBUG)
 MAIN_ICON               ICON                    "..\..\..\libs\openFrameworksCompiled\project\vs\icon_debug.ico"
 #else
-MAIN_ICON               ICON                    "..\..\..\libs\openFrameworksCompiled\project\vs\icon.ico"
+MAIN_ICON               ICON                    "bin\data\gemcutter_icon.ico"
 #endif

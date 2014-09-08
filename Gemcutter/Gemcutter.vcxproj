@@ -75,7 +75,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxDetectDisplays\libs;..\..\..\addons\ofxDetectDisplays\src;..\..\..\addons\ofxMSAInteractiveObject\libs;..\..\..\addons\ofxMSAInteractiveObject\src;..\..\..\addons\ofxGemcutter\libs;..\..\..\addons\ofxGemcutter\src;..\..\..\addons\ofxGemcutter\src\controls;..\..\..\addons\ofxGemcutter\src\settings;..\..\..\addons\ofxGemcutter\src\shapes;..\..\..\addons\ofxGemcutter\src\utils;..\..\..\addons\ofxGemcutter\src\utils\homography;..\..\..\addons\ofxGemcutter\src\utils\ofxExtraWindow;..\..\..\addons\ofxUI\libs;..\..\..\addons\ofxUI\src;..\..\..\addons\ofDirectShowVideoPlayer</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
