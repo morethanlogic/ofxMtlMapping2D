@@ -279,11 +279,10 @@ void ofxGemcutter::draw()
                 ofScale(ofxGemcutterGlobal::outputViewZoomFactor, ofxGemcutterGlobal::outputViewZoomFactor);
                 ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
                 
-                render(false);
-                
                 ofPushMatrix();
                 {
                     ofTranslate(ofxGemcutterGlobal::outputViewOutputPreview.x, ofxGemcutterGlobal::outputViewOutputPreview.y);
+                    render();
                     drawAllShapes();
                 }
                 ofPopMatrix();
@@ -306,7 +305,16 @@ void ofxGemcutter::draw()
         }
     }
     else {
-        render(true);
+        ofPushMatrix();
+        {
+            ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+            ofScale(ofxGemcutterGlobal::outputViewZoomFactor, ofxGemcutterGlobal::outputViewZoomFactor);
+            ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
+            ofTranslate(ofxGemcutterGlobal::outputViewOutputPreview.x, ofxGemcutterGlobal::outputViewOutputPreview.y);
+
+            render();
+        }
+        ofPopMatrix();
     }
     
     ofxGemcutterControls::sharedInstance()->drawBg();
@@ -315,27 +323,40 @@ void ofxGemcutter::draw()
         _outputWindow.begin();
         {
             ofBackground(0);
-            render(true);
+            render();
+            
+            if (ofxGemcutterGlobal::bShowShapesOnOutputWindow) {
+                    drawAllShapes(true);
+            }
+            
+            ofSetColor(255);
+            float remapMouseX = ofGetMouseX() - (ofGetWidth()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor)/2);
+            float remapMouseY = ofGetMouseY() - (ofGetHeight()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor)/2);
+            float newX = ofMap(remapMouseX, .0f, ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputWidth);
+            float newY = ofMap(remapMouseY, .0f, ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputHeight);
+            ofLine(newX, .0f, newX, ofGetHeight());
+            ofLine(.0f, newY, ofGetWidth(), newY);
+
         }
         _outputWindow.end();
     }
 }
 
 //--------------------------------------------------------------
-void ofxGemcutter::drawAllShapes()
+void ofxGemcutter::drawAllShapes(bool bForceOutputMode)
 {
     list<ofxGemcutterShape*>::iterator it;
     for (it=ofxGemcutterShapes::pmShapes.begin(); it!=ofxGemcutterShapes::pmShapes.end(); it++) {
         ofxGemcutterShape* shape = *it;
         
         if(shape != ofxGemcutterShape::activeShape) {
-            shape->draw();
+            shape->draw(bForceOutputMode);
         }
     }
     
     if(ofxGemcutterShape::activeShape) {
         //Draw active shape on top
-        ofxGemcutterShape::activeShape->draw();
+        ofxGemcutterShape::activeShape->draw(bForceOutputMode);
     }
 }
 
@@ -373,14 +394,9 @@ void ofxGemcutter::drawFbo()
 #pragma mark -
 #pragma mark Render - Mapping Mode
 //--------------------------------------------------------------
-void ofxGemcutter::render(bool bIsOutput)
+void ofxGemcutter::render()
 {
     list<ofxGemcutterShape*>::iterator it;
-    
-    if (!bIsOutput) {
-        ofPushMatrix();
-        ofTranslate(ofxGemcutterGlobal::outputViewOutputPreview.x, ofxGemcutterGlobal::outputViewOutputPreview.y);
-    }
     
     // Textured shapes
     _fbo.getTextureReference().bind();
@@ -408,10 +424,6 @@ void ofxGemcutter::render(bool bIsOutput)
         if (shape->shapeType == MAPPING_2D_SHAPE_MASK) {
             shape->render();
         }
-    }
-    
-    if (!bIsOutput) {
-        ofPopMatrix();
     }
 }
 

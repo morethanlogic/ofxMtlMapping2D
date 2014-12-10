@@ -39,7 +39,7 @@ public:
     static int outputHeight;
     
     static bool bIsDraggingZone;
-
+    static bool bShowShapesOnOutputWindow;
 
 private:
 

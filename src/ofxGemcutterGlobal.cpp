@@ -16,6 +16,9 @@ int ofxGemcutterGlobal::outputWidth = 10;
 int ofxGemcutterGlobal::outputHeight = 10;
 bool ofxGemcutterGlobal::bIsDraggingZone = false;
 
+bool ofxGemcutterGlobal::bShowShapesOnOutputWindow = false;
+
+
 //--------------------------------------------------------------
 void ofxGemcutterGlobal::setEditView(MappingEditView mappingEditView)
 {

@@ -77,43 +77,30 @@ void ofxGemcutterShape::update()
 
 
 //--------------------------------------------------------------
-void ofxGemcutterShape::draw()
+void ofxGemcutterShape::draw(bool bForceOutputMode)
 {		
     //--------
     ofPushStyle();
     ofEnableAlphaBlending();
         
     // ---- OUTPUT MODE
-    if(ofxGemcutterGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+    if(ofxGemcutterGlobal::getEditView() == MAPPING_OUTPUT_VIEW || bForceOutputMode) {
         _super::draw();
+        _super::drawID();
 
     // ---- INPUT MODE
     } else if (ofxGemcutterGlobal::getEditView() == MAPPING_INPUT_VIEW) {
         if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
             inputPolygon->draw();
+            
+            if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
+                inputPolygon->drawID();
+            }
         }
     }
-    
-    drawID();
-    
+        
 	ofDisableAlphaBlending();
     ofPopStyle();
-}
-
-
-//--------------------------------------------------------------
-void ofxGemcutterShape::drawID() 
-{
-    // ---- OUTPUT MODE
-    if(ofxGemcutterGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
-        _super::drawID();
-    
-    // ---- INPUT MODE
-    } else if (ofxGemcutterGlobal::getEditView() == MAPPING_INPUT_VIEW) {
-        if (inputPolygon && shapeType != MAPPING_2D_SHAPE_MASK) {
-            inputPolygon->drawID();
-        }
-    }
 }
 
 //--------------------------------------------------------------

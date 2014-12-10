@@ -135,7 +135,7 @@ private:
     ofxXmlSettings _shapesListXML;
     list<ofxGemcutterShape*>::iterator iteratorForShapeWithId(int shapeId);
     
-    void render(bool bIsOutput);
+    void render();
 
     void createQuad();
     void createGrid();
@@ -143,7 +143,7 @@ private:
     void createMask();
     void deleteShape();
     
-    void drawAllShapes();
+    void drawAllShapes(bool bForceOutputMode = false);
 
     void loadShapesList();
     void saveShapesList();

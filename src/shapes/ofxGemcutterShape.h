@@ -32,8 +32,8 @@ public:
     void init(int sId, bool defaultShape = false);
 
     void update();
-    void draw();
-    void drawID();
+    void draw(bool bForceOutputMode = false);
+    
     virtual void render() {};
 
     void setAsActiveShape(bool fromUI = false);
@@ -50,6 +50,4 @@ private:
     typedef ofxGemcutterPolygon _super;
     
     bool _bIsLocked;
-
-
 };

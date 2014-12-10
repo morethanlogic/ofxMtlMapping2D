@@ -148,7 +148,7 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _gridSettingsCanvas = new ofxUICanvas();
     _gridSettingsCanvas->setWidth(gridSettingCanvasWidth);
     _gridSettingsCanvas->setColorBack(uiColorB);
-    
+        
     _gridSettingsCanvas->addLabel("GRID SETTINGS");
     _gridSettingsCanvas->addIntSlider("NB COLS", 1, 20, &ofxGemcutterSettings::gridDefaultNbCols);
     _gridSettingsCanvas->addIntSlider("NB ROWS", 1, 20, &ofxGemcutterSettings::gridDefaultNbRows);
@@ -168,6 +168,8 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     _outputUI->setColorBack(uiColor);
     
     _outputUI->addSpacer(_outputUI->getRect()->width - 10, 2);
+    
+    _outputUI->addToggle("SHOW SHAPES", &ofxGemcutterGlobal::bShowShapesOnOutputWindow);
     
     _outputUI->addButton("DETECT DISPLAYS", false);
     
@@ -706,6 +708,7 @@ void ofxGemcutterControls::setUIShapeEditingState(bool isOn)
         ofxGemcutterShape::resetActivePolygonVars();
         
         // ---
+        unselectShapesToggles();
         _shapesListCanvas->disable();
         hideGridSettingsCanvas();
         
