@@ -118,12 +118,19 @@ ofxGemcutterControls::ofxGemcutterControls() //ofxGemcutter * mtlMapping2D)
     
     _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
     _settingsUI->addLabel("PROJECTION SIZE");
-    _settingsUI->addTextInput("PROJ. WIDTH", ofToString(ofGetWidth()));
-    _settingsUI->addTextInput("PROJ. HEIGHT", ofToString(ofGetHeight()));
-
+    ofxUITextInput *textInput;
+    textInput = _settingsUI->addTextInput("PROJ. WIDTH", ofToString(ofGetScreenWidth()));
+    textInput->setOnlyNumericInput(true);
+    textInput->setAutoClear(false);
+    textInput = _settingsUI->addTextInput("PROJ. HEIGHT", ofToString(ofGetScreenHeight()));
+    textInput->setOnlyNumericInput(true);
+    textInput->setAutoClear(false);
+    
     _settingsUI->addSpacer((_settingsUI->getRect()->width - 10) / 2, 1);
     _settingsUI->addLabel("UI HIDES AFTER SEC");
-    _settingsUI->addTextInput("DELAY IN SEC", ofToString(ofxGemcutterGlobal::delayBeforeHiddingUI))->setOnlyNumericInput(true);
+    textInput = _settingsUI->addTextInput("DELAY IN SEC", ofToString(ofxGemcutterGlobal::delayBeforeHiddingUI));
+    textInput->setOnlyNumericInput(true);
+    textInput->setAutoClear(false);
     
     _settingsUI->autoSizeToFitWidgets();
     ofAddListener(_settingsUI->newGUIEvent, this, &ofxGemcutterControls::settingsUiEvent);
