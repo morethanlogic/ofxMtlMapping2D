@@ -314,7 +314,11 @@ void ofxGemcutterControls::toolsUiEvent(ofxUIEventArgs &event)
         bool bGoFullscreen = getToggleValue(_toolsCanvas, name);
         ofSetFullscreen(bGoFullscreen);
         
+        // We do this so that the scale factor, etc...are updated.
+        // This is a workaround for now, as we should not update the UI.
+        _mtlMapping2D->zoomScaleToFit(ofxGemcutterGlobal::getEditView());
         
+        //
         if (bGoFullscreen && _displayNames.size() == 1) {
             _currActiveDisplayName = _displayNames[0];
             setToggleValue(_outputUI, _currActiveDisplayName, true);        
