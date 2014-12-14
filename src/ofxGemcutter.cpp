@@ -329,13 +329,15 @@ void ofxGemcutter::draw()
                     drawAllShapes(true);
             }
             
-            ofSetColor(255);
-            float remapMouseX = ofGetMouseX() - (ofGetWidth()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor)/2);
-            float remapMouseY = ofGetMouseY() - (ofGetHeight()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor)/2);
-            float newX = ofMap(remapMouseX, .0f, ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputWidth);
-            float newY = ofMap(remapMouseY, .0f, ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputHeight);
-            ofLine(newX, .0f, newX, ofGetHeight());
-            ofLine(.0f, newY, ofGetWidth(), newY);
+            if (ofxGemcutterGlobal::getEditView() == MAPPING_OUTPUT_VIEW) {
+                ofSetColor(255);
+                float remapMouseX = ofGetMouseX() - (ofGetWidth()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor)/2);
+                float remapMouseY = ofGetMouseY() - (ofGetHeight()/2 - (ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor)/2);
+                float newX = ofMap(remapMouseX, .0f, ofxGemcutterGlobal::outputViewOutputPreview.width * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputWidth);
+                float newY = ofMap(remapMouseY, .0f, ofxGemcutterGlobal::outputViewOutputPreview.height * ofxGemcutterGlobal::outputViewZoomFactor, .0f, ofxGemcutterGlobal::outputHeight);
+                ofLine(newX, .0f, newX, ofGetHeight());
+                ofLine(.0f, newY, ofGetWidth(), newY);
+            }
 
         }
         _outputWindow.end();
