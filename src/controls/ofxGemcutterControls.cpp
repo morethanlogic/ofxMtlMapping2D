@@ -940,7 +940,7 @@ void ofxGemcutterControls::updateUIsPosition()
 #if defined(OFX_GEMCUTTER_USE_VIDEO_PLAYER_OPTION)
     #if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
-    #elif
+    #else
         _videoPlayerUI->setPosition(ofGetWidth() - _videoPlayerUI->getRect()->width, _settingsUI->getRect()->height + 5);
     #endif
     
@@ -953,7 +953,7 @@ void ofxGemcutterControls::updateUIsPosition()
     #else
         #if defined(OFX_GEMCUTTER_USE_OFX_DETECT_DISPLAYS)
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _outputUI->getRect()->y + _outputUI->getRect()->height + 5);
-        #elif
+        #else
             _syphonUI->setPosition(ofGetWidth() - _syphonUI->getRect()->width, _settingsUI->getRect()->height + 5);
         #endif
     #endif
