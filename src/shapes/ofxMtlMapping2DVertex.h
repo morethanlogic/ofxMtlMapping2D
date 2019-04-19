@@ -42,7 +42,7 @@ public:
     
     bool toBeRemoved;
     bool isDefiningTectureCoord;
-    ofVec2f center;
+    glm::vec2 center;
     int index;
     bool bIsOnAnEdge;
     int edgeIndex;

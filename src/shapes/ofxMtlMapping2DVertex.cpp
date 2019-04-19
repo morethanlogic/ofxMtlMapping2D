@@ -90,7 +90,7 @@ ofxMtlMapping2DVertex* ofxMtlMapping2DVertex::getActiveVertex()
 //--------------------------------------------------------------
 void ofxMtlMapping2DVertex::updateCenter() 
 {
-	center.set(x+15, y+15);
+	center= glm::vec2(x+15, y+15);
 }
 
 //--------------------------------------------------------------
