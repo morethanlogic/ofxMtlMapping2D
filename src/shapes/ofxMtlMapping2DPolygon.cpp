@@ -101,7 +101,7 @@ void ofxMtlMapping2DPolygon::draw()
     }
     
     // ---
-    vector<ofPoint> &polyPoints = polyline->getVertices();
+    auto &polyPoints = polyline->getVertices();
     
     ofFill();
     ofBeginShape();

@@ -58,7 +58,7 @@ void ofxMtlMapping2DGrid::updateVertices(){
             ofxMtlMapping2DVertex* bottomLeftVertex = *it;
             
             // --- Interpolate the quad's vertical edges
-            vector<ofVec2f> left, right;
+            vector<glm::vec2> left, right;
             left.resize(gridVerticalResolution+1);
             right.resize(gridVerticalResolution+1);
             
@@ -68,23 +68,23 @@ void ofxMtlMapping2DGrid::updateVertices(){
             }
             
             // --- Interpolate all internal points
-            vector<vector<ofVec2f> >grid;
+            vector<vector<glm::vec2> >grid;
             grid.resize(gridHorizontalResolution+1);
             for (int i_x = 0; i_x <= gridHorizontalResolution; i_x++) {
                 grid[i_x].resize(gridVerticalResolution+1);
                 for (int i_y = 0; i_y <= gridVerticalResolution; i_y++) {
-                    ofVec2f l = left[i_y];
-                    ofVec2f r = right[i_y];
+                    glm::vec2 l = left[i_y];
+                    glm::vec2 r = right[i_y];
                     
-                    grid[i_x][i_y].set(l + ((r - l) / gridHorizontalResolution) * (float)i_x);
+                    grid[i_x][i_y] = glm::vec2(l + ((r - l) / gridHorizontalResolution) * (float)i_x);
                 }
             }
             
             // --- Update Control Mesh
-            controlMesh.setVertex(topLeft, topLeftVertex->center);
-            controlMesh.setVertex(topRight, topRightVertex->center);
-            controlMesh.setVertex(bottomRight, bottonRightVertex->center);
-            controlMesh.setVertex(bottomLeft, bottomLeftVertex->center);
+            controlMesh.setVertex(topLeft, glm::vec3(topLeftVertex->center,  0.f));
+            controlMesh.setVertex(topRight, glm::vec3(topRightVertex->center,  0.f));
+            controlMesh.setVertex(bottomRight, glm::vec3(bottonRightVertex->center,  0.f));
+            controlMesh.setVertex(bottomLeft, glm::vec3(bottomLeftVertex->center,  0.f));
             
             // --- Update internal mesh
             int quadStartIndex = (y * ((gridNbCols * gridHorizontalResolution) + 1) * gridVerticalResolution) + (x * gridHorizontalResolution);
@@ -99,15 +99,15 @@ void ofxMtlMapping2DGrid::updateVertices(){
                     int i_bottomRight = (vertexIndex + 1) + ((gridNbCols * gridHorizontalResolution) + 1);
                     int i_bottomLeft = vertexIndex + ((gridNbCols * gridHorizontalResolution) + 1);
                     
-                    ofVec2f i_topLeftVertex = grid[i_x][i_y];
-                    ofVec2f i_topRightVertex = grid[i_x+1][i_y];
-                    ofVec2f i_bottomRightVertex = grid[i_x+1][i_y+1];
-                    ofVec2f i_bottomLeftVertex = grid[i_x][i_y+1];
+                    glm::vec2 i_topLeftVertex = grid[i_x][i_y];
+                    glm::vec2 i_topRightVertex = grid[i_x+1][i_y];
+                    glm::vec2 i_bottomRightVertex = grid[i_x+1][i_y+1];
+                    glm::vec2 i_bottomLeftVertex = grid[i_x][i_y+1];
                     
-                    internalMesh.setVertex(i_topLeft, i_topLeftVertex);
-                    internalMesh.setVertex(i_topRight, i_topRightVertex);
-                    internalMesh.setVertex(i_bottomRight, i_bottomRightVertex);
-                    internalMesh.setVertex(i_bottomLeft, i_bottomLeftVertex);
+                    internalMesh.setVertex(i_topLeft,  glm::vec3(i_topLeftVertex, 0.f));
+                    internalMesh.setVertex(i_topRight,  glm::vec3(i_topRightVertex, 0.f));
+                    internalMesh.setVertex(i_bottomRight,  glm::vec3(i_bottomRightVertex, 0.f));
+                    internalMesh.setVertex(i_bottomLeft,  glm::vec3(i_bottomLeftVertex, 0.f));
                 }
             }
         }
@@ -312,7 +312,7 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
     for (it=vertices.begin(); it!=vertices.end(); it++) {
         ofxMtlMapping2DVertex* vertex = *it;
         
-        controlMesh.addVertex(ofVec3f(vertex->center.x, vertex->center.y, .0f));
+        controlMesh.addVertex(glm::vec3 (vertex->center.x, vertex->center.y, .0f));
 
     }
     
@@ -345,7 +345,7 @@ void ofxMtlMapping2DGrid::updateGridAndMesh(bool startFresh)
         for (int x = 0; x <= (gridNbCols * gridHorizontalResolution); x++) {
             float vertexX = x * gridCellWidth;
             
-            internalMesh.addVertex(ofVec3f(vertexX, vertexY, .0f));
+            internalMesh.addVertex(glm::vec3(vertexX, vertexY, .0f));
         }
     }
     
@@ -380,8 +380,8 @@ void ofxMtlMapping2DGrid::updateUVMap()
 {    
 	internalMesh.clearTexCoords();
     
-    ofVec2f coordinatesStart;
-    ofVec2f coordinatesEnd;
+    glm::vec2 coordinatesStart;
+    glm::vec2 coordinatesEnd;
     
     coordinatesStart.x =  inputPolygon->polyline->getVertices()[0].x;
     coordinatesStart.y =  inputPolygon->polyline->getVertices()[0].y;
@@ -389,7 +389,7 @@ void ofxMtlMapping2DGrid::updateUVMap()
     coordinatesEnd.y =  inputPolygon->polyline->getVertices()[2].y;
         
     // ---
-    ofVec2f uvSize = coordinatesEnd - coordinatesStart;
+    glm::vec2 uvSize = coordinatesEnd - coordinatesStart;
     float uvCellWidth = uvSize.x / (gridNbCols * gridHorizontalResolution);
     float uvCellHeight = uvSize.y / (gridNbRows * gridVerticalResolution);
     
@@ -399,7 +399,7 @@ void ofxMtlMapping2DGrid::updateUVMap()
         for (int x = 0; x <= (gridNbCols * gridHorizontalResolution); x++) {
             float uvCellX = coordinatesStart.x + x * uvCellWidth;
             
-            internalMesh.addTexCoord(ofVec2f(uvCellX, uvCellY));
+            internalMesh.addTexCoord(glm::vec2(uvCellX, uvCellY));
         }
     }
 }

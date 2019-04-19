@@ -24,7 +24,7 @@ class ofxMtlMapping2DShape : public ofxMtlMapping2DPolygon {
         ofxMtlMapping2DShape();
         ~ofxMtlMapping2DShape();
     
-        map<string,string> shapeSettings;
+        std::map<string,string> shapeSettings;
         ofxMtlMapping2DInput* inputPolygon;
     
         void init(int sId, bool defaultShape = false);
